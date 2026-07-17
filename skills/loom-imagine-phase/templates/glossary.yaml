@@ -1,0 +1,7 @@
+# Source of truth for docs/product/GLOSSARY.md (generate the .md, never edit it by hand)
+# Every domain noun used in any Loom document must be defined here.
+terms:
+  - term: Example Term
+    definition: One-sentence definition in the user's own words.
+    aliases: []          # forbidden synonyms map here, use `term` everywhere
+    see: []              # related terms
