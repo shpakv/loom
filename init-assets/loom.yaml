@@ -1,0 +1,22 @@
+# Loom framework config — single source of truth for paths and phases
+version: 0.9
+scripts_version: 0.9.0   # written by /loom:init; compared with plugin version by /loom:status
+paths:
+  product: docs/product
+  domain: docs/domain
+  adr: docs/adr
+  spikes: docs/spikes
+  architecture: docs/architecture
+  conventions: docs/conventions
+  roadmap: docs/roadmap
+  epics: docs/roadmap/epics
+  scripts: scripts/loom
+test_command: ""   # e.g. "go test ./..." — REQUIRED before /loom-implement
+test_globs: ["*_test.go", "*.spec.ts", "*.test.ts", "test_*.py", "*_test.py", "**/tests/**", "**/__tests__/**"]
+statuses:
+  documents: [draft, in-review, approved, superseded]
+  adr: [proposed, accepted, rejected, deprecated, superseded]
+naming: slug-based, no sequential numbers — see loom-core skill
+phases:
+  implemented: [imagine, roadmap, skeleton, consolidate, design, implement, review, spike]
+  planned: [intake, retro, ship, audit, postmortem]
