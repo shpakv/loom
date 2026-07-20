@@ -6,8 +6,8 @@ ADR, package SKILL.md) + gated phases + an anti-cheating TDD engine.
 ## Installation (local)
 
     claude
-    /plugin marketplace add /path/to/loom-marketplace
-    /plugin install loom@slava-loom
+    /plugin marketplace add shpakv/loom
+    /plugin install loom@loom
 
 ## Project initialization
 
