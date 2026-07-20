@@ -1,0 +1,13 @@
+{
+  "name": "loom",
+  "owner": {
+    "name": "shpakv"
+  },
+  "plugins": [
+    {
+      "name": "loom",
+      "source": "./",
+      "description": "Docs-first framework for AI development: a knowledge layer (glossary, DRIVERS, ADR, package SKILL.md) + gated phases + an anti-cheating TDD engine."
+    }
+  ]
+}

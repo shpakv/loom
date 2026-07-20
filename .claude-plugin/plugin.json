@@ -1,0 +1,11 @@
+{
+  "name": "loom",
+  "version": "0.6.0",
+  "description": "Docs-first framework for AI development: a knowledge layer (glossary, DRIVERS, ADR, package SKILL.md) + gated phases + an anti-cheating TDD engine.",
+  "author": {
+    "name": "shpakv"
+  },
+  "homepage": "https://github.com/shpakv/loom",
+  "repository": "https://github.com/shpakv/loom",
+  "hooks": "./hooks/hooks.json"
+}
