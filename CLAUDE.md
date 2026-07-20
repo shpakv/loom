@@ -104,6 +104,10 @@ PreToolUse matcher `Edit|Write|MultiEdit` runs `guard_file_roles.py`. It reads
 role `test-author` may write only files matching `test_globs`; role
 `implementer` may not touch test-glob files. Blocks with exit code 2 + stderr.
 
+**Do not add a `"hooks"` key to `.claude-plugin/plugin.json`.** Claude Code
+auto-discovers `hooks/hooks.json`; registering it explicitly caused the guard
+hook to misbehave and was removed in 0.9.1.
+
 ## Testing changes to the plugin
 
 There is **no test suite or CI in this repo** — the TDD gates operate on a
