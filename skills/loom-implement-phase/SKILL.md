@@ -30,14 +30,23 @@ an agent can be argued with, an exit code cannot.
 
 ## Cycle
 
+The cycle has three parts: **Setup** (once) → **Per-step loop** (each plan step)
+→ **Closure** (once). Which loop you run depends on the task's `rigor`.
+
+### Setup (once)
+
 0. Write `.loom/role` = `planner`, dispatch loom-planner → it fills `## Plan`
    (steps of behavior → test → minimal change; contracts touched; proposed
    rigor). **Stop and show the plan to the human** — this is the cheap gate.
-   `rigor: light` (from task frontmatter, planner may propose changing it):
-   steps 1–5 may run in one agent doing classic TDD, but verify scripts,
-   guards and the reviewer remain mandatory.
+   The planner may propose changing the task's `rigor`; the human decides.
 
-For each plan step (rigor: full):
+### Per-step loop — `rigor: full` (role-separated)
+
+Full rigor is the default and the one the anti-cheating machinery protects:
+test-author and implementer are different subagents, and the file-role guard
+(`.loom/role`) physically stops each from touching the other's files. Run this
+for every plan step:
+
 1. `.loom/role` = `test-author`, dispatch loom-test-author with ONLY the spec,
    this step, SKILL.md and contracts → new failing test.
 2. `python3 scripts/loom/verify_red.py [--expect <substr>]` — red for the
@@ -49,12 +58,38 @@ For each plan step (rigor: full):
 5. Optional refactor by implementer under green; verify_green again.
    Commit `REFACTOR(TASK-<slug>): <step>`.
 
-Then:
-6. Clear `.loom/role`. Dispatch loom-code-reviewer (fresh context) → findings
-   into `## Review`. Non-trivial fixes go through the cycle again.
-7. Closure gates: verify_green; SKILL.md of touched packages updated if their
-   public surface changed; changelog fragment `changes/TASK-<slug>.md` written;
-   `oq_scan --gate` on the task file; `link_check.py docs packages`.
+### Per-step loop — `rigor: light` (single agent)
+
+Light rigor is for low-risk tasks only — one package, no public contract, no
+domain invariant (the same bar /loom:design uses to assign it). One agent does
+classic TDD (write failing test → make it pass → refactor) instead of two.
+
+This deliberately **trades the role guard for the commit trail**: with a single
+agent there is no test-author/implementer asymmetry for the guard to enforce, so
+`.loom/role` is CLEARED (no marker → the guard allows all edits) and the
+integrity of the step rests entirely on the verify scripts and the audit trail
+that remain mandatory:
+
+- `verify_red.py` must pass BEFORE any implementation — the test must genuinely
+  fail first, and the separate `RED(...)` commit proves it did. A step that goes
+  straight to green with no red commit is the exact cheat this preserves against.
+- `verify_green.py` must pass after; commit `GREEN(...)` (and `REFACTOR(...)`).
+- The fresh-context reviewer in Closure still runs — it is the independent check
+  that replaces the second pair of eyes the role split would have given.
+
+If a light task turns out to touch a contract or a domain invariant mid-flight,
+stop and escalate it to `full` (re-dispatch with role separation) rather than
+finishing single-agent.
+
+### Closure (once)
+
+6. Clear `.loom/role`. Dispatch loom-code-reviewer (fresh context) → numbered
+   findings into `## Review`, ending in its `APPROVED` / `BLOCKED (n)` verdict.
+   Loop back through the relevant per-step cycle until the verdict is APPROVED.
+7. Closure gates: `python3 scripts/loom/verify_green.py`; SKILL.md of touched
+   packages updated if their public surface changed; changelog fragment
+   `changes/TASK-<slug>.md` written; `python3 scripts/loom/oq_scan.py --gate`
+   on the task file; `python3 scripts/loom/link_check.py docs packages`.
    Task → `approved`.
 
 ## Test-change protocol
