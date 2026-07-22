@@ -17,10 +17,12 @@ ADR, package SKILL.md) + gated phases + an anti-cheating TDD engine.
 
 Route: prime → imagine → roadmap → requirements → architecture → technology →
 skeleton → consolidate → design → implement. Utilities: spike, challenge, status,
-audit. Requirements and structure come before technology; technology decisions
-are proposed and the skeleton verifies them. `audit` is the backward pass that
-re-checks accepted decisions against their revisit triggers. To update the
-project scripts after a plugin update: /loom:init --refresh.
+audit, intake. Requirements and structure come before technology; technology
+decisions are proposed and the skeleton verifies them. `audit` is the backward
+pass that re-checks accepted decisions against their revisit triggers; `intake`
+is the front door that routes incoming work on an existing project to the
+smallest phase that fits. To update the project scripts after a plugin update:
+/loom:init --refresh.
 
 ## Migration from kit (<=v0.8)
 
@@ -31,8 +33,8 @@ project's scripts/loom via /loom:init --refresh. /loom-imagine becomes /loom:ima
 
 ## Contents
 
-    commands/      16 commands (loom: namespace)
-    skills/        loom-core + 10 phases + review-gate + spike-method
+    commands/      17 commands (loom: namespace)
+    skills/        loom-core + 10 phases + review-gate + spike/intake-method
     agents/        reviewer, planner, test-author, implementer, code-reviewer, challenger
     hooks/         file-role guard (PreToolUse, automatic)
     scripts/loom/  oq_scan, index_gen, link_check, adr_scan, roadmap_gen, verify_red/green, guard
