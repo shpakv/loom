@@ -9,6 +9,16 @@ Applies to ANY Loom document. Read `loom-core` conventions first.
 Prefer running the review in the `loom-reviewer` subagent (fresh context) when
 the current session authored the document — the author inherits its blind spots.
 
+## Pre-flight (before spending any human review time)
+
+Mechanics a script can catch should never consume a review turn. Before reading
+the document for substance, run `python3 scripts/loom/link_check.py` on it — if
+any slug reference is broken or an ID is duplicated, STOP and report that: the
+document is not review-ready, and fixing a dangling `ADR-…`/`QS-…` reference is
+authoring work, not a review decision. Return the document to its author with the
+failing references rather than reviewing around them. Only once links resolve does
+the substantive review below begin.
+
 ## Procedure (regular documents)
 
 1. Run `python3 scripts/loom/oq_scan.py <file>` to list open questions.

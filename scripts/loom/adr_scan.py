@@ -24,6 +24,9 @@ Usage:
                                       ADR-* or a convention (no unmapped NFR)
                                     - accepted ADR with verification: SPIKE-<slug>
                                       points at a real, approved spike
+                                    - accepted one-way ADR does not stand on a
+                                      confidence: guessed driver without a
+                                      revisit_when trigger
 """
 import re
 import sys
@@ -34,6 +37,10 @@ DECISION_MODES = {"decided", "framed", "menu", "delegated"}
 
 QS_RE = re.compile(r"\bQS-[a-z0-9-]+", re.IGNORECASE)
 ADR_REF_RE = re.compile(r"\bADR-[a-z0-9-]+", re.IGNORECASE)
+DRV_REF_RE = re.compile(r"\bDRV-[a-z0-9-]+", re.IGNORECASE)
+# a DRIVERS.md table row: | DRV-slug | fact | confidence | verify by |
+DRV_ROW_RE = re.compile(
+    r"^\|\s*(DRV-[a-z0-9-]+)\s*\|[^|]*\|\s*([a-z]+)\s*\|", re.IGNORECASE)
 
 BODY_STATUS_RE = re.compile(r"^Status:\s*([a-z]+)\b", re.IGNORECASE)
 
@@ -107,23 +114,30 @@ def main(argv):
 
     adrs = {}
     spikes = {}          # SPIKE-<slug> -> status (for framing verification checks)
+    drv_conf = {}        # DRV-<slug> -> confidence (from DRIVERS.md rows)
     for t in targets:
         p = Path(t)
         for f in (sorted(p.rglob("*.md")) if p.is_dir() else [p]):
             try:
-                fm = frontmatter(f.read_text(encoding="utf-8").splitlines())
+                text = f.read_text(encoding="utf-8")
             except (UnicodeDecodeError, OSError):
                 continue
+            fm = frontmatter(text.splitlines())
             fid = fm.get("id")
             if isinstance(fid, str) and fid.startswith("ADR-"):
-                text = f.read_text(encoding="utf-8")
                 adrs[fid] = (fm, str(f), body_status(text.splitlines()),
-                             "DRV-" in text, bool(QS_RE.search(text)))
+                             "DRV-" in text, bool(QS_RE.search(text)),
+                             sorted(set(DRV_REF_RE.findall(text))))
             elif isinstance(fid, str) and fid.startswith("SPIKE-"):
                 spikes[fid] = fm.get("status", "?")
+            # DRIVERS.md (or any doc carrying DRV rows) → confidence map
+            for line in text.splitlines():
+                m = DRV_ROW_RE.match(line.strip())
+                if m:
+                    drv_conf[m.group(1).lower()] = m.group(2).lower()
 
     errors, warnings = [], []
-    for aid, (fm, path, bstat, has_drv, has_qs) in sorted(adrs.items()):
+    for aid, (fm, path, bstat, has_drv, has_qs, drv_refs) in sorted(adrs.items()):
         st = fm.get("status", "?")
         one_way = fm.get("reversibility") == "one-way"
         if st not in STATUSES:
@@ -166,6 +180,16 @@ def main(argv):
                 elif spikes[verif] not in ("approved", "accepted"):
                     errors.append(f"{aid}: verification cites {verif}, still "
                                   f"'{spikes[verif]}' — evidence not yet approved ({path})")
+            # an accepted one-way decision may not rest on an unconfirmed guess
+            # unless it declares what would invalidate it (revisit_when)
+            if st == "accepted" and one_way and not fm.get("revisit_when"):
+                guessed = sorted(d for d in drv_refs
+                                  if drv_conf.get(d.lower()) == "guessed")
+                if guessed:
+                    errors.append(f"{aid}: accepted one-way decision stands on "
+                                  f"guessed driver(s) {', '.join(guessed)} with no "
+                                  f"revisit_when trigger — confirm the fact or "
+                                  f"declare what invalidates the decision ({path})")
         if st == "superseded" and fm.get("superseded_by") in (None, "", "null", []):
             errors.append(f"{aid}: superseded without 'superseded_by' ({path})")
         sup = fm.get("supersedes", [])
@@ -177,7 +201,7 @@ def main(argv):
                                   f"is '{back}' — links must be symmetric")
 
     if revisit_only:
-        for aid, (fm, _, _, _, _) in sorted(adrs.items()):
+        for aid, (fm, _, _, _, _, _) in sorted(adrs.items()):
             if fm.get("status") == "accepted":
                 trig = fm.get("revisit_when") or ["(none declared)"]
                 print(aid)
@@ -192,7 +216,7 @@ def main(argv):
                           f"{', '.join(unmapped)} map to neither an ADR nor a "
                           f"convention — a decorative or undecided NFR ({spath})")
 
-    for aid, (fm, _, _, _, _) in sorted(adrs.items()):
+    for aid, (fm, _, _, _, _, _) in sorted(adrs.items()):
         print(f"{fm.get('status', '?'):<11} {aid}  "
               f"[{fm.get('reversibility', '?')}, verify: {fm.get('verification', '?')}]")
     for w in warnings:

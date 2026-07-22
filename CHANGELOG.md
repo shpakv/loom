@@ -10,6 +10,23 @@ Two version numbers move independently (see `CLAUDE.md` → Releasing):
 - **scripts** — `scripts_version` in `init-assets/loom.yaml`, bumped only when
   `scripts/loom/*` change; consuming projects re-sync via `/loom:init --refresh`.
 
+## [0.16.0] — 2026-07-22
+
+### Added
+- `/loom:prime` now ends with a "resume here" line — the single most likely next
+  action (a task left in-review or with an empty `## Plan`, the nearest open
+  blocking OQ, or the command the phase sequence implies) — so a returning session
+  knows where it stopped. It also runs `oq_scan.py` as part of the bootstrap.
+- Review-gate pre-flight: before spending any human review time, `link_check.py`
+  runs on the document and a broken reference or duplicate ID stops the review as
+  not-ready (authoring work), rather than being reviewed around.
+- `adr_scan.py --framing` now also fails when an accepted one-way ADR stands on a
+  `confidence: guessed` driver with no `revisit_when` trigger — the guessed-driver
+  sweep that consolidate always described is now enforced, not just advised.
+
+### Changed
+- **scripts** `0.9.2` → `0.9.3` (`adr_scan.py` changed).
+
 ## [0.15.0] — 2026-07-22
 
 ### Added
@@ -146,6 +163,7 @@ published state of the plugin (early development moved the manifest version
   auto-discovers `hooks/hooks.json`, and registering it explicitly caused the
   file-role guard hook to misbehave. Documented the auto-discovery in `CLAUDE.md`.
 
+[0.16.0]: https://github.com/shpakv/loom/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/shpakv/loom/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/shpakv/loom/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/shpakv/loom/compare/v0.12.0...v0.13.0
