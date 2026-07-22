@@ -63,8 +63,13 @@ If the skeleton is not demoable, this event is premature — go back to
 8. **Re-cut the roadmap** — with skeleton knowledge in hand, revisit draft
    epic candidates: merge, split, re-sequence, adjust appetites. Approve only
    the next one epic (rolling wave). Run `roadmap_gen.py`.
-9. Gates: `adr_scan.py --gate`, `link_check.py docs packages`,
+9. Gates: `adr_scan.py --gate --framing`, `link_check.py docs packages`,
    `oq_scan.py --gate` on each architecture document, then /loom:review them.
+   The `--framing` mode is the point of this event: it fails unless every
+   accepted one-way ADR is framed by a driver (DRV-*) AND a quality scenario
+   (QS-*), declares its decision_mode, and every QS in the solution strategy
+   maps to an accepted ADR or a convention. An accepted one-way door with no
+   target or no agreed decision mode does not leave this event.
 
 ## Exit criteria
 

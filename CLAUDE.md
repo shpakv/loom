@@ -91,7 +91,10 @@ violations for CI use, and several offer `--json`/`--print`.
 - `link_check.py` — slug-ID reference integrity (uniqueness + every mention
   resolves); `--refs <id>` reverse index.
 - `adr_scan.py` — ADR lifecycle validator (status vocab, body/frontmatter
-  agreement, supersedes symmetry); `--revisit` audits triggers.
+  agreement, supersedes symmetry); `--revisit` audits triggers; `--framing`
+  adds opt-in strict checks used at /loom:consolidate (accepted one-way ADR
+  must cite DRV-* and QS-* and declare decision_mode; every QS in
+  solution-strategy.md maps to an ADR or convention).
 - `roadmap_gen.py` — generates `docs/roadmap/ROADMAP.md` from epic frontmatter;
   validates the epic dependency DAG is acyclic.
 - `verify_red.py` — TDD red gate: passes only if tests FAIL (optionally for the

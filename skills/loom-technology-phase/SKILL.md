@@ -74,7 +74,10 @@ time, not only here.
 7. Gates: `adr_scan.py --gate` (proposed ADRs are valid), `link_check.py docs`,
    `oq_scan.py --gate` on any ADR carrying a blocking OQ. Proposed ADRs are
    reviewed for framing, not accepted — /loom:review may move them `in-review`,
-   never `accepted`.
+   never `accepted`. The stricter `adr_scan.py --framing` gate runs at
+   /loom:consolidate, not here — but every one-way ADR you write should already
+   satisfy it (cite a DRV-* and a QS-*, declare `decision_mode:`) so acceptance
+   later is a formality, not a scramble.
 
 ## Exit criteria (before /loom:skeleton)
 
