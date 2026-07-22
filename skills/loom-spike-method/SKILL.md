@@ -1,6 +1,6 @@
 ---
 name: loom-spike-method
-description: Loom utility — run a time-boxed spike (experiment/research) to answer a specific technical question and produce evidence for an ADR. Use whenever the user runs /loom:spike, wants to compare technologies, validate an assumption (AS-*), de-risk a one-way-door decision, or asks "let's try X before deciding".
+description: Invoked by the /loom:spike command to run a time-boxed spike (experiment/research) that answers one falsifiable question and produces evidence for an ADR. Run /loom:spike once a spike has been agreed — deciding whether a fork needs a spike belongs to /loom:technology or a review.
 ---
 
 # Loom: spike

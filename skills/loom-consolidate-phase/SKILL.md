@@ -1,6 +1,6 @@
 ---
 name: loom-consolidate-phase
-description: Loom phase (command /loom:consolidate) — the decision event after the walking skeleton: accept the proposed one-way ADRs using the skeleton as material verification, reconcile the as-built structure and quality scenarios against the architecture hypothesis, extract golden-path conventions, sweep assumptions, re-cut the roadmap. Use whenever the user runs /loom:consolidate, says the skeleton is done, or asks to lock in the architecture.
+description: Invoked by the /loom:consolidate command — the decision event after the walking skeleton: accept the proposed one-way ADRs using the skeleton as material verification, reconcile the as-built structure and quality scenarios against the architecture hypothesis, extract golden-path conventions, sweep assumptions, re-cut the roadmap. Run /loom:consolidate once the skeleton is demoable with green CI.
 ---
 
 # Loom: consolidation event

@@ -1,6 +1,6 @@
 ---
 name: loom-audit-phase
-description: Loom phase (command /loom:audit) — the feedback loop that keeps decisions honest over time: run the ADR revisit triggers, surface stale open questions and unconfirmed guessed drivers, and materialize what has drifted as blocking OQs for the human to resolve. Use whenever the user runs /loom:audit, asks to review whether past decisions still hold, says an assumption may have changed, after a release or incident, or on a periodic "is our architecture still valid" check.
+description: Invoked by the /loom:audit command — the backward pass that keeps decisions honest over time: re-check accepted ADRs against their revisit triggers, surface stale open questions and unconfirmed guessed drivers, and materialize what has drifted as blocking OQs for the human to resolve (it never decides). Run /loom:audit after a release or incident, or as a periodic check that accepted decisions still hold.
 ---
 
 # Loom: audit phase (close the learning loop)

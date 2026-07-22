@@ -1,6 +1,6 @@
 ---
 name: loom-intake-method
-description: Loom utility (command /loom:intake) — the front door for incoming work on an EXISTING Loom project: a short triage interview that sizes a new idea, bug, or feature request and routes it to the smallest phase that fits, instead of forcing every change through a full /loom:imagine. Use whenever the user runs /loom:intake, brings a change to a project that already has docs/ (a bug, a small feature, a "can we also add…"), or asks "where does this go / what command do I run for this".
+description: Invoked by the /loom:intake command — the triage front door for incoming work on an existing Loom project: a short interview that sizes a bug, change, or new capability and routes it to the smallest phase that fits, instead of forcing every change through a full /loom:imagine. Run /loom:intake on a project that already has docs/; for a brand-new product use /loom:imagine instead.
 ---
 
 # Loom: intake (triage router)
