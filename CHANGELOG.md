@@ -124,5 +124,10 @@ published state of the plugin (early development moved the manifest version
   auto-discovers `hooks/hooks.json`, and registering it explicitly caused the
   file-role guard hook to misbehave. Documented the auto-discovery in `CLAUDE.md`.
 
-<!-- No git tags exist yet; add version-compare links here once releases are tagged. -->
+[0.14.0]: https://github.com/shpakv/loom/compare/v0.13.0...v0.14.0
+[0.13.0]: https://github.com/shpakv/loom/compare/v0.12.0...v0.13.0
+[0.12.0]: https://github.com/shpakv/loom/compare/v0.11.0...v0.12.0
+[0.11.0]: https://github.com/shpakv/loom/compare/v0.10.0...v0.11.0
+[0.10.0]: https://github.com/shpakv/loom/compare/v0.9.1...v0.10.0
+[0.9.1]: https://github.com/shpakv/loom/releases/tag/v0.9.1
 

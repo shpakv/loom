@@ -131,9 +131,18 @@ There is **no test suite or CI in this repo** — the TDD gates operate on a
 ## Releasing
 
 - Bump `version` in `.claude-plugin/plugin.json` on any user-visible change.
-- **Version skew to be aware of:** `plugin.json` `version` (currently `0.6.0`)
+- **Always update `CHANGELOG.md` in the same commit as the change** — it is the
+  human-facing record of every user-visible change. Follow the existing
+  [Keep a Changelog](https://keepachangelog.com) format: add (or append to) an
+  entry under a `## [<new-version>]` heading with the release date, grouped into
+  Added / Changed / Fixed / Removed. Note a `scripts` bump explicitly when
+  `scripts/loom/*` changed. A version bump without a matching changelog entry is
+  an incomplete release.
+- **Tag each release** once committed: `git tag -a v<version> -m "..."` then
+  `git push origin --tags`, so the `CHANGELOG.md` compare links resolve.
+- **Version skew to be aware of:** `plugin.json` `version` (currently `0.14.0`)
   tracks the *plugin package*, while `init-assets/loom.yaml` carries its own
-  `version`/`scripts_version` (currently `0.9`/`0.9.0`) tracking the *scaffolded
+  `version`/`scripts_version` (currently `0.9`/`0.9.1`) tracking the *scaffolded
   framework/scripts*. These are intentionally independent — bump each for changes
   to its own surface. Bump `scripts_version` in `init-assets/loom.yaml` when
   `scripts/loom/*` change, since consuming projects re-sync via
