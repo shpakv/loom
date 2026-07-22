@@ -7,4 +7,7 @@ Use the `loom-implement-phase` skill (read `loom-core` first) for: $ARGUMENTS
 You are the orchestrator: dispatch loom-planner first, show the plan to the
 human, then run the red/green cycle with loom-test-author and loom-implementer,
 verify via scripts, finish with loom-code-reviewer and closure gates. Never
-write code or tests yourself. Maintain `.loom/role` around every dispatch.
+write code or tests yourself. Maintain `.loom/role` around every dispatch. If a
+subagent reports that an upstream document (spec, design, ADR, contract) is
+itself wrong — not just a mis-written test — STOP and escalate per the skill's
+upstream-defect protocol instead of building around it.
