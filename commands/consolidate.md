@@ -1,10 +1,13 @@
 ---
-description: Loom phase 4 — decision event after the skeleton: accept one-way ADRs, as-built blocks, conventions, re-cut roadmap
+description: Loom phase — decision event after the skeleton: accept the proposed one-way ADRs, reconcile as-built architecture, extract conventions, re-cut roadmap
 ---
 Use the `loom-consolidate-phase` skill (read `loom-core` first).
 
-Verify the walking skeleton is demoable with green CI before starting. Sweep
-proposed ADRs (one-way first, `verification: skeleton`), then quality
-scenarios, as-built building blocks, solution strategy, conventions,
-ASSUMPTIONS sweep, roadmap re-cut. Finish with `adr_scan.py --gate` and
-`link_check.py docs packages`.
+Verify the walking skeleton is demoable with green CI before starting. Accept the
+proposed ADRs on the skeleton's evidence (one-way first, `verification: skeleton`),
+then reconcile against reality: confirm/correct quality scenarios with what the
+skeleton measured, update building blocks as-built vs as-intended, close the
+solution-strategy QS → ADR matrix, extract conventions, sweep ASSUMPTIONS, re-cut
+the roadmap. These docs already exist from /loom:requirements and
+/loom:architecture — you are confirming or correcting them, not writing them
+fresh. Finish with `adr_scan.py --gate` and `link_check.py docs packages`.

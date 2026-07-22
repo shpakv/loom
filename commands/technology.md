@@ -1,9 +1,16 @@
 ---
-description: Loom utility — capture or update tech posture (stack competence, vetoes, novelty appetite, ops reality)
+description: Loom phase — choose technologies as proposed ADRs, framed by drivers and quality scenarios, after the logical architecture exists
+argument-hint: [building block or fork to decide]
 ---
-Use the `loom-technology-method` skill (read `loom-core` first).
+Use the `loom-technology-phase` skill (read `loom-core` first).
 
-Interview the human to fill or update the `## Tech posture` section of
-docs/product/DRIVERS.md. One question per turn. Never recommend technologies
-during this interview — you are collecting facts about the human and team,
-not making choices.
+Verify `solution-strategy.md` is `approved` (its open forks are your work list);
+if DRIVERS.md has no `## Tech posture`, run that interview first (one question
+per turn, zero recommendations). For each open fork run the loom-core
+technology-fork protocol — decision mode BEFORE any recommendation — and record
+a PROPOSED ADR framed by the `DRV-*` and `QS-*` it stands on. Never accept a
+one-way ADR here; the skeleton verifies and /loom:consolidate accepts. Schedule a
+/loom:spike where a comparison needs evidence. Finish with `adr_scan.py --gate`
+and `link_check.py docs`.
+
+Fork or block to decide (optional): $ARGUMENTS

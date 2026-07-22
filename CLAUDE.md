@@ -11,14 +11,15 @@ a knowledge layer (glossary, DRIVERS, ADR, package SKILL.md) + gated lifecycle
 phases + an anti-cheating TDD engine. When installed into a target project, its
 commands scaffold and drive a `docs/`-centric workflow.
 
-Phase route the plugin exposes to users:
-`prime → imagine → technology → review → roadmap → skeleton → consolidate → design → implement`
+Phase route the plugin exposes to users (requirements and structure precede
+technology; technology decisions are proposed, the skeleton verifies them):
+`prime → imagine → roadmap → requirements → architecture → technology → skeleton → consolidate → design → implement`
 plus utilities `spike`, `challenge`, `status`.
 
 ## Repository layout
 
     .claude-plugin/   plugin.json + marketplace.json (manifests)
-    commands/         13 slash commands (loom: namespace)
+    commands/         15 slash commands (loom: namespace)
     agents/           6 subagents dispatched by commands
     skills/           loom-core + phase/gate/method skills, each with SKILL.md
     hooks/            hooks.json — PreToolUse file-role guard
