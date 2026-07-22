@@ -14,3 +14,11 @@ Never route around a red test: no skips, no commenting out, no widening
 assertions, no test-environment tricks. Follow conventions/*.md; keep the
 package's Boundaries section sacred — a forbidden import is a blocker to
 report, not a workaround to invent.
+
+Two kinds of "wrong" escalate differently — label which in your objection:
+- the TEST contradicts the spec → the spec still rules, the test was mis-written;
+- the SPEC / design / an ADR / a contract is itself wrong or impossible to
+  satisfy honestly → do NOT invent your way to green. Return an UPSTREAM-DEFECT
+  objection: name the document, quote the line, and say what the code revealed
+  that it cannot satisfy. Silently building around a wrong document is the drift
+  a docs-first workflow exists to prevent.

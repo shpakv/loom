@@ -66,6 +66,36 @@ the code — silence-editing it into green is structurally blocked by
 `guard_file_roles.py` — installed automatically as a plugin hook;
 `.loom/` is gitignored by /loom:init.
 
+## Upstream-defect escalation (code → docs)
+
+Implementation is the phase where documents meet reality, so it is where a wrong
+document is discovered — not where it is quietly worked around. Loom is
+docs-first: if the code and an `approved` upstream document disagree, the default
+is that the DOCUMENT is the bug to fix, not the thing to route around in code.
+
+Distinguish two kinds of "this is wrong", because they escalate differently:
+
+- **The test contradicts the spec** → local; use the test-change protocol above.
+  The spec is still the authority; the test was written wrong.
+- **The spec / design.md / an ADR / a contract is itself wrong or incomplete** →
+  the authority itself is the defect. STOP the red/green cycle. Do NOT invent a
+  spec, widen scope, or build around the gap. Raise a `(blocking)` OQ on the
+  OWNING document (not on the task), stating what the code revealed and why the
+  document cannot be honestly satisfied, then route to the phase that owns it:
+  a task/design defect → /loom:design; a wrong or missing decision → a
+  superseding ADR via /loom:consolidate (or /loom:audit if a revisit trigger
+  fired); a vision/scope conflict → /loom:review on the upstream doc. Record the
+  halt in the task's `## Plan` so the next session sees why it stopped.
+
+The signal from planner or implementer is the same escalation surfacing at
+different depths: the planner emits blocking OQs when the spec is ambiguous
+before any code; the implementer returns an OBJECTION mid-cycle. When that
+objection is "the test is wrong", handle it locally; when it is "the document is
+wrong", it becomes an upstream-defect escalation. Discovering a broken document
+here — one task in — is a success of docs-first, exactly as the skeleton
+refuting an ADR is: cheap correction now beats silent drift compounding across
+every later task built on the same wrong document.
+
 ## Rules
 
 - One task per /loom:implement invocation; parallel tasks = parallel sessions
