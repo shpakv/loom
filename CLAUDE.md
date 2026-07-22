@@ -98,7 +98,8 @@ violations for CI use, and several offer `--json`/`--print`.
   adds opt-in strict checks used at /loom:consolidate (accepted one-way ADR
   must cite DRV-* and QS-* and declare decision_mode; every QS in
   solution-strategy.md maps to an ADR or convention; a `verification: SPIKE-*`
-  claim must resolve to a real, approved spike).
+  claim must resolve to a real, approved spike; no accepted one-way ADR rests on
+  a `confidence: guessed` driver without a `revisit_when` trigger).
 - `roadmap_gen.py` — generates `docs/roadmap/ROADMAP.md` from epic frontmatter;
   validates the epic dependency DAG is acyclic.
 - `verify_red.py` — TDD red gate: passes only if tests FAIL (optionally for the

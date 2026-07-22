@@ -36,7 +36,8 @@ If the skeleton is not demoable, this event is premature — go back to
    (`link_check.py --refs DRV-<slug>`), either confirm it (→ `known`, with a
    note of the evidence) or add a matching `revisit_when` trigger to that ADR.
    An accepted one-way decision standing on an unconfirmed guess without a
-   trigger is a gate failure of this event.
+   trigger is a hard failure of the `adr_scan.py --framing` gate at step 9 — the
+   sweep here is how you clear it before running the gate.
 3. **Quality scenarios, confirmed by measurement** — `quality-requirements.md`
    already exists from /loom:requirements. Update each `QS-<slug>` with what the
    skeleton actually measured: confirm the target, correct it where reality
@@ -68,9 +69,11 @@ If the skeleton is not demoable, this event is premature — go back to
    The `--framing` mode is the point of this event: it fails unless every
    accepted one-way ADR is framed by a driver (DRV-*) AND a quality scenario
    (QS-*), declares its decision_mode, every QS in the solution strategy maps to
-   an accepted ADR or a convention, and any `verification: SPIKE-*` claim points
-   at a real, approved spike. An accepted one-way door with no target, no agreed
-   decision mode, or evidence that does not exist does not leave this event.
+   an accepted ADR or a convention, any `verification: SPIKE-*` claim points at a
+   real, approved spike, and no accepted one-way decision rests on a guessed
+   driver without a revisit_when trigger. An accepted one-way door with no target,
+   no agreed decision mode, missing evidence, or an unconfirmed guess under it
+   does not leave this event.
 
 ## Exit criteria
 
