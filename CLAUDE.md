@@ -14,13 +14,15 @@ commands scaffold and drive a `docs/`-centric workflow.
 Phase route the plugin exposes to users (requirements and structure precede
 technology; technology decisions are proposed, the skeleton verifies them):
 `prime → imagine → roadmap → requirements → architecture → technology → skeleton → consolidate → design → implement`
-plus utilities `spike`, `challenge`, `status`, and `audit` (the backward pass
-that re-checks accepted decisions against their revisit triggers).
+plus utilities `spike`, `challenge`, `status`, `audit` (the backward pass
+that re-checks accepted decisions against their revisit triggers), and `intake`
+(triage front door that routes incoming work on an existing project to the
+smallest phase that fits, instead of a full `imagine`).
 
 ## Repository layout
 
     .claude-plugin/   plugin.json + marketplace.json (manifests)
-    commands/         16 slash commands (loom: namespace)
+    commands/         17 slash commands (loom: namespace)
     agents/           6 subagents dispatched by commands
     skills/           loom-core + phase/gate/method skills, each with SKILL.md
     hooks/            hooks.json — PreToolUse file-role guard

@@ -1,6 +1,6 @@
 {
   "name": "loom",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "description": "Docs-first framework for AI development: a knowledge layer (glossary, DRIVERS, ADR, package SKILL.md) + gated phases + an anti-cheating TDD engine.",
   "author": {
     "name": "shpakv"
