@@ -18,5 +18,5 @@ statuses:
   adr: [proposed, accepted, rejected, deprecated, superseded]
 naming: slug-based, no sequential numbers — see loom-core skill
 phases:
-  implemented: [imagine, roadmap, requirements, architecture, technology, skeleton, consolidate, design, implement, review, spike]
-  planned: [intake, retro, ship, audit, postmortem]
+  implemented: [imagine, roadmap, requirements, architecture, technology, skeleton, consolidate, design, implement, review, spike, audit]
+  planned: [intake, retro, ship, postmortem]
