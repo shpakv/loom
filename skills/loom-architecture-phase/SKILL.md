@@ -32,7 +32,8 @@ guessing.
    `architecture/building-blocks.md` (from `templates/building-blocks.md`), name
    each building block by what it OWNS in glossary terms — a business capability
    or a bounded responsibility, never a technical tier. `billing`, `ingest`,
-   `identity` are blocks; `backend`, `database-layer`, `utils` are not.
+   `identity` are blocks; `backend`, `database-layer`, `utils` are not. Leave the
+   `Key ADRs` column empty — no ADRs exist yet; it is filled at /loom:consolidate.
 2. **Draw the dependency graph.** The mermaid graph and the table's edges say who
    may call/import whom. Then write the **forbidden dependencies** explicitly —
    the negative edges are the ones worth enforcing later as arch-tests. A block
@@ -62,14 +63,17 @@ guessing.
   creates it.
 - Every quality scenario maps to a structural approach; each remaining technology
   fork is captured as an open decision, not resolved.
-- Structural assumptions recorded; documents `approved` as a hypothesis.
+- Structural assumptions recorded; documents `approved` (meaning: a coherent
+  hypothesis worth testing, not verified truth).
 
 ## Rules
 
-- **Structure before technology, hypothesis before truth.** These documents are
-  `draft`/`approved-as-hypothesis`; the skeleton is what turns a hypothesis into a
+- **Structure before technology, hypothesis before truth.** These documents move
+  through the normal `draft → approved` statuses, but here `approved` means only
+  "a coherent hypothesis worth testing" — the skeleton is what turns it into a
   verified fact, and /loom:consolidate reconciles this intended structure with the
-  as-built one.
+  as-built one. There is no `approved-as-hypothesis` status; the qualifier is
+  meaning, not a frontmatter value.
 - **No product names.** The first datastore, framework, or language name written
   in this phase is a leak from /loom:technology — pull it back into a fork.
 - Keep it system-wide and thin. Epic-internal structure belongs to that epic's
