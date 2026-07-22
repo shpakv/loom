@@ -1,5 +1,5 @@
 ---
-description: Loom phase 2 — decompose approved vision into epics with a dependency DAG, generate ROADMAP.md
+description: Loom phase — decompose approved vision into epics with a dependency DAG, generate ROADMAP.md
 ---
 Use the `loom-roadmap-phase` skill (read `loom-core` first).
 
