@@ -64,10 +64,19 @@ time, not only here.
    - two-way door → `verification: judgment`, one paragraph, `proposed`.
    Never set a one-way ADR to `accepted` here — acceptance is /loom:consolidate's
    job, after the skeleton has proven it.
-5. **Schedule spikes where evidence is required.** A one-way fork between close
-   options, or any choice whose deciding QS the skeleton alone will not exercise,
-   gets a `/loom:spike` with a falsifiable question and a kill criterion. The
-   spike's recommendation is cited from the ADR Options section, never merged in.
+5. **Schedule spikes where evidence is required — these triggers are mandatory,
+   not discretionary.** A one-way ADR may not be accepted later on a claim the
+   skeleton will not itself substantiate. Open a `/loom:spike` (falsifiable
+   question + kill criterion) BEFORE proposing such an ADR whenever:
+   - the fork is **one-way and between close options** where the choice turns on a
+     measurable difference (throughput, latency, footprint) rather than team fit;
+   - the deciding `QS-*` is one the **walking skeleton alone will not exercise**
+     (e.g. a sustained-load or failover scenario the thin slice never hits);
+   - the decision rests on a **`confidence: guessed` driver** whose real value
+     would flip the choice — spike to measure the fact, not just the tech.
+   A one-way ADR whose `verification: skeleton` cannot honestly be met by the
+   planned slice MUST instead carry `verification: SPIKE-<slug>`. The spike's
+   recommendation is cited from the ADR Options section, never merged in.
 6. **Feed the strategy back.** For each fork now covered by a proposed ADR, note
    the ADR id against its QS row in `solution-strategy.md` — closing the loop
    from quality scenario → structure → technology.
