@@ -10,3 +10,5 @@ Also compare `scripts_version` in docs/loom.yaml with the installed plugin versi
 
 Summarize: which documents are draft / in-review / approved, how many blocking
 OQs are open and where, and suggest the single most useful next Loom command.
+If the project has accepted ADRs and no recent audit, mention that /loom:audit
+can re-check whether those decisions still hold against their revisit triggers.
