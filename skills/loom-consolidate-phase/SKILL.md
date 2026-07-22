@@ -67,9 +67,10 @@ If the skeleton is not demoable, this event is premature — go back to
    `oq_scan.py --gate` on each architecture document, then /loom:review them.
    The `--framing` mode is the point of this event: it fails unless every
    accepted one-way ADR is framed by a driver (DRV-*) AND a quality scenario
-   (QS-*), declares its decision_mode, and every QS in the solution strategy
-   maps to an accepted ADR or a convention. An accepted one-way door with no
-   target or no agreed decision mode does not leave this event.
+   (QS-*), declares its decision_mode, every QS in the solution strategy maps to
+   an accepted ADR or a convention, and any `verification: SPIKE-*` claim points
+   at a real, approved spike. An accepted one-way door with no target, no agreed
+   decision mode, or evidence that does not exist does not leave this event.
 
 ## Exit criteria
 

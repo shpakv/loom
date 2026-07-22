@@ -10,6 +10,28 @@ Two version numbers move independently (see `CLAUDE.md` → Releasing):
 - **scripts** — `scripts_version` in `init-assets/loom.yaml`, bumped only when
   `scripts/loom/*` change; consuming projects re-sync via `/loom:init --refresh`.
 
+## [0.15.0] — 2026-07-22
+
+### Added
+- Explicit, mandatory challenge triggers in the review gate: a `loom-challenger`
+  pass is now required before approval not only for any one-way ADR, but also for
+  an epic with `criticality: must` and a design doc that introduces a new external
+  contract — the high-cost-of-being-wrong cases where the author's own context is
+  the liability.
+- Explicit, mandatory spike triggers in the technology phase: a `/loom:spike` must
+  precede a proposed one-way ADR when the fork is one-way between close options
+  decided by a measurable difference, when the deciding `QS-*` is one the walking
+  skeleton will not exercise, or when the decision rests on a `confidence: guessed`
+  driver that would flip the choice.
+- `adr_scan.py --framing` now also verifies that an accepted ADR whose
+  `verification: SPIKE-<slug>` points at a spike that actually exists and is
+  approved — evidence claimed must be evidence that exists.
+
+### Changed
+- Updated the `loom-challenger` agent description to state the broadened mandatory
+  triggers.
+- **scripts** `0.9.1` → `0.9.2` (`adr_scan.py` changed).
+
 ## [0.14.0] — 2026-07-22
 
 ### Added
@@ -124,6 +146,7 @@ published state of the plugin (early development moved the manifest version
   auto-discovers `hooks/hooks.json`, and registering it explicitly caused the
   file-role guard hook to misbehave. Documented the auto-discovery in `CLAUDE.md`.
 
+[0.15.0]: https://github.com/shpakv/loom/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/shpakv/loom/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/shpakv/loom/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/shpakv/loom/compare/v0.11.0...v0.12.0

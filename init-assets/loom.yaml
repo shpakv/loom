@@ -1,6 +1,6 @@
 # Loom framework config — single source of truth for paths and phases
 version: 0.9
-scripts_version: 0.9.1   # written by /loom:init; compared with plugin version by /loom:status
+scripts_version: 0.9.2   # written by /loom:init; compared with plugin version by /loom:status
 paths:
   product: docs/product
   domain: docs/domain

@@ -42,12 +42,29 @@ the current session authored the document — the author inherits its blind spot
 - No contradiction with accepted ADRs; if superseding, both link fields are set.
 - Name reads as an answer (verb phrase), not a topic.
 - `decision_mode` is filled and truthful (see loom-core fork protocol).
-- **One-way only, mandatory**: dispatch `loom-challenger` BEFORE acceptance;
-  materialize its findings as OQs and resolve them first. No challenge pass —
-  no accept.
 - On acceptance: set `status: accepted` in the frontmatter AND in the body
   `Status:` line, fill `decided:`, then treat the body as immutable (addenda
   only). Run `python3 scripts/loom/adr_scan.py --gate`.
+
+## Challenge triggers (when a fresh-context skeptic is mandatory)
+
+A challenge is not optional politeness — it is required BEFORE approval whenever
+the cost of being wrong is high and the author's context is the liability. The
+`loom-challenger` agent runs in fresh context precisely because the author
+inherits their own blind spots. Dispatch it and resolve its findings as OQs first
+— no challenge pass, no approval — in these cases:
+
+- **any one-way ADR** (expensive to undo — the original mandatory case);
+- **an epic with `criticality: must`** — a load-bearing capability whose framing,
+  if wrong, cascades into every task under it;
+- **a design doc that introduces a new external contract** (a public API, an
+  event schema, a cross-package protocol) — contracts are the hardest thing to
+  change once consumers exist.
+
+For everything else the challenger is available on demand via /loom:challenge but
+not gated. When in doubt on a two-way decision, prefer shipping and revisiting
+over a ceremonial challenge — reserve the mandatory pass for the doors that don't
+reopen cheaply.
 
 ## Rules
 

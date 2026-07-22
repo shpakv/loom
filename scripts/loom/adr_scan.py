@@ -22,6 +22,8 @@ Usage:
                                     - any one-way ADR declares decision_mode
                                     - every QS-* in solution-strategy.md maps to an
                                       ADR-* or a convention (no unmapped NFR)
+                                    - accepted ADR with verification: SPIKE-<slug>
+                                      points at a real, approved spike
 """
 import re
 import sys
@@ -104,6 +106,7 @@ def main(argv):
     targets = [a for a in argv if not a.startswith("--")] or ["docs"]
 
     adrs = {}
+    spikes = {}          # SPIKE-<slug> -> status (for framing verification checks)
     for t in targets:
         p = Path(t)
         for f in (sorted(p.rglob("*.md")) if p.is_dir() else [p]):
@@ -111,10 +114,13 @@ def main(argv):
                 fm = frontmatter(f.read_text(encoding="utf-8").splitlines())
             except (UnicodeDecodeError, OSError):
                 continue
-            if isinstance(fm.get("id"), str) and fm["id"].startswith("ADR-"):
+            fid = fm.get("id")
+            if isinstance(fid, str) and fid.startswith("ADR-"):
                 text = f.read_text(encoding="utf-8")
-                adrs[fm["id"]] = (fm, str(f), body_status(text.splitlines()),
-                                  "DRV-" in text, bool(QS_RE.search(text)))
+                adrs[fid] = (fm, str(f), body_status(text.splitlines()),
+                             "DRV-" in text, bool(QS_RE.search(text)))
+            elif isinstance(fid, str) and fid.startswith("SPIKE-"):
+                spikes[fid] = fm.get("status", "?")
 
     errors, warnings = [], []
     for aid, (fm, path, bstat, has_drv, has_qs) in sorted(adrs.items()):
@@ -151,6 +157,15 @@ def main(argv):
                 errors.append(f"{aid}: one-way decision with no decision_mode "
                               f"(decided|framed|menu|delegated) — a fork opened "
                               f"without agreeing how it was decided ({path})")
+            # a verification: SPIKE-<slug> claim must point at a real, approved spike
+            verif = fm.get("verification", "")
+            if st == "accepted" and isinstance(verif, str) and verif.startswith("SPIKE-"):
+                if verif not in spikes:
+                    errors.append(f"{aid}: verification cites {verif}, which does "
+                                  f"not exist — evidence claimed but missing ({path})")
+                elif spikes[verif] not in ("approved", "accepted"):
+                    errors.append(f"{aid}: verification cites {verif}, still "
+                                  f"'{spikes[verif]}' — evidence not yet approved ({path})")
         if st == "superseded" and fm.get("superseded_by") in (None, "", "null", []):
             errors.append(f"{aid}: superseded without 'superseded_by' ({path})")
         sup = fm.get("supersedes", [])
