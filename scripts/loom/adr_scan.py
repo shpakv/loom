@@ -15,13 +15,23 @@ Usage:
   adr_scan.py [paths...]          report (default: docs/)
   adr_scan.py --gate [paths...]   exit 1 on violations
   adr_scan.py --revisit           print only accepted ADRs' revisit triggers (audit)
+  adr_scan.py --framing [paths..] add stricter framing checks (opt-in), combine
+                                  with --gate for CI. Enforces that decisions are
+                                  framed by facts and targets before acceptance:
+                                    - accepted one-way ADR cites both DRV-* and QS-*
+                                    - any one-way ADR declares decision_mode
+                                    - every QS-* in solution-strategy.md maps to an
+                                      ADR-* or a convention (no unmapped NFR)
 """
 import re
 import sys
 from pathlib import Path
 
 STATUSES = {"proposed", "accepted", "rejected", "deprecated", "superseded"}
+DECISION_MODES = {"decided", "framed", "menu", "delegated"}
 
+QS_RE = re.compile(r"\bQS-[a-z0-9-]+", re.IGNORECASE)
+ADR_REF_RE = re.compile(r"\bADR-[a-z0-9-]+", re.IGNORECASE)
 
 BODY_STATUS_RE = re.compile(r"^Status:\s*([a-z]+)\b", re.IGNORECASE)
 
@@ -63,9 +73,34 @@ def frontmatter(lines):
     return fm
 
 
+def strategy_unmapped_qs(targets):
+    """Return (path, [QS ids]) for solution-strategy.md rows whose line names a
+    QS but resolves to neither an ADR-* nor a 'convention'. Empty list == clean."""
+    for t in targets:
+        p = Path(t)
+        for f in (sorted(p.rglob("solution-strategy.md")) if p.is_dir()
+                  else ([p] if p.name == "solution-strategy.md" else [])):
+            try:
+                lines = f.read_text(encoding="utf-8").splitlines()
+            except (UnicodeDecodeError, OSError):
+                continue
+            unmapped = []
+            for line in lines:
+                for qs in QS_RE.findall(line):
+                    # a template placeholder row (QS-{slug}) is not a real mapping
+                    if "{" in line:
+                        continue
+                    if not ADR_REF_RE.search(line) and "convention" not in line.lower():
+                        unmapped.append(qs)
+            if unmapped:
+                return str(f), sorted(set(unmapped))
+    return None, []
+
+
 def main(argv):
     gate = "--gate" in argv
     revisit_only = "--revisit" in argv
+    framing = "--framing" in argv
     targets = [a for a in argv if not a.startswith("--")] or ["docs"]
 
     adrs = {}
@@ -79,11 +114,12 @@ def main(argv):
             if isinstance(fm.get("id"), str) and fm["id"].startswith("ADR-"):
                 text = f.read_text(encoding="utf-8")
                 adrs[fm["id"]] = (fm, str(f), body_status(text.splitlines()),
-                                  "DRV-" in text)
+                                  "DRV-" in text, bool(QS_RE.search(text)))
 
     errors, warnings = [], []
-    for aid, (fm, path, bstat, has_drv) in sorted(adrs.items()):
+    for aid, (fm, path, bstat, has_drv, has_qs) in sorted(adrs.items()):
         st = fm.get("status", "?")
+        one_way = fm.get("reversibility") == "one-way"
         if st not in STATUSES:
             errors.append(f"{aid}: invalid ADR status '{st}' ({path})")
             continue
@@ -96,14 +132,25 @@ def main(argv):
         if st in ("accepted", "rejected") and fm.get("decided") in (None, "", "null", []):
             errors.append(f"{aid}: status '{st}' but 'decided:' is empty ({path})")
         if st == "accepted":
-            if fm.get("reversibility") == "one-way" and fm.get("verification", "judgment") == "judgment":
+            if one_way and fm.get("verification", "judgment") == "judgment":
                 errors.append(f"{aid}: one-way decision accepted on 'judgment' — "
                               f"needs SPIKE/benchmark/prototype/reference ({path})")
             if not fm.get("revisit_when"):
                 warnings.append(f"{aid}: accepted with empty revisit_when ({path})")
-            if fm.get("reversibility") == "one-way" and not has_drv:
-                warnings.append(f"{aid}: accepted one-way decision cites no "
-                                f"drivers (DRV-*) in its body ({path})")
+            if one_way and not has_drv:
+                (errors if framing else warnings).append(
+                    f"{aid}: accepted one-way decision cites no drivers "
+                    f"(DRV-*) in its body ({path})")
+        # --framing: stricter, opt-in checks that hard-wire "framed by facts and
+        # targets before acceptance" (see the phase-reordering, v0.10.0).
+        if framing:
+            if st == "accepted" and one_way and not has_qs:
+                errors.append(f"{aid}: accepted one-way decision cites no quality "
+                              f"scenario (QS-*) — an untargeted one-way door ({path})")
+            if one_way and fm.get("decision_mode") not in DECISION_MODES:
+                errors.append(f"{aid}: one-way decision with no decision_mode "
+                              f"(decided|framed|menu|delegated) — a fork opened "
+                              f"without agreeing how it was decided ({path})")
         if st == "superseded" and fm.get("superseded_by") in (None, "", "null", []):
             errors.append(f"{aid}: superseded without 'superseded_by' ({path})")
         sup = fm.get("supersedes", [])
@@ -115,7 +162,7 @@ def main(argv):
                                   f"is '{back}' — links must be symmetric")
 
     if revisit_only:
-        for aid, (fm, _, _, _) in sorted(adrs.items()):
+        for aid, (fm, _, _, _, _) in sorted(adrs.items()):
             if fm.get("status") == "accepted":
                 trig = fm.get("revisit_when") or ["(none declared)"]
                 print(aid)
@@ -123,7 +170,14 @@ def main(argv):
                     print(f"  revisit when: {tr}")
         return 0
 
-    for aid, (fm, _, _, _) in sorted(adrs.items()):
+    if framing:
+        spath, unmapped = strategy_unmapped_qs(targets)
+        if unmapped:
+            errors.append(f"solution-strategy: quality scenario(s) "
+                          f"{', '.join(unmapped)} map to neither an ADR nor a "
+                          f"convention — a decorative or undecided NFR ({spath})")
+
+    for aid, (fm, _, _, _, _) in sorted(adrs.items()):
         print(f"{fm.get('status', '?'):<11} {aid}  "
               f"[{fm.get('reversibility', '?')}, verify: {fm.get('verification', '?')}]")
     for w in warnings:
