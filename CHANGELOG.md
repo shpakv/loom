@@ -10,6 +10,25 @@ Two version numbers move independently (see `CLAUDE.md` → Releasing):
 - **scripts** — `scripts_version` in `init-assets/loom.yaml`, bumped only when
   `scripts/loom/*` change; consuming projects re-sync via `/loom:init --refresh`.
 
+## [0.18.0] — 2026-07-22
+
+### Changed
+- Restructured the implement-phase Cycle into three labelled parts — Setup (once)
+  → Per-step loop → Closure (once) — so control flow (which steps run once vs per
+  step) is unambiguous.
+- **Specified the `rigor: light` path, which was previously ambiguous.** It now
+  has its own subsection stating that a single agent does classic TDD, that
+  `.loom/role` is cleared (no marker → the file-role guard allows all edits), and
+  that this deliberately trades the role guard for the commit trail: the mandatory
+  RED-before-green commit sequence, the verify scripts, and the fresh-context
+  reviewer carry the integrity the role split would otherwise provide. A light
+  task that turns out to touch a contract or domain invariant must escalate to
+  `full`. This closes a gap where the anti-cheating machinery silently collapsed
+  in light mode without saying what replaced it.
+- Surfaced the code-reviewer's `APPROVED` / `BLOCKED (n)` verdict in Closure and
+  normalized closure gate commands to the fully-qualified `python3
+  scripts/loom/…` form used elsewhere in the skill.
+
 ## [0.17.0] — 2026-07-22
 
 ### Changed
@@ -179,6 +198,7 @@ published state of the plugin (early development moved the manifest version
   auto-discovers `hooks/hooks.json`, and registering it explicitly caused the
   file-role guard hook to misbehave. Documented the auto-discovery in `CLAUDE.md`.
 
+[0.18.0]: https://github.com/shpakv/loom/compare/v0.17.0...v0.18.0
 [0.17.0]: https://github.com/shpakv/loom/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/shpakv/loom/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/shpakv/loom/compare/v0.14.0...v0.15.0
