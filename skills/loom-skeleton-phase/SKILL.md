@@ -17,7 +17,7 @@ Read `loom-core` conventions first (ADR lifecycle especially).
 
 Approved `GLOSSARY.md`, `VISION.md` (minimum form), `DRIVERS.md`,
 `quality-requirements.md`, and the architecture hypothesis (`building-blocks.md`,
-`solution-strategy.md`) approved-as-hypothesis with its proposed technology ADRs;
+`solution-strategy.md`) approved as a hypothesis, with its proposed technology ADRs;
 plus exactly one approved first-slice epic. If the structure or the technology
 forks are not yet settled as proposals, route back to /loom:architecture or
 /loom:technology — the skeleton verifies decisions, it does not originate them.

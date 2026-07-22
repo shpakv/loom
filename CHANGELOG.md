@@ -10,6 +10,25 @@ Two version numbers move independently (see `CLAUDE.md` → Releasing):
 - **scripts** — `scripts_version` in `init-assets/loom.yaml`, bumped only when
   `scripts/loom/*` change; consuming projects re-sync via `/loom:init --refresh`.
 
+## [0.19.0] — 2026-07-22
+
+### Changed
+- `loom-technology-phase` gained an explicit `## Inputs (gate)` section (it was
+  the only phase skill without one), listing the approved solution-strategy,
+  building-blocks, quality-requirements, and DRIVERS it consumes.
+- `loom-requirements-phase` gate now lists the approved first-slice epic it
+  consumes (its procedure already read the epic's definition of done), closing
+  the roadmap → requirements handoff.
+- Stopped presenting `approved-as-hypothesis` as if it were a status value —
+  loom-core's status vocabulary has no such entry. Architecture/skeleton/
+  consolidate now say the documents are `approved` with the "hypothesis worth
+  testing" meaning carried as prose.
+- `templates/building-blocks.md` and the architecture skill now say the `Key ADRs`
+  column and forbidden-dependency ADR refs are left empty until /loom:consolidate
+  (no ADRs exist during architecture), resolving a template-vs-skill contradiction.
+- Removed the empty `templates/` directory under `loom-consolidate-phase` (cruft).
+- Trimmed a duplicated "measures, not adjectives" restatement in requirements.
+
 ## [0.18.0] — 2026-07-22
 
 ### Changed
@@ -198,6 +217,7 @@ published state of the plugin (early development moved the manifest version
   auto-discovers `hooks/hooks.json`, and registering it explicitly caused the
   file-role guard hook to misbehave. Documented the auto-discovery in `CLAUDE.md`.
 
+[0.19.0]: https://github.com/shpakv/loom/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/shpakv/loom/compare/v0.17.0...v0.18.0
 [0.17.0]: https://github.com/shpakv/loom/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/shpakv/loom/compare/v0.15.0...v0.16.0

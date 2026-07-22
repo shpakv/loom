@@ -18,6 +18,15 @@ This phase sits between /loom:architecture and /loom:skeleton. Structure is
 already fixed as a hypothesis; here you decide what each part is built with. You
 do NOT accept one-way decisions here — the skeleton has not proven anything yet.
 
+## Inputs (gate)
+
+Approved (as hypothesis) `solution-strategy.md` — its open forks are your work
+list — and `building-blocks.md`; approved `quality-requirements.md` (the QS each
+choice must satisfy) and a `DRIVERS.md` that exists. If the structure or the
+quality requirements are still draft, route back to /loom:architecture or
+/loom:requirements — technology decisions made before the targets and shape are
+fixed are guessing.
+
 ## Step 0 — Tech posture (only if missing or stale)
 
 Technology choices need facts about the humans, not just the workload: what they

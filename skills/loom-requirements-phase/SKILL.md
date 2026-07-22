@@ -17,10 +17,12 @@ before you know the latency budget, is how one-way doors get walked through blin
 
 ## Inputs (gate)
 
-Approved `VISION.md` and use cases, and a `DRIVERS.md` that exists (its proto-QS
-rows are the raw material). If use cases are still draft, route to /loom:review.
-If DRIVERS.md has no quality/data rows yet, the facts are missing — go back to
-the driver interview in /loom:imagine before guessing NFRs here.
+Approved `VISION.md` and use cases, the approved first-slice epic (its definition
+of done is a source of quality demands), and a `DRIVERS.md` that exists (its
+proto-QS rows are the raw material). If use cases or the first-slice epic are
+still draft, route to /loom:review or /loom:roadmap. If DRIVERS.md has no
+quality/data rows yet, the facts are missing — go back to the driver interview in
+/loom:imagine before guessing NFRs here.
 
 ## Procedure
 
@@ -33,9 +35,9 @@ the driver interview in /loom:imagine before guessing NFRs here.
    `DRV-peak-ingest-rate: ~10^4 rps` becomes
    `QS-ingest-sustained-load: at 10^4 events/s sustained for 1h, p99 write latency < 50ms, zero loss`.
 3. **Add the scenarios the drivers missed** but the vision or first epic demand —
-   availability, recovery, security posture, operability, cost ceilings. Each must
-   still be a scenario, not an adjective: "secure" is not a QS; "an unauthenticated
-   request to any /admin route is rejected within 10ms and logged" is.
+   availability, recovery, security posture, operability, cost ceilings. Each is a
+   full scenario, not an adjective (see Rules): "an unauthenticated request to any
+   /admin route is rejected within 10ms and logged", not "secure".
 4. **Trace every scenario** back to its source (`Traces to`): a VISION metric, a
    driver, or an epic. A QS that traces to nothing is either scope creep or a
    hidden assumption — delete it or raise it as a driver first.

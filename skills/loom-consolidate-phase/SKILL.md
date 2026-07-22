@@ -17,7 +17,7 @@ Read `loom-core` conventions first.
 ## Inputs (gate)
 
 A demoable walking skeleton (CI green); its proposed ADRs carrying the skeleton's
-evidence notes; the approved-as-hypothesis architecture (`quality-requirements.md`,
+evidence notes; the architecture approved as a hypothesis (`quality-requirements.md`,
 `building-blocks.md`, `solution-strategy.md`); and `ASSUMPTIONS.md` in any state.
 If the skeleton is not demoable, this event is premature — go back to
 /loom:skeleton.

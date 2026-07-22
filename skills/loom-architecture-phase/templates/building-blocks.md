@@ -14,13 +14,17 @@ graph LR
   %% containers and their allowed dependencies (arrows = "may call/import")
 ```
 
+Leave the **Key ADRs** column empty in /loom:architecture — no ADRs exist yet;
+it is filled in at /loom:consolidate once the technology ADRs are accepted.
+
 | Block | Responsibility (one sentence) | Monorepo path | Key ADRs |
 |---|---|---|---|
-| {name} | {what it owns, in glossary terms} | packages/{name} | ADR-{...} |
+| {name} | {what it owns, in glossary terms} | packages/{name} | — (filled at consolidate) |
 
 ## Forbidden dependencies
-Explicit negative edges (these become arch-test rules referencing ADRs):
-- {block} must not import {block} — ADR-{slug}
+Explicit negative edges (these become arch-test rules referencing ADRs once the
+decisions exist — leave the ADR reference off until /loom:consolidate):
+- {block} must not import {block}
 
 ## Open questions
 - [ ] OQ-blocks-{topic}: ...
