@@ -1,6 +1,6 @@
 ---
 name: loom-requirements-phase
-description: Loom phase (command /loom:requirements) — turn approved use cases and DRIVERS into testable quality requirements before any architecture or technology thinking: promote the proto-QS driver rows into full quality scenarios (stimulus → response → measure), add the NFRs the vision metrics and first-slice epic demand, trace each scenario back to its source. Use whenever the user runs /loom:requirements, asks to define non-functional requirements, quality attributes, SLAs, or performance/security/availability/scalability targets, says "what are our NFRs", or wants to pin down how good the system must be — before decomposing the architecture.
+description: Invoked by the /loom:requirements command to turn approved use cases and DRIVERS into testable quality requirements before any architecture or technology thinking — promote the proto-QS driver rows into full quality scenarios (stimulus → response → measure), add the NFRs the vision metrics and first-slice epic demand, trace each scenario to its source. Run /loom:requirements after the vision and use cases are approved and before /loom:architecture.
 ---
 
 # Loom: requirements phase (quality scenarios)

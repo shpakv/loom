@@ -1,6 +1,6 @@
 ---
 name: loom-core
-description: Core conventions of the Loom docs-first development framework — slug-based naming grammar, document status model, ADR lifecycle, frontmatter schema, open-question lifecycle, file layout. Consult this skill whenever creating, naming, or editing any document under docs/ (vision, glossary, ADR, spike, epic, design doc, task), whenever the user mentions Loom, document statuses, ADRs, or open questions.
+description: The shared substrate every loom-*-phase, -gate, and -method skill reads before doing its work — slug-based naming grammar, document status model, ADR lifecycle, frontmatter schema, open-question lifecycle, file layout. Consult it when authoring or validating any Loom document under docs/ (vision, glossary, ADR, spike, epic, design doc, task); the Loom commands load it by name, so it need not auto-trigger on free-text.
 ---
 
 # Loom core conventions

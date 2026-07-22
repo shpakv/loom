@@ -1,6 +1,6 @@
 ---
 name: loom-implement-phase
-description: Loom implement phase (command /loom:implement TASK-<slug>) — orchestrate TDD implementation of one task via role-separated subagents (planner, test-author, implementer, code-reviewer) with deterministic red/green verification. Use whenever the user runs /loom:implement, asks to implement a task, or start coding a planned task.
+description: Invoked by the /loom:implement command to orchestrate TDD implementation of one task via role-separated subagents (planner, test-author, implementer, code-reviewer) with deterministic red/green verification and a file-role guard. Run /loom:implement TASK-<slug> on a planned task.
 ---
 
 # Loom: implement phase (per task)

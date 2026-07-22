@@ -1,6 +1,6 @@
 ---
 name: loom-skeleton-phase
-description: Loom phase (command /loom:skeleton) — build the walking skeleton: the thinnest end-to-end slice through all layers that VALIDATES the proposed architecture and technology decisions by building them, generating the material evidence one-way ADRs cite at consolidation and surfacing where the hypothesis was wrong. Use whenever the user runs /loom:skeleton, asks to start the walking skeleton, bootstrap the codebase, or build the first end-to-end slice.
+description: Invoked by the /loom:skeleton command to build the walking skeleton — the thinnest end-to-end slice through all layers that validates the proposed architecture and technology decisions by building them, generating the material evidence one-way ADRs cite at consolidation and surfacing where the hypothesis was wrong. Run /loom:skeleton after /loom:technology has proposed the one-way ADRs and before /loom:consolidate.
 ---
 
 # Loom: skeleton phase

@@ -1,6 +1,6 @@
 ---
 name: loom-design-phase
-description: Loom design phase (command /loom:design) — decompose one approved epic into a design doc, parallel tracks, and session-sized task files with rigor levels. Use whenever the user runs /loom:design, asks to break an epic into tasks, plan tracks, or prepare work for implementation.
+description: Invoked by the /loom:design command to decompose one approved epic into a design doc, contracts, parallel conflict-free tracks, and session-sized task files with rigor levels. Run /loom:design on an approved epic to prepare its work for /loom:implement.
 ---
 
 # Loom: design phase (per epic)

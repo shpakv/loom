@@ -10,6 +10,22 @@ Two version numbers move independently (see `CLAUDE.md` → Releasing):
 - **scripts** — `scripts_version` in `init-assets/loom.yaml`, bumped only when
   `scripts/loom/*` change; consuming projects re-sync via `/loom:init --refresh`.
 
+## [0.17.0] — 2026-07-22
+
+### Changed
+- Rewrote all 14 skill `description:` fields to be **command-scoped** rather than
+  free-text trigger lists. Every Loom skill is loaded by name from its paired
+  command, so pushy "use whenever the user says …" phrasing did not help loading
+  and caused mis-fires: `loom-imagine-phase` vs `loom-intake-method` both claimed
+  free-text idea prompts, and `loom-review-gate`'s "review any document" collided
+  with an unrelated installed PR-`review` skill. Descriptions now open with
+  "Invoked by the /loom:x command to …" and name the phase boundaries;
+  `loom-review-gate` explicitly excludes code diffs and GitHub PRs; `loom-core`
+  states its read-first substrate role.
+- Documented the command-scoped description rule in CLAUDE.md's skill authoring
+  conventions (replacing the earlier "make the description trigger-oriented"
+  guidance that produced the collisions).
+
 ## [0.16.0] — 2026-07-22
 
 ### Added
@@ -163,6 +179,7 @@ published state of the plugin (early development moved the manifest version
   auto-discovers `hooks/hooks.json`, and registering it explicitly caused the
   file-role guard hook to misbehave. Documented the auto-discovery in `CLAUDE.md`.
 
+[0.17.0]: https://github.com/shpakv/loom/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/shpakv/loom/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/shpakv/loom/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/shpakv/loom/compare/v0.13.0...v0.14.0

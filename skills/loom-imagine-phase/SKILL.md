@@ -1,6 +1,6 @@
 ---
 name: loom-imagine-phase
-description: Loom phase (command /loom:imagine) — extract the MINIMUM shared understanding before first code: glossary, anti-goals, 3 use cases, assumptions — via socratic interview and throwaway prototypes. Use whenever the user runs /loom:imagine, brings a new project or feature idea, says "I have an idea", or asks to flesh out a raw concept.
+description: Invoked by the /loom:imagine command to extract the minimum shared understanding before first code — glossary, anti-goals, 3–5 use cases, assumptions — via socratic interview and throwaway prototypes. Run /loom:imagine to start a new product or greenfield idea; not meant to auto-trigger on free-text idea prompts (routing existing-project work is /loom:intake's job).
 ---
 
 # Loom: imagine phase (minimum)

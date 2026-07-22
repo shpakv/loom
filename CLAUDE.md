@@ -74,9 +74,18 @@ smallest phase that fits, instead of a full `imagine`).
 - Body is a plain-prose role and output contract.
 
 ### Skills (`skills/<name>/SKILL.md`)
-- Frontmatter fields: `name:` (matches directory) and `description:` only. Make
-  the description trigger-oriented (*"Use whenever the user runs /loom:..."*) —
-  it's how the skill gets surfaced.
+- Frontmatter fields: `name:` (matches directory) and `description:` only.
+- **Descriptions are command-scoped, not free-text triggers.** Every Loom skill
+  is loaded by name from its paired command (`commands/x.md` says *"Use the
+  `loom-x-phase` skill"*), so the description does not need to match the phrases
+  a user might type — it should open with *"Invoked by the /loom:x command to
+  …"*, state what the skill does, and name the phase boundaries (run after X,
+  before Y). Do NOT add pushy *"use whenever the user says '…'"* trigger lists:
+  they don't help command-driven loading and cause the skill to mis-fire on
+  free-text that belongs to a sibling (imagine vs intake) or an unrelated
+  installed skill (review-gate vs a generic PR `review`). `loom-core` is the one
+  skill with no paired command — its description states its read-first substrate
+  role instead.
 - Naming suffixes (defined in `loom-core`): `-phase` for lifecycle phases,
   `-gate` for gates, `-method` for utilities. `loom-core` has no suffix and no
   paired command.
