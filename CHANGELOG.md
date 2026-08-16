@@ -10,6 +10,91 @@ Two version numbers move independently (see `CLAUDE.md` → Releasing):
 - **scripts** — `scripts_version` in `init-assets/loom.yaml`, bumped only when
   `scripts/loom/*` change; consuming projects re-sync via `/loom:init --refresh`.
 
+## [0.20.0] — 2026-08-16
+
+Loom stops implementing. It is now the knowledge layer only: it produces
+documents and task specs, and an external SDD engine (Spec Kit, Kiro, OpenSpec,
+BMAD, a plain agent harness) writes the plan, the tests and the code. Two new
+commands are the seam — `compile` projects the knowledge layer into the engine's
+own files, `harvest` reads back what the engine decided by itself. Rationale in
+`CONCEPT.md` (§2 boundaries, §5 the seam, §10 what was dropped).
+
+### Removed
+- `/loom:implement` and `loom-implement-phase` — the orchestrated TDD engine.
+- Agents `loom-planner`, `loom-test-author`, `loom-implementer`,
+  `loom-code-reviewer`. Every remaining agent is read-only; no Loom agent writes
+  code or tests.
+- `scripts/loom/verify_red.py`, `verify_green.py`, `guard_file_roles.py` and
+  `hooks/hooks.json` — the plugin now ships no hooks at all.
+- `test_command` and `test_globs` from `init-assets/loom.yaml`; `.loom/` role
+  markers and the `changes/` changelog-fragment convention.
+- `## Plan`, `## Test-change log` and `## Review` from the task template. The task
+  file is its `## Spec` — behavior, acceptance, contracts, out of scope.
+
+### Added
+- `/loom:compile` + `loom-compile-phase` + `scripts/loom/compile.py`: assembles
+  the engine's constitution (vocabulary → anti-goals → binding rules → decisions
+  in force → ruled out → conventions → structural boundaries) and, with `--epic`,
+  a seed spec from that epic's approved task specs and contracts. `--print`,
+  `--check` (gates on stale or missing output). Refuses to hand off a spec with
+  open blocking OQs.
+- `engine:` block in `init-assets/loom.yaml` (`name`, `constitution`, `spec_dir`)
+  — engine-specific layout is configuration, never script code. Profiles for
+  Spec Kit / Kiro / OpenSpec / plain harnesses are listed in the skill.
+- `/loom:harvest` + `loom-harvest-method` + the read-only `loom-harvester` agent:
+  fresh-context reading of the engine's diff and artifacts, classifying findings
+  into term / rule-or-number / decision / surface / contradiction / scope and
+  routing each to the one document that owns it. A contradiction becomes a
+  blocking OQ on the document — never a document edited to match the code.
+- `BR-*` domain rules in `docs/product/RULES.md` (template + `loom-core` section):
+  formulas, thresholds, rounding and boundaries the system is obliged to
+  reproduce, with bounds, a named source, and `review_by` for external sources.
+  Authored in `/loom:requirements`; `link_check.py` resolves `BR-*` references and
+  treats table rows as definitions; `adr_scan.py --revisit` lists rules whose
+  review date is due; `/loom:audit` asks whether the source was revised.
+- Task frontmatter `handoff:` / `landed:` / `harvested:`, surfaced as a `Seam`
+  column in `docs/INDEX.md` and by `/loom:status` and `/loom:prime`. A task
+  handed off and unharvested is the successor to the old unfinished-task signal.
+- `templates/skeleton-brief.md` — what each proposed ADR must demonstrate, layers
+  that must be traversed, the `Faked:` contract, and the falsification criterion.
+- `docs/recipes/anti-cheating-tdd.md` — the retired role-asymmetry / verify-red /
+  file-guard machinery as a portable recipe, with the three original scripts. Not
+  executed by the plugin; documented because SDD engines ship nothing like it.
+
+### Changed
+- `loom-core` gained a handoff-seam section (what Loom owns vs the engine) and a
+  `BR-*` section with the DRV / QS / ADR / invariant / convention boundary table.
+  `rigor: full | light` is now an advisory signal about the cost of being wrong,
+  not a mode Loom executes.
+- `loom-design-phase` ends at an engine-ready spec: acceptance criteria with
+  numbers, contracts named, and no internal file names or step order.
+- `loom-skeleton-phase` writes a brief and interprets the result; the engine
+  builds the slice. Evidence that ran through something on the `Faked:` list does
+  not verify an ADR. Package `SKILL.md` files are now written *before* the build,
+  as the engine's constraint rather than a record of what it did.
+- `loom-spike-method` absorbs the probe genre explicitly: fidelity axis, cheapness
+  ladder (napkin → mock → single-file script → throwaway app), a mandatory
+  `Faked:` list, and quarantine rules. Probes get no tests, review or conventions
+  by design.
+- `loom-consolidate-phase` and `loom-audit-phase` re-project into the engine after
+  changing decisions — a deprecated decision left in the constitution is worse
+  than an undocumented one, because the engine actively obeys it.
+- `loom-intake-method` takes harvested findings as a second caller alongside the
+  human, and routes tasks to `/loom:compile` instead of `/loom:implement`.
+- `loom-requirements-phase` owns both kinds of number: `QS-*` scenarios and `BR-*`
+  rules.
+- Ships `scripts_version` `0.10.0` (`loom.yaml` `version` `0.10`). `/loom:init
+  --refresh` now reports project-local `scripts/loom/*.py` the plugin no longer
+  ships, since a stale gate script reads config keys that are gone.
+
+### Fixed
+- `link_check.py` and `index_gen.py` skip files opening with the `<!-- GENERATED`
+  marker; without this, compiled projections would report every projected ID as a
+  duplicate definition.
+- `/loom:prime` no longer suggests the pre-slug `E-XXX` epic form.
+- `loom-reviewer` pointed at a kit-era path (`.claude/skills/loom:review-gate/`)
+  instead of the `loom-review-gate` skill.
+
 ## [0.19.0] — 2026-07-22
 
 ### Changed
@@ -217,6 +302,7 @@ published state of the plugin (early development moved the manifest version
   auto-discovers `hooks/hooks.json`, and registering it explicitly caused the
   file-role guard hook to misbehave. Documented the auto-discovery in `CLAUDE.md`.
 
+[0.20.0]: https://github.com/shpakv/loom/compare/v0.19.0...v0.20.0
 [0.19.0]: https://github.com/shpakv/loom/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/shpakv/loom/compare/v0.17.0...v0.18.0
 [0.17.0]: https://github.com/shpakv/loom/compare/v0.16.0...v0.17.0

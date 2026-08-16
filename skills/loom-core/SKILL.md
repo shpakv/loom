@@ -5,9 +5,45 @@ description: The shared substrate every loom-*-phase, -gate, and -method skill r
 
 # Loom core conventions
 
-Loom is a docs-first workflow: documents are the source of truth, code follows
-documents. Every phase skill (loom-imagine-phase, loom-skeleton-phase, loom-consolidate-phase, ...) builds
-on the conventions defined here.
+Loom is the **knowledge layer** of a docs-first workflow: documents are the
+source of truth, and code — written by an external SDD engine — follows them.
+Loom itself writes no plan, no test, and no production code; what it produces is
+knowledge in checkable form, up to and including the task spec the engine
+consumes (see the handoff seam below). Every phase skill (loom-imagine-phase,
+loom-skeleton-phase, loom-consolidate-phase, ...) builds on the conventions
+defined here.
+
+## The handoff seam (what Loom does not do)
+
+Loom stops at the spec. Knowing exactly where it stops is what keeps it from
+competing with the engine over "how we code" — two sources of truth on that
+question is strictly worse than either one alone.
+
+| Loom owns | The engine owns |
+|---|---|
+| glossary, drivers, rules, quality scenarios | the plan, the step order |
+| decisions and their reasons (ADR lifecycle) | tests and the code |
+| contracts, invariants, package boundaries | diff review, refactoring |
+| the task `## Spec` — behavior, acceptance, out of scope | how the behavior is achieved |
+
+Consequences that bind every skill here:
+
+- **Never prescribe internals.** A Loom document names behavior, contracts and
+  glossary terms; it does not name source files, functions, or a build order.
+  The one exception is a contract file, which IS the interface.
+- **`rigor: full | light` is advice, not a mode.** It tells the engine the cost
+  of being wrong (public contract / domain invariant / more than one package →
+  `full`). Loom no longer runs a ceremony for it; the one it used to run is kept
+  as a recipe in `docs/recipes/anti-cheating-tdd.md`.
+- **The seam is bidirectional.** `/loom:compile` pushes the knowledge layer into
+  the engine's own files; `/loom:harvest` reads back what the engine decided and
+  materializes the facts. A task with `handoff:` set and `harvested: false` is
+  work whose facts are still missing from the docs — the successor to the old
+  "unfinished task" signal.
+- **Code is evidence, not authority.** When code and an `approved` document
+  disagree, the document is the bug to fix or the decision to supersede — never
+  something to quietly work around. Harvest raises it as a blocking OQ; it does
+  not edit the document to match the code.
 
 ## Identity and naming (slugs, never sequential numbers)
 
@@ -29,6 +65,7 @@ Naming grammar by type:
 | OQ | topic slug | `OQ-vision-multi-tenancy` |
 | Quality scenario | topic slug | `QS-ingest-sustained-load` |
 | Driver (fact) | fact slug | `DRV-peak-ingest-rate` |
+| Business rule | rule slug | `BR-tonnage-rounding` |
 
 ADR name test: it must read as an ANSWER, not a topic.
 `ADR-database-choice` — wrong (topic). `ADR-use-postgres-for-billing` — right.
@@ -58,7 +95,7 @@ Rules:
 ```
 docs/
 ├── loom.yaml                 # framework config (paths, phases, status vocabularies)
-├── product/                  # VISION.md, GLOSSARY.md, ASSUMPTIONS.md, DRIVERS.md, use-cases/
+├── product/                  # VISION.md, GLOSSARY.md, ASSUMPTIONS.md, DRIVERS.md, RULES.md, use-cases/
 ├── domain/                   # event storming notes, C4 models (.dsl / mermaid)
 ├── adr/                      # global ADRs: ADR-<slug>.md
 ├── spikes/                   # SPIKE-<slug>.md
@@ -72,9 +109,14 @@ docs/
         ├── adr/              # epic-scoped ADR deltas
         ├── contracts/        # OpenAPI/AsyncAPI/proto — source of truth
         └── tasks/TASK-<slug>.md
-changes/                      # changelog fragments, one per task (changes/TASK-<slug>.md)
-.loom/                        # transient role markers for implement guards (gitignored)
 ```
+
+Everything above is authored. Everything the engine reads is **generated** by
+`/loom:compile` into the paths named in `loom.yaml` `engine:` — outside `docs/`,
+opening with a `<!-- GENERATED ... do not edit -->` marker, and never edited by
+hand: a fix belongs in the source document, and the next compile would overwrite
+it anyway. The generated tree is not part of the knowledge layer; deleting it and
+recompiling must lose nothing.
 
 ## Frontmatter schema
 
@@ -90,6 +132,13 @@ aliases: []                  # former IDs after a legitimate rename
 
 Optional keys by type: `depends_on: []` (epics, tasks), `packages: []` (tasks),
 `criticality: must|should|could|wont` (epics), `appetite: <duration>` (epics).
+
+Handoff keys (tasks only, written at the seam — see above): `handoff: <engine>`
+when `/loom:compile` shipped the spec, `landed: <PR|commit>` when the engine
+closed it, `harvested: true|false` once `/loom:harvest` folded its facts back.
+They track the round trip, not the document's own review status — a task can be
+`approved` and unharvested, and that combination is exactly what /loom:status
+surfaces.
 
 ## Status vocabularies
 
@@ -154,6 +203,53 @@ Template: `templates/adr.md` in this skill. Key rules:
 
 Spike vs ADR: a spike ends with a **recommendation** (evidence), an ADR fixes a
 **decision**. Spikes are cited from the ADR Options section, never merged into it.
+
+## Business rules (BR-*)
+
+`docs/product/RULES.md` holds the rules the system is OBLIGED to reproduce —
+formulas, thresholds, rounding, boundaries, tie-breaks, period edges. They are
+not choices; they are given. This is the file that closes the third failure mode
+Loom exists for: an agent inventing a plausible formula, and nobody noticing at
+review because it looks right.
+
+One table row per rule: **ID | rule | bounds | source | review_by**.
+
+```markdown
+| BR-tonnage-formula | Tonnage = Σ(weight × reps) over working sets | warm-ups excluded; supersets counted separately | product owner, 2026-03-11 | |
+| BR-vat-rate-standard | Standard VAT is 20%, rounded up to the cent | applies to the invoice total, not per line | UK VAT Act §2(1) | 2027-01-01 |
+```
+
+- **Bounds are the rule.** Most hallucinated arithmetic hides at the edges, not in
+  the main formula: state rounding and where it is applied, inclusive vs exclusive
+  on boundaries, tie-break order, behavior at zero / empty / negative, timezone
+  and period boundaries, and precedence when two rules collide.
+- **`source` is not decoration.** It is the only thing separating a rule from a
+  guess. Name who or what says so — a person and a date, a regulation with its
+  section and edition, a contract. A rule whose source is "the engine chose it"
+  during `/loom:harvest` is recorded as `confidence: guessed` with what would
+  confirm it — never presented as settled.
+- **`review_by` for rules with an external source.** Standards and regulations get
+  revised, and unlike a decision there is no `revisit_when` condition to watch —
+  the trigger is a calendar one. `/loom:audit` scans these; a product built "to the
+  standard" is compliant only until its next edition, and an undated citation makes
+  that invisible.
+- **Never infer a missing rule.** A gap here is a blocking OQ to the human, at any
+  reversibility — a wrong threshold silently corrupts data and is discovered by a
+  user, not by a test. This is stricter than the driver protocol, where a two-way
+  door may proceed on a labelled guess.
+
+Where a fact belongs — the boundary these four confuse most often:
+
+| If it is… | it is | test |
+|---|---|---|
+| a measured fact about the world, input to decisions | `DRV-*` | it describes the territory, not our behavior |
+| a measurable demand on quality | `QS-*` | it is about speed / reliability, not about a result |
+| our choice, with alternatives and a reversibility | `ADR-*` | it could be re-decided; a BR has no options, only a source |
+| a "must never" statement about state | invariant | it forbids, it does not compute |
+| how we write code | `conventions/*` | lintable, no domain content |
+
+Deciding question: **could this be re-decided?** Yes → ADR. No, and we measured it
+→ DRV. No, and we are obliged to reproduce it → BR.
 
 ## Open questions (OQ)
 

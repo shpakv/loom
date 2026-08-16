@@ -1,12 +1,15 @@
 ---
 name: loom-design-phase
-description: Invoked by the /loom:design command to decompose one approved epic into a design doc, contracts, parallel conflict-free tracks, and session-sized task files with rigor levels. Run /loom:design on an approved epic to prepare its work for /loom:implement.
+description: Invoked by the /loom:design command to decompose one approved epic into a design doc, contracts, parallel conflict-free tracks, and session-sized task specs ready for handoff. Run /loom:design on an approved epic, before /loom:compile hands its tasks to the SDD engine.
 ---
 
 # Loom: design phase (per epic)
 
-Goal: turn one approved epic into tasks so self-sufficient that /loom:implement
-needs no clarifying questions. Read `loom-core` conventions first.
+Goal: turn one approved epic into task specs so self-sufficient that the SDD
+engine implementing them needs no clarifying questions. This is the last phase
+that produces per-task artifacts — the plan, the tests and the code are the
+engine's, and `/loom:compile` is the handoff. Read `loom-core` conventions first
+(the handoff seam especially).
 
 ## Inputs (gate)
 
@@ -33,17 +36,28 @@ building-blocks, conventions), package SKILL.md of packages likely touched.
    the package SKILL.md plus the relevant design.md excerpt must fit in
    context with room to spare. If a task cannot be specified without "and
    then figure out...", it is underdesigned — split or return to the track.
-5. Only the `## Spec` section is written here. `## Plan` is deliberately left
-   empty — it is produced just-in-time by the planner inside /loom:implement,
-   against the code as it will be then.
+5. **`## Spec` is the whole task file.** Behavior, acceptance with numbers,
+   contracts touched, out of scope — and nothing about HOW. No file names, no
+   function names, no step order: those are the engine's decisions, made against
+   the code as it will be then, and pinning them here is how a spec starts lying
+   before it is read. A spec that cannot be written without naming internals is
+   usually a missing contract.
 6. Assign `rigor` per task: `full` when it touches public contracts, domain
-   invariants, or more than one package; `light` otherwise.
+   invariants, or more than one package; `light` otherwise. This is an
+   **advisory signal** about the cost of being wrong — the engine decides what
+   ceremony it applies to it (see `docs/recipes/anti-cheating-tdd.md` for the
+   ceremony Loom used to apply itself).
 7. Task `depends_on` forms a DAG within the epic; cross-track dependencies
    are a design smell — restructure tracks before accepting one.
 8. Gates: `oq_scan --gate` on design.md, `link_check.py docs packages`,
-   then /loom:review on design.md before any implementation starts.
+   then /loom:review on design.md.
+9. Hand off with `/loom:compile` on the epic. Do not start work in the engine
+   from a `draft` design doc — compile refuses a spec with open blocking OQs,
+   which is the point.
 
-## Exit criteria
+## Exit criteria (before /loom:compile)
 
-- Contracts reviewed; every task self-contained with acceptance criteria;
-  task DAG valid; every task names its packages and rigor.
+- Contracts reviewed; task DAG valid; every task names its packages and rigor.
+- Every task is **engine-ready**: acceptance criteria are checkable and carry
+  numbers where numbers exist, contracts touched are named, out of scope is
+  filled, and no internal file or step order is prescribed.

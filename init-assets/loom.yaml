@@ -1,6 +1,6 @@
 # Loom framework config — single source of truth for paths and phases
-version: 0.9
-scripts_version: 0.9.3   # written by /loom:init; compared with plugin version by /loom:status
+version: 0.10
+scripts_version: 0.10.0   # written by /loom:init; compared with plugin version by /loom:status
 paths:
   product: docs/product
   domain: docs/domain
@@ -11,12 +11,17 @@ paths:
   roadmap: docs/roadmap
   epics: docs/roadmap/epics
   scripts: scripts/loom
-test_command: ""   # e.g. "go test ./..." — REQUIRED before /loom-implement
-test_globs: ["*_test.go", "*.spec.ts", "*.test.ts", "test_*.py", "*_test.py", "**/tests/**", "**/__tests__/**"]
+# Where the knowledge layer is projected for the SDD engine that writes the code.
+# Loom does not implement; it compiles into these files — see /loom:compile.
+# REQUIRED before /loom:compile. Leave name empty until an engine is chosen.
+engine:
+  name: ""            # spec-kit | kiro | openspec | bmad | claude-code | ...
+  constitution: ""    # e.g. .specify/memory/constitution.md | .kiro/steering/product.md | AGENTS.md
+  spec_dir: ""        # e.g. .specify/specs — per-epic seed specs land here
 statuses:
   documents: [draft, in-review, approved, superseded]
   adr: [proposed, accepted, rejected, deprecated, superseded]
 naming: slug-based, no sequential numbers — see loom-core skill
 phases:
-  implemented: [imagine, roadmap, requirements, architecture, technology, skeleton, consolidate, design, implement, review, spike, audit, intake]
+  implemented: [imagine, roadmap, requirements, architecture, technology, skeleton, consolidate, design, compile, harvest, review, spike, audit, intake]
   planned: [retro, ship, postmortem]

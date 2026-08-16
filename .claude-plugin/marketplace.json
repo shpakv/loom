@@ -7,7 +7,7 @@
     {
       "name": "loom",
       "source": "./",
-      "description": "Docs-first framework for AI development: a knowledge layer (glossary, DRIVERS, ADR, package SKILL.md) + gated phases + an anti-cheating TDD engine."
+      "description": "Knowledge layer for AI development: glossary, drivers, rules, ADR lifecycle, package boundaries and task specs, compiled into whatever SDD engine writes the code."
     }
   ]
 }

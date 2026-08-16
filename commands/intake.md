@@ -8,7 +8,7 @@ Incoming item from the user: $ARGUMENTS
 
 Run a short triage interview (one question per turn, stop as soon as the route is
 clear) to size the work and route it to the SMALLEST phase that honestly handles
-it — a task under an existing epic (/loom:design → /loom:implement), a new epic
+it — a task under an existing epic (/loom:design → /loom:compile), a new epic
 candidate (/loom:roadmap), a revisited decision (superseding ADR via
 /loom:consolidate or /loom:audit), a vision change (/loom:imagine), a new quality
 target (/loom:requirements), or a spike first (/loom:spike). When several fit,

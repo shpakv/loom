@@ -14,7 +14,8 @@ Checks:
 Usage:
   adr_scan.py [paths...]          report (default: docs/)
   adr_scan.py --gate [paths...]   exit 1 on violations
-  adr_scan.py --revisit           print only accepted ADRs' revisit triggers (audit)
+  adr_scan.py --revisit           print accepted ADRs' revisit triggers, plus
+                                  BR-* rules whose calendar review_by is due (audit)
   adr_scan.py --framing [paths..] add stricter framing checks (opt-in), combine
                                   with --gate for CI. Enforces that decisions are
                                   framed by facts and targets before acceptance:
@@ -30,6 +31,7 @@ Usage:
 """
 import re
 import sys
+from datetime import date
 from pathlib import Path
 
 STATUSES = {"proposed", "accepted", "rejected", "deprecated", "superseded"}
@@ -43,6 +45,35 @@ DRV_ROW_RE = re.compile(
     r"^\|\s*(DRV-[a-z0-9-]+)\s*\|[^|]*\|\s*([a-z]+)\s*\|", re.IGNORECASE)
 
 BODY_STATUS_RE = re.compile(r"^Status:\s*([a-z]+)\b", re.IGNORECASE)
+
+# a RULES.md row: | BR-slug | rule | bounds | source | review_by |
+BR_ROW_RE = re.compile(r"^\|\s*(BR-[a-z0-9-]+)\s*\|(.*)$", re.IGNORECASE)
+ISO_DATE_RE = re.compile(r"\b(\d{4})-(\d{2})-(\d{2})\b")
+
+
+def rules_due(targets, today=None):
+    """[(BR id, review_by, path)] for rules with a calendar review_by at or past
+    due. Rules sourced from a standard rot by revision, not by a condition — so
+    unlike ADRs they need a date, and something has to read it."""
+    today = today or date.today().isoformat()
+    due = []
+    for t in targets:
+        p = Path(t)
+        for f in (sorted(p.rglob("*.md")) if p.is_dir() else [p]):
+            try:
+                lines = f.read_text(encoding="utf-8").splitlines()
+            except (UnicodeDecodeError, OSError):
+                continue
+            for line in lines:
+                m = BR_ROW_RE.match(line.strip())
+                if not m or "{" in line:
+                    continue
+                cells = [c.strip() for c in m.group(2).split("|")]
+                # review_by is the last non-empty cell only if it is a bare date
+                dates = [c for c in cells if ISO_DATE_RE.fullmatch(c)]
+                if dates and dates[-1] <= today:
+                    due.append((m.group(1), dates[-1], str(f)))
+    return due
 
 
 def body_status(lines):
@@ -207,6 +238,11 @@ def main(argv):
                 print(aid)
                 for tr in (trig if isinstance(trig, list) else [trig]):
                     print(f"  revisit when: {tr}")
+        due = rules_due(targets)
+        if due:
+            print("\n-- business rules due for review (external source revised?)")
+            for rid, when, path in sorted(due):
+                print(f"{rid}\n  review_by: {when} ({path})")
         return 0
 
     if framing:
