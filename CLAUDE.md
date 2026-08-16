@@ -6,28 +6,42 @@ that consume it.
 
 ## What Loom is
 
-A docs-first framework for AI development, shipped as a Claude Code plugin:
-a knowledge layer (glossary, DRIVERS, ADR, package SKILL.md) + gated lifecycle
-phases + an anti-cheating TDD engine. When installed into a target project, its
+The knowledge layer for AI development, shipped as a Claude Code plugin:
+glossary, DRIVERS, `BR-*` rules, ADR lifecycle, contracts, package SKILL.md and
+task specs + gated lifecycle phases. When installed into a target project, its
 commands scaffold and drive a `docs/`-centric workflow.
+
+**Loom does not implement** (since 0.20.0 — see `CONCEPT.md` §2). It produces
+knowledge and stops at the task `## Spec`; an external SDD engine (Spec Kit, Kiro,
+OpenSpec, BMAD, a plain agent harness) writes the plan, the tests and the code.
+Two commands are the seam: `compile` projects the knowledge layer into the
+engine's own files, `harvest` reads back what the engine decided by itself. When
+adding a surface, the test is: *does this produce knowledge, or does it produce
+code?* The second belongs to the engine — and the old implementation machinery is
+kept only as a portable recipe in `docs/recipes/anti-cheating-tdd.md`, which the
+plugin never executes.
 
 Phase route the plugin exposes to users (requirements and structure precede
 technology; technology decisions are proposed, the skeleton verifies them):
-`prime → imagine → roadmap → requirements → architecture → technology → skeleton → consolidate → design → implement`
-plus utilities `spike`, `challenge`, `status`, `audit` (the backward pass
-that re-checks accepted decisions against their revisit triggers), and `intake`
-(triage front door that routes incoming work on an existing project to the
-smallest phase that fits, instead of a full `imagine`).
+`prime → imagine → roadmap → requirements → architecture → technology → skeleton → consolidate → design → compile → ((engine)) → harvest`
+plus utilities `spike`, `challenge`, `review`, `status`, `audit` (the backward
+pass that re-checks accepted decisions against their revisit triggers and `BR-*`
+rules against their `review_by` dates), and `intake` (triage front door that
+routes incoming work — from a human or from `harvest` — to the smallest phase that
+fits, instead of a full `imagine`).
 
 ## Repository layout
 
     .claude-plugin/   plugin.json + marketplace.json (manifests)
-    commands/         17 slash commands (loom: namespace)
-    agents/           6 subagents dispatched by commands
+    commands/         18 slash commands (loom: namespace)
+    agents/           3 read-only subagents dispatched by commands
     skills/           loom-core + phase/gate/method skills, each with SKILL.md
-    hooks/            hooks.json — PreToolUse file-role guard
-    scripts/loom/     8 stdlib-only Python gate/generator scripts
-    init-assets/       loom.yaml + seed ADR, copied into target projects by /loom:init
+    scripts/loom/     6 stdlib-only Python gate/generator scripts
+    init-assets/      loom.yaml + seed ADR, copied into target projects by /loom:init
+    docs/recipes/     the retired TDD machinery, documentation only — never executed
+
+There is deliberately no `hooks/` directory: the only hook Loom ever shipped
+guarded implementation roles, and Loom no longer implements.
 
 ## Golden rules
 
@@ -45,8 +59,11 @@ smallest phase that fits, instead of a full `imagine`).
   orchestrators, to dispatch agents) — the actual procedure lives in the skill,
   not the command body.
 - **`loom.yaml` is the single source of truth** for paths, statuses, naming,
-  phases, `test_command`, and `test_globs`. Scripts read config from it; don't
-  duplicate those values elsewhere.
+  phases, and the `engine:` profile (which SDD engine, and where its constitution
+  and spec directory live). Scripts read config from it; don't duplicate those
+  values elsewhere. Engine-specific knowledge belongs in that profile, never in
+  script code — chasing four vendors' file layouts in Python is the fastest-rotting
+  thing this repo could own.
 - Keep changes coherent across the four surfaces that describe the same concept:
   a new phase usually touches a **command**, a **skill** (+ templates), possibly
   an **agent**, and the `phases:`/`paths:` blocks in **init-assets/loom.yaml**.
@@ -65,12 +82,13 @@ smallest phase that fits, instead of a full `imagine`).
 
 ### Agents (`agents/*.md`)
 - Frontmatter fields (all three required): `name:` (matches filename),
-  `description:` (state who dispatches it, e.g. *"Dispatched by /loom:implement
-  step 6"*), `tools:` (comma-separated).
-- Tool convention: read-only agents (challenger, code-reviewer, planner,
-  reviewer) use `Read, Grep, Glob, Bash`; write-capable agents (implementer,
-  test-author) use `Read, Grep, Glob, Write, Edit, Bash`. No `model:` field is
-  used.
+  `description:` (state who dispatches it, e.g. *"Dispatched by /loom:harvest"*),
+  `tools:` (comma-separated).
+- Tool convention: **every agent is read-only** — `Read, Grep, Glob, Bash`. All
+  three (challenger, reviewer, harvester) analyse and report; the orchestrating
+  session materializes their findings into documents. No `model:` field is used,
+  and no agent gets `Write`/`Edit`: a write-capable agent here would mean Loom is
+  producing something it should have handed to the engine.
 - Body is a plain-prose role and output contract.
 
 ### Skills (`skills/<name>/SKILL.md`)
@@ -101,9 +119,13 @@ violations for CI use, and several offer `--json`/`--print`.
   blocking OQs.
 - `index_gen.py` — generates `docs/INDEX.md` from document frontmatter.
 - `link_check.py` — slug-ID reference integrity (uniqueness + every mention
-  resolves); `--refs <id>` reverse index.
+  resolves; `QS/DRV/BR/track` table rows count as definitions); `--refs <id>`
+  reverse index. Skips files opening with the `<!-- GENERATED` marker — a
+  generated file restates IDs defined elsewhere, so scanning it would report
+  every projected ID as a duplicate.
 - `adr_scan.py` — ADR lifecycle validator (status vocab, body/frontmatter
-  agreement, supersedes symmetry); `--revisit` audits triggers; `--framing`
+  agreement, supersedes symmetry); `--revisit` audits triggers and lists `BR-*`
+  rules whose calendar `review_by` is due; `--framing`
   adds opt-in strict checks used at /loom:consolidate (accepted one-way ADR
   must cite DRV-* and QS-* and declare decision_mode; every QS in
   solution-strategy.md maps to an ADR or convention; a `verification: SPIKE-*`
@@ -111,28 +133,32 @@ violations for CI use, and several offer `--json`/`--print`.
   a `confidence: guessed` driver without a `revisit_when` trigger).
 - `roadmap_gen.py` — generates `docs/roadmap/ROADMAP.md` from epic frontmatter;
   validates the epic dependency DAG is acyclic.
-- `verify_red.py` — TDD red gate: passes only if tests FAIL (optionally for the
-  right reason via `--expect`).
-- `verify_green.py` — TDD green gate: whole suite must pass.
-- `guard_file_roles.py` — the PreToolUse hook (below).
+- `compile.py` — projects the knowledge layer into the engine's files per the
+  `engine:` profile: the constitution (vocabulary, anti-goals, `BR-*` rules,
+  accepted-ADR digest, ruled-out decisions, conventions, structural boundaries)
+  and, with `--epic`, that epic's seed spec from its approved task specs.
+  `--print` shows without writing; `--check` gates on missing/stale output.
+  Generated content carries no timestamp **on purpose** — a date in the body would
+  make `--check` report every output stale the day after it was written.
 
-### Hook (`hooks/hooks.json`)
-PreToolUse matcher `Edit|Write|MultiEdit` runs `guard_file_roles.py`. It reads
-`.loom/role` (written by the implement orchestrator): no marker → allow all;
-role `test-author` may write only files matching `test_globs`; role
-`implementer` may not touch test-glob files. Blocks with exit code 2 + stderr.
-
-**Do not add a `"hooks"` key to `.claude-plugin/plugin.json`.** Claude Code
-auto-discovers `hooks/hooks.json`; registering it explicitly caused the guard
-hook to misbehave and was removed in 0.9.1.
+### Generated files
+Anything a script writes opens with `<!-- GENERATED by scripts/loom/<x>.py — do
+not edit ... -->` on line 1 (`INDEX.md`, `ROADMAP.md`, everything `compile.py`
+emits). The marker is load-bearing, not decorative: `link_check.py` and
+`index_gen.py` skip files that carry it. A new generator must emit it.
 
 ## Testing changes to the plugin
 
-There is **no test suite or CI in this repo** — the TDD gates operate on a
-*consuming* project's `test_command`, not on the plugin. To exercise a change:
+There is **no test suite or CI in this repo** — nothing here executes a consuming
+project's tests any more. To exercise a change:
 
 1. Sanity-run edited scripts directly, e.g.
    `python3 scripts/loom/link_check.py --help` and against a project's `docs/`.
+   For `compile.py`, scaffold a throwaway `docs/` tree with a glossary, an
+   accepted and a rejected ADR, a RULES row and one approved task, then check the
+   three things a mechanical projection gets wrong: `--print` output, `--check`
+   passing immediately after a write (idempotence), and `--check` failing when a
+   source document changes.
 2. Install the plugin locally and drive the affected command end-to-end:
    `/plugin marketplace add /Users/z003pz4w/personal/loom` then
    `/plugin install loom@loom`. Reload Claude Code to re-read the marketplace.
@@ -151,9 +177,9 @@ There is **no test suite or CI in this repo** — the TDD gates operate on a
   an incomplete release.
 - **Tag each release** once committed: `git tag -a v<version> -m "..."` then
   `git push origin --tags`, so the `CHANGELOG.md` compare links resolve.
-- **Version skew to be aware of:** `plugin.json` `version` (currently `0.14.0`)
+- **Version skew to be aware of:** `plugin.json` `version` (currently `0.20.0`)
   tracks the *plugin package*, while `init-assets/loom.yaml` carries its own
-  `version`/`scripts_version` (currently `0.9`/`0.9.1`) tracking the *scaffolded
+  `version`/`scripts_version` (currently `0.10`/`0.10.0`) tracking the *scaffolded
   framework/scripts*. These are intentionally independent — bump each for changes
   to its own surface. Bump `scripts_version` in `init-assets/loom.yaml` when
   `scripts/loom/*` change, since consuming projects re-sync via

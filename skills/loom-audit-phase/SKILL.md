@@ -33,6 +33,10 @@ because those are the ones assumed settled.
    "sustained load > 5k rps" is a fact to check, not an opinion.) An accepted ADR
    with `revisit_when: (none declared)` is itself a finding — a decision no one
    knows how to invalidate.
+   The same command also lists `BR-*` rules whose `review_by` date has arrived —
+   rules sourced from a standard, regulation or contract rot by revision, so for
+   each one ask whether that source has been revised since. "We comply with the
+   standard" silently becomes false at its next edition.
 2. **Sweep unconfirmed guessed drivers.** For every `DRIVERS.md` row with
    `confidence: guessed`, run `link_check.py --refs DRV-<slug>` to see which
    accepted ADRs stand on it. A guessed fact still carrying a live one-way
@@ -54,10 +58,16 @@ because those are the ones assumed settled.
    decision often reshuffles priorities — hand off to /loom:roadmap (or
    /loom:consolidate if a one-way ADR must be superseded) rather than editing
    epics here.
-7. Report: a short list of findings by severity (broken one-way decision >
-   unconfirmed guessed driver under a live decision > stale OQ > missing revisit
-   trigger), each pointing at the OQ it became and the command that will resolve
-   it.
+7. **Check the projection.** Run `compile.py --check`: a stale constitution means
+   the engine is being handed decisions the docs no longer hold, which is drift in
+   the other direction. If this audit changed any ADR status, sharpened a rule, or
+   deprecated a decision, re-run `/loom:compile` — a deprecated decision still
+   sitting in the engine's constitution is worse than an undocumented one, because
+   the engine will actively obey it.
+8. Report: a short list of findings by severity (broken one-way decision >
+   unconfirmed guessed driver under a live decision > deprecated decision still in
+   the projection > overdue rule review > stale OQ > missing revisit trigger),
+   each pointing at the OQ it became and the command that will resolve it.
 
 ## Exit criteria
 

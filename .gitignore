@@ -16,3 +16,6 @@
 # Environment
 .env
 .env.local
+
+# Local notes not tracked in git
+/.local/

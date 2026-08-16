@@ -36,7 +36,7 @@ If the skeleton is not demoable, this event is premature — go back to
    (`link_check.py --refs DRV-<slug>`), either confirm it (→ `known`, with a
    note of the evidence) or add a matching `revisit_when` trigger to that ADR.
    An accepted one-way decision standing on an unconfirmed guess without a
-   trigger is a hard failure of the `adr_scan.py --framing` gate at step 9 — the
+   trigger is a hard failure of the `adr_scan.py --framing` gate at step 10 — the
    sweep here is how you clear it before running the gate.
 3. **Quality scenarios, confirmed by measurement** — `quality-requirements.md`
    already exists from /loom:requirements. Update each `QS-<slug>` with what the
@@ -64,8 +64,14 @@ If the skeleton is not demoable, this event is premature — go back to
 8. **Re-cut the roadmap** — with skeleton knowledge in hand, revisit draft
    epic candidates: merge, split, re-sequence, adjust appetites. Approve only
    the next one epic (rolling wave). Run `roadmap_gen.py`.
-9. Gates: `adr_scan.py --gate --framing`, `link_check.py docs packages`,
-   `oq_scan.py --gate` on each architecture document, then /loom:review them.
+9. **Re-project into the engine.** This event changes the set of accepted ADRs
+   and usually adds conventions — both are compiled into the engine's
+   constitution, so run `/loom:compile` before any further work is handed off. An
+   engine still obeying the pre-consolidation projection is following decisions
+   that were just superseded.
+10. Gates: `adr_scan.py --gate --framing`, `link_check.py docs packages`,
+   `oq_scan.py --gate` on each architecture document, `compile.py --check`,
+   then /loom:review them.
    The `--framing` mode is the point of this event: it fails unless every
    accepted one-way ADR is framed by a driver (DRV-*) AND a quality scenario
    (QS-*), declares its decision_mode, every QS in the solution strategy maps to

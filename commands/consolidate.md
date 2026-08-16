@@ -12,4 +12,6 @@ the roadmap. These docs already exist from /loom:requirements and
 /loom:architecture — you are confirming or correcting them, not writing them
 fresh. Finish with `adr_scan.py --gate --framing` (every accepted one-way ADR
 must cite a DRV-* and a QS-*, declare its decision_mode, and every QS must map to
-an ADR or convention) and `link_check.py docs packages`.
+an ADR or convention), `link_check.py docs packages`, and /loom:compile — the
+newly accepted decisions and extracted conventions must reach the engine's
+constitution before it writes another line against the old one.
