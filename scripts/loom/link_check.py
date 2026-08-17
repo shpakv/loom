@@ -4,9 +4,9 @@
 Definitions:
   - frontmatter `id:` of every docs/**/*.md (+ its `aliases:`)
   - OQ slugs defined in checklist lines
-  - QS/DRV/BR/track table rows (`| <ID> | ... |`)
+  - QS/DRV/BR/ACTOR/track table rows (`| <ID> | ... |`)
 References:
-  - every ADR/UC/SPIKE/TASK/OQ/QS/DRV/BR/track/epic-* mention in scanned files
+  - every ADR/UC/SPIKE/TASK/OQ/QS/DRV/BR/ACTOR/track/epic-* mention in scanned files
 
 Usage:
   link_check.py [paths...]        scan (default: docs/); exit 1 on violations
@@ -18,8 +18,8 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-REF_RE = re.compile(r"\b(?:ADR|UC|SPIKE|TASK|OQ|QS|DRV|BR|track|epic)-[a-z0-9][a-z0-9-]*[a-z0-9]\b")
-QS_DEF_RE = re.compile(r"^\|\s*((?:QS|DRV|BR|track)-[a-z0-9][a-z0-9-]*[a-z0-9])\s*\|")
+REF_RE = re.compile(r"\b(?:ADR|UC|SPIKE|TASK|OQ|QS|DRV|BR|ACTOR|track|epic)-[a-z0-9][a-z0-9-]*[a-z0-9]\b")
+QS_DEF_RE = re.compile(r"^\|\s*((?:QS|DRV|BR|ACTOR|track)-[a-z0-9][a-z0-9-]*[a-z0-9])\s*\|")
 OQ_DEF_RE = re.compile(r"^-\s*\[[ xX]\]\s*(OQ-[a-z0-9][a-z0-9-]*[a-z0-9])\b")
 
 

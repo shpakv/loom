@@ -43,9 +43,18 @@ recorded as `guessed` with a verify-by — never silently omitted.
 |---|---|---|
 | `GLOSSARY.md` | from `templates/glossary.yaml` | every term used in UC and VISION |
 | `VISION.md` | `templates/vision.md` | problem, for whom, ≥3 anti-goals, ≥1 metric; personas table and full metrics may stay empty |
-| `use-cases/UC-*.md` | `templates/use-case.md` | exactly 3–5, glossary terms only |
+| `ACTORS.md` | `templates/actors.md` | one row per actor a use case names as `primary_actor`/`secondary_actors` |
+| `use-cases/UC-*.md` | `templates/use-case.md` (Cockburn fully-dressed) | exactly 3–5, glossary terms only, actor(s) resolved against `ACTORS.md` |
 | `ASSUMPTIONS.md` | `templates/assumptions.md` | every unverified belief, with verify-by |
 | `DRIVERS.md` | `templates/drivers.md` | facts in orders of magnitude; unknowns as `guessed` |
+
+`docs/product/UC-DIAGRAM.md` is **generated**, not authored here: run
+`scripts/loom/uc_diagram_gen.py` after ACTORS.md and the UC set stabilize to
+render the actor↔UC UML diagram (Mermaid flowchart: actors, use cases as
+stadium nodes, `<<include>>`/`<<extend>>` edges between UC). It also validates
+that every `primary_actor`/`secondary_actors`/`includes`/`extends` reference
+resolves — treat a nonzero exit as a blocking OQ, not a thing to hand-fix in
+the generated file.
 
 Deliberately deferred (do NOT produce here): full personas, complete metric
 trees, domain C4 diagrams, any ADRs. They are added when learning demands —
@@ -56,5 +65,7 @@ ADR-adopt-loom, which ships with the kit.
 
 - Glossary covers every domain noun in the other artifacts.
 - ≥3 anti-goals; 3–5 use cases; ASSUMPTIONS rows all have verify-by.
+- Every use case names a `primary_actor` that resolves to an ACTORS.md row;
+  `uc_diagram_gen.py` exits 0.
 - DRIVERS.md exists; every `guessed` row has a verify-by.
 - Blocking OQs resolved via /loom:review on VISION.md.

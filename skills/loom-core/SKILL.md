@@ -58,6 +58,7 @@ Naming grammar by type:
 |---|---|---|
 | ADR | decision as a claim (verb phrase) | `ADR-use-questdb-for-timeseries` |
 | Epic | business capability (noun phrase) | `epic-billing-analytics` |
+| Actor | role, noun phrase | `ACTOR-trainer` |
 | Use case | actor + action | `UC-trainer-logs-workout` |
 | Spike | question / comparison | `SPIKE-questdb-vs-timescale-ingest` |
 | Track | workstream in a design doc | `track-billing-api` |
@@ -87,15 +88,17 @@ Rules:
 - Rare legitimate renames: keep the old ID in frontmatter `aliases: []` — aliases
   stay globally unique and resolvable forever.
 - Reference integrity is enforced by `scripts/loom/link_check.py` (uniqueness of
-  all IDs + aliases; every `ADR-* / UC-* / SPIKE-* / TASK-* / OQ-* / epic-*`
-  mention in docs must resolve; QS-*, track-* and DRV-* table rows count as definitions).
+  all IDs + aliases; every `ADR-* / UC-* / SPIKE-* / TASK-* / OQ-* / epic-* /
+  ACTOR-*` mention in docs must resolve; QS-*, track-*, DRV-* and ACTOR-* table
+  rows count as definitions).
 
 ## File layout
 
 ```
 docs/
 ├── loom.yaml                 # framework config (paths, phases, status vocabularies)
-├── product/                  # VISION.md, GLOSSARY.md, ASSUMPTIONS.md, DRIVERS.md, RULES.md, use-cases/
+├── product/                  # VISION.md, GLOSSARY.md, ACTORS.md, ASSUMPTIONS.md, DRIVERS.md, RULES.md, use-cases/
+│                              # UC-DIAGRAM.md is generated (actor↔UC UML diagram) — never edited by hand
 ├── domain/                   # event storming notes, C4 models (.dsl / mermaid)
 ├── adr/                      # global ADRs: ADR-<slug>.md
 ├── spikes/                   # SPIKE-<slug>.md
