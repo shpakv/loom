@@ -60,6 +60,7 @@ Naming grammar by type:
 | Epic | business capability (noun phrase) | `epic-billing-analytics` |
 | Actor | role, noun phrase | `ACTOR-trainer` |
 | Use case | actor + action | `UC-trainer-logs-workout` |
+| Gherkin step | fact/action slug | `STEP-user-logged-in` |
 | Spike | question / comparison | `SPIKE-questdb-vs-timescale-ingest` |
 | Track | workstream in a design doc | `track-billing-api` |
 | Task | package + change | `TASK-billing-add-vat-rates` |
@@ -97,7 +98,7 @@ Rules:
 ```
 docs/
 ├── loom.yaml                 # framework config (paths, phases, status vocabularies)
-├── product/                  # VISION.md, GLOSSARY.md, ACTORS.md, ASSUMPTIONS.md, DRIVERS.md, RULES.md, use-cases/
+├── product/                  # VISION.md, GLOSSARY.md, ACTORS.md, STEPS.md, ASSUMPTIONS.md, DRIVERS.md, RULES.md, use-cases/
 │                              # UC-DIAGRAM.md is generated (actor↔UC UML diagram) — never edited by hand
 ├── domain/                   # event storming notes, C4 models (.dsl / mermaid)
 ├── adr/                      # global ADRs: ADR-<slug>.md

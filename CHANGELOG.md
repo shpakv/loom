@@ -10,6 +10,30 @@ Two version numbers move independently (see `CLAUDE.md` → Releasing):
 - **scripts** — `scripts_version` in `init-assets/loom.yaml`, bumped only when
   `scripts/loom/*` change; consuming projects re-sync via `/loom:init --refresh`.
 
+## [0.22.0] — 2026-08-17
+
+Unifies Gherkin step phrasing across use cases and requires non-happy-path
+coverage, so the engine writes one step definition per fact instead of one
+per rewording.
+
+### Added
+- `docs/product/STEPS.md` (`templates/steps.md` in `loom-imagine-phase`): the
+  canonical Given/When/Then phrase catalog, `STEP-*` rows with `{placeholder}`
+  slots. Every step in every `UC-*.md` must resolve to a row here.
+- `use-case.md` template: each Extension is now tagged `[alternate]` /
+  `[error]` / `[boundary]`; at least one `[error]` or `[boundary]` extension
+  is required per use case.
+- `scripts/loom/gherkin_lint.py --gate` — flags Gherkin steps that don't
+  resolve to a STEPS.md phrase, flags near-duplicate rewordings of an
+  existing phrase (word-overlap heuristic, no fuzzy-match false negatives on
+  differently-sized `{placeholder}` fills), and flags use cases with no
+  `[error]`/`[boundary]` extension.
+
+### Changed
+- `loom-imagine-phase` and `loom-core` skills document `STEP-*` as a naming
+  type and `STEPS.md` as an imagine-phase artifact; exit criteria now include
+  `gherkin_lint.py --gate`.
+
 ## [0.21.0] — 2026-08-17
 
 The use case template now follows Cockburn's "fully dressed" standard instead
