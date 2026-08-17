@@ -10,6 +10,33 @@ Two version numbers move independently (see `CLAUDE.md` → Releasing):
 - **scripts** — `scripts_version` in `init-assets/loom.yaml`, bumped only when
   `scripts/loom/*` change; consuming projects re-sync via `/loom:init --refresh`.
 
+## [0.21.0] — 2026-08-17
+
+The use case template now follows Cockburn's "fully dressed" standard instead
+of a homegrown one, and actors become a first-class artifact with UML-style
+relationships between use cases.
+
+### Added
+- `ACTOR-*` as a first-class ID type: `docs/product/ACTORS.md`
+  (`templates/actors.md` in `loom-imagine-phase`), one table row per actor,
+  referenced from `UC-*.md` frontmatter (`primary_actor`, `secondary_actors`).
+- `use-case.md` template rewritten to Cockburn fully-dressed structure
+  (preconditions, trigger, minimal/success guarantees, numbered extensions)
+  while keeping the Main success scenario and each extension in Gherkin —
+  unchanged from `CONCEPT.md`'s "closes: непонимание сценариев → Gherkin" form.
+- `includes`/`extends` frontmatter fields on `UC-*.md` for UML
+  `<<include>>`/`<<extend>>` relationships between use cases.
+- `scripts/loom/uc_diagram_gen.py` — generates `docs/product/UC-DIAGRAM.md`,
+  a Mermaid flowchart rendering of the actor↔use-case UML diagram, and
+  validates that every actor/includes/extends reference resolves.
+
+### Changed
+- `link_check.py`: `ACTOR-*` mentions now resolve as references, and
+  `ACTOR-*` table rows count as definitions (same treatment as `QS-*` /
+  `DRV-*` / `track-*`).
+- `loom-imagine-phase` and `loom-core` skills document the new artifact and ID
+  type (file layout, naming grammar, exit criteria).
+
 ## [0.20.0] — 2026-08-16
 
 Loom stops implementing. It is now the knowledge layer only: it produces
