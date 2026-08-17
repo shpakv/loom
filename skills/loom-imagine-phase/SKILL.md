@@ -17,6 +17,9 @@ Read `loom-core` conventions first.
    scope (push until you get at least 3 anti-goals) → the 3 scenarios that,
    if they work, the project succeeds.
 3. New domain words go to GLOSSARY.md immediately, in the user's own words.
+   Before writing a new Given/When/Then, check `STEPS.md` for an existing
+   phrase first — reuse it rather than rewording; a genuinely new fact gets a
+   new `STEP-<slug>` row in the same turn.
 4. **Prototype-as-interview**: when the user struggles to answer in the
    abstract, or after two unproductive rounds on the same question, offer to
    build 1–3 throwaway prototypes and harvest reactions instead — people
@@ -44,7 +47,8 @@ recorded as `guessed` with a verify-by — never silently omitted.
 | `GLOSSARY.md` | from `templates/glossary.yaml` | every term used in UC and VISION |
 | `VISION.md` | `templates/vision.md` | problem, for whom, ≥3 anti-goals, ≥1 metric; personas table and full metrics may stay empty |
 | `ACTORS.md` | `templates/actors.md` | one row per actor a use case names as `primary_actor`/`secondary_actors` |
-| `use-cases/UC-*.md` | `templates/use-case.md` (Cockburn fully-dressed) | exactly 3–5, glossary terms only, actor(s) resolved against `ACTORS.md` |
+| `STEPS.md` | `templates/steps.md` | one row per distinct Given/When/Then phrase before it is used in a UC |
+| `use-cases/UC-*.md` | `templates/use-case.md` (Cockburn fully-dressed) | exactly 3–5, glossary terms only, actor(s) resolved against `ACTORS.md`, steps resolved against `STEPS.md`, ≥1 `[error]`/`[boundary]` extension each |
 | `ASSUMPTIONS.md` | `templates/assumptions.md` | every unverified belief, with verify-by |
 | `DRIVERS.md` | `templates/drivers.md` | facts in orders of magnitude; unknowns as `guessed` |
 
@@ -67,5 +71,8 @@ ADR-adopt-loom, which ships with the kit.
 - ≥3 anti-goals; 3–5 use cases; ASSUMPTIONS rows all have verify-by.
 - Every use case names a `primary_actor` that resolves to an ACTORS.md row;
   `uc_diagram_gen.py` exits 0.
+- `scripts/loom/gherkin_lint.py --gate` exits 0: every step resolves to
+  STEPS.md, no near-duplicate phrasing, ≥1 `[error]`/`[boundary]` extension
+  per use case.
 - DRIVERS.md exists; every `guessed` row has a verify-by.
 - Blocking OQs resolved via /loom:review on VISION.md.

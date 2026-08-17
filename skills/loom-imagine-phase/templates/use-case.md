@@ -23,6 +23,12 @@ Cockburn fully-dressed use case. Actor(s) resolve against `ACTORS.md`
 **Minimal guarantee:** {what holds even if the scenario fails or is aborted}
 **Success guarantee:** {observable result worth money/time to the actor, once achieved}
 
+Every Given/When/Then below must match a phrase registered in `STEPS.md`
+(`templates/steps.md`), exactly or via its `{placeholder}` slots — do not
+reword an existing step; reuse it. `scripts/loom/gherkin_lint.py --gate`
+checks this and that at least one extension below is tagged `[error]` or
+`[boundary]` — happy-path-only use cases fail the gate.
+
 ## Main success scenario
 ```gherkin
 Given ...
@@ -31,10 +37,20 @@ Then ...
 ```
 
 ## Extensions
-Numbered against the main scenario step they branch from; each is itself a
-Gherkin fragment so it stays executable-adjacent.
+Numbered against the main scenario step they branch from. Tag each with its
+kind — `[alternate]` (a different but still successful path), `[error]` (the
+actor or system fails, is denied, times out, ...), `[boundary]` (empty,
+zero, max, duplicate, concurrent). At least one `[error]` or `[boundary]`
+extension is required; each is itself a Gherkin fragment reusing `STEPS.md`
+phrases.
 
-- **{step}a.** {condition}
+- **{step}a. [alternate]** {condition}
+  ```gherkin
+  Given ...
+  When ...
+  Then ...
+  ```
+- **{step}b. [error]** {condition}
   ```gherkin
   Given ...
   When ...
