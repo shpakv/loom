@@ -10,6 +10,16 @@ Two version numbers move independently (see `CLAUDE.md` → Releasing):
 - **scripts** — `scripts_version` in `init-assets/loom.yaml`, bumped only when
   `scripts/loom/*` change; consuming projects re-sync via `/loom:init --refresh`.
 
+## [0.22.1] — 2026-08-18
+
+### Removed
+- `skills/loom-imagine-phase/templates/glossary.yaml`: an unused template left
+  over from an earlier design where a YAML source generated `GLOSSARY.md`. No
+  generator script ever existed for it, and the skill's interview protocol
+  writes directly to `GLOSSARY.md` — the table row in `SKILL.md` claiming it
+  came "from `templates/glossary.yaml`" was stale and now says "written
+  directly (no template)".
+
 ## [0.22.0] — 2026-08-17
 
 Unifies Gherkin step phrasing across use cases and requires non-happy-path
