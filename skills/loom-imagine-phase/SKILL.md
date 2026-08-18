@@ -44,7 +44,7 @@ recorded as `guessed` with a verify-by — never silently omitted.
 
 | Artifact | Template | Scope in this phase |
 |---|---|---|
-| `GLOSSARY.md` | from `templates/glossary.yaml` | every term used in UC and VISION |
+| `GLOSSARY.md` | written directly (no template) | every term used in UC and VISION |
 | `VISION.md` | `templates/vision.md` | problem, for whom, ≥3 anti-goals, ≥1 metric; personas table and full metrics may stay empty |
 | `ACTORS.md` | `templates/actors.md` | one row per actor a use case names as `primary_actor`/`secondary_actors` |
 | `STEPS.md` | `templates/steps.md` | one row per distinct Given/When/Then phrase before it is used in a UC |
