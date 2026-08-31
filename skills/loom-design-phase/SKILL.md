@@ -1,6 +1,6 @@
 ---
 name: loom-design-phase
-description: Invoked by the /loom:design command to decompose one approved epic into a design doc, contracts, parallel conflict-free tracks, and session-sized task specs ready for handoff. Run /loom:design on an approved epic, before /loom:compile hands its tasks to the SDD engine.
+description: Decompose one approved epic into a design document, contracts, conflict-free tracks and session-sized task specs ready for an external SDD engine. Use on an approved epic before compilation; do not write an implementation plan or product code.
 ---
 
 # Loom: design phase (per epic)

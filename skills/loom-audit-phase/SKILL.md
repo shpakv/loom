@@ -1,6 +1,6 @@
 ---
 name: loom-audit-phase
-description: Invoked by the /loom:audit command — the backward pass that keeps decisions honest over time: re-check accepted ADRs against their revisit triggers, surface stale open questions and unconfirmed guessed drivers, and materialize what has drifted as blocking OQs for the human to resolve (it never decides). Run /loom:audit after a release or incident, or as a periodic check that accepted decisions still hold.
+description: Run the backward audit over accepted ADRs, revisit triggers, stale open questions, guessed drivers and due business rules. Use after a release, incident or meaningful change; report drift as blocking questions and never decide on behalf of the human.
 ---
 
 # Loom: audit phase (close the learning loop)

@@ -1,6 +1,6 @@
 ---
 name: loom-harvest-method
-description: Invoked by the /loom:harvest command to close the seam after an external SDD engine implemented a task or a skeleton — read the diff and the engine's own artifacts with a fresh-context agent, and materialize the facts it decided on its own as glossary terms, rules, drivers, proposed ADRs, package surface updates, or blocking open questions. Run /loom:harvest once the engine's work has landed, before handing it the next task.
+description: Harvest project knowledge from work produced by an external SDD engine after a task or skeleton lands. Use to identify contradictions, durable decisions, rules, numbers, domain terms and public surfaces missing from Loom documents; do not treat implementation details as knowledge.
 ---
 
 # Loom: harvest (the backward half of the seam)

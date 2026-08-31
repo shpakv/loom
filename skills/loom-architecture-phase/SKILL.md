@@ -1,6 +1,6 @@
 ---
 name: loom-architecture-phase
-description: Invoked by the /loom:architecture command to design the logical solution structure as a hypothesis before any technology commitment — building blocks (C4 L2 — responsibilities, allowed and forbidden dependencies) and a solution-strategy skeleton mapping each quality scenario to the structural approach and the technology fork that will satisfy it. Produces draft documents the walking skeleton later validates, not accepted architecture; chooses no technologies. Run /loom:architecture after quality requirements are approved and before /loom:technology.
+description: Design the logical solution structure as a hypothesis after quality requirements are approved and before technology decisions. Use when defining responsibilities, allowed and forbidden dependencies, quality-scenario tactics and open technology forks; do not choose technologies in this phase.
 ---
 
 # Loom: architecture phase (structure as hypothesis)

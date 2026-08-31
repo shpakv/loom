@@ -1,6 +1,6 @@
 ---
 name: loom-review-gate
-description: Invoked by the /loom:review command to advance a Loom-managed document (one carrying Loom frontmatter — status, OQ lines) through its status transitions (draft → in-review → approved; ADRs proposed → accepted/rejected) by resolving its open questions and checking consistency against GLOSSARY/ADRs. Run /loom:review on a Loom doc or ADR; not for arbitrary files, code diffs, or GitHub PRs.
+description: Review a Loom-managed document or ADR, resolve or surface open questions, check consistency with the knowledge layer and recommend a valid lifecycle transition. Use for Loom documents only, not source-code diffs or GitHub pull requests.
 ---
 
 # Loom: review gate

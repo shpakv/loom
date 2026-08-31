@@ -1,0 +1,26 @@
+{
+  "name": "loom",
+  "version": "0.23.0",
+  "description": "Knowledge layer for AI development: glossary, drivers, rules, ADR lifecycle, package boundaries and task specs.",
+  "author": {
+    "name": "shpakv"
+  },
+  "homepage": "https://github.com/shpakv/loom",
+  "repository": "https://github.com/shpakv/loom",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Loom",
+    "shortDescription": "Knowledge layer for AI development",
+    "longDescription": "Loom guides requirements, architecture, decisions and task specifications, then hands implementation to an external SDD engine.",
+    "developerName": "shpakv",
+    "category": "Productivity",
+    "capabilities": ["Interactive"],
+    "websiteURL": "https://github.com/shpakv/loom",
+    "defaultPrompt": [
+      "Initialize Loom in this repository",
+      "Show the current Loom project status",
+      "Route this work through the smallest Loom phase"
+    ],
+    "brandColor": "#6D5EF7"
+  }
+}

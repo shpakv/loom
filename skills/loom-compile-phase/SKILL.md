@@ -1,6 +1,6 @@
 ---
 name: loom-compile-phase
-description: Invoked by the /loom:compile command to hand the knowledge layer to an external SDD engine — compile conventions, accepted decisions, rules, anti-goals and glossary into the engine's constitution, and an epic's approved task specs into its seed spec. Run /loom:compile after /loom:design (or after /loom:consolidate changed the accepted decisions), before the engine implements anything.
+description: Compile Loom's glossary, rules, accepted decisions, anti-goals and conventions into the configured external SDD engine, optionally including an epic's approved task specs. Use after design or consolidation and before the engine implements anything; never write product code.
 ---
 
 # Loom: compile (handoff to the engine)

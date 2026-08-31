@@ -1,6 +1,6 @@
 ---
 name: loom-requirements-phase
-description: Invoked by the /loom:requirements command to turn approved use cases and DRIVERS into testable quality requirements and binding domain rules before any architecture or technology thinking — promote the proto-QS driver rows into full quality scenarios (stimulus → response → measure), write the BR-* rules the system is obliged to reproduce, trace each to its source. Run /loom:requirements after the vision and use cases are approved and before /loom:architecture.
+description: Turn approved use cases and drivers into measurable quality scenarios and binding BR-* domain rules before architecture or technology decisions. Use after vision and use cases are approved and before logical architecture.
 ---
 
 # Loom: requirements phase (quality scenarios and domain rules)

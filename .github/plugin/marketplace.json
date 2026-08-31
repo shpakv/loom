@@ -1,0 +1,19 @@
+{
+  "name": "loom",
+  "owner": {
+    "name": "shpakv",
+    "url": "https://github.com/shpakv"
+  },
+  "metadata": {
+    "description": "Knowledge and decision layer for AI development agents.",
+    "version": "0.23.0"
+  },
+  "plugins": [
+    {
+      "name": "loom",
+      "description": "Knowledge layer for AI development: glossary, drivers, rules, ADR lifecycle, package boundaries and task specs.",
+      "version": "0.23.0",
+      "source": "../.."
+    }
+  ]
+}

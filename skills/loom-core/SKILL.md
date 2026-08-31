@@ -5,6 +5,16 @@ description: The shared substrate every loom-*-phase, -gate, and -method skill r
 
 # Loom core conventions
 
+## Host-neutral invocation
+
+Loom has thin host-specific command wrappers, but the skills are the portable
+workflow. Claude Code invokes them through `/loom:<phase>` commands; Codex can
+invoke the corresponding `loom-*` skill explicitly; GitHub Copilot selects
+them from the task and the skill description. Do not assume that a `/loom:*`
+command exists when following a skill. When a skill says to continue with
+another phase, name the phase and its skill as well as the Claude command alias
+where one exists.
+
 Loom is the **knowledge layer** of a docs-first workflow: documents are the
 source of truth, and code — written by an external SDD engine — follows them.
 Loom itself writes no plan, no test, and no production code; what it produces is

@@ -1,6 +1,6 @@
 ---
 name: loom-spike-method
-description: Invoked by the /loom:spike command to frame a time-boxed spike or probe that answers one falsifiable question and to record its evidence for an ADR — Loom specifies the question, the fidelity axis and what may be faked; the throwaway code is built outside Loom. Run /loom:spike once a spike has been agreed — deciding whether a fork needs a spike belongs to /loom:technology or a review.
+description: Frame and record a time-boxed spike that answers one falsifiable question and produces evidence for an ADR. Use when a technology or design fork needs evidence; define the probe, fidelity, kill criterion and fakes before building.
 ---
 
 # Loom: spike (probes)
