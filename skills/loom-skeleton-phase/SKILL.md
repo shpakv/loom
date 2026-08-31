@@ -1,6 +1,6 @@
 ---
 name: loom-skeleton-phase
-description: Invoked by the /loom:skeleton command to specify and then interpret the walking skeleton — the thinnest end-to-end slice through all layers, built by the SDD engine from a Loom brief, whose result becomes the material evidence one-way ADRs cite at consolidation. Run /loom:skeleton after /loom:technology has proposed the one-way ADRs and before /loom:consolidate.
+description: Specify and interpret the walking skeleton: the thinnest end-to-end slice through all layers, built by the external SDD engine from a Loom brief. Use after technology proposals and before consolidation; the result provides evidence for one-way ADRs.
 ---
 
 # Loom: skeleton phase

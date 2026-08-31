@@ -17,6 +17,30 @@ constitution, and pulls back what the engine decided on its own.
     /plugin marketplace add shpakv/loom
     /plugin install loom@loom
 
+## Installation in Codex
+
+Loom is also packaged as an Agent Skills plugin for Codex. From Codex CLI,
+add this repository as a marketplace and install it:
+
+    codex plugin marketplace add shpakv/loom
+    codex plugin add loom@loom
+
+The Codex manifest is `.codex-plugin/plugin.json`. In Codex, invoke the
+workflows as `loom-*` skills; Claude's `/loom:*` command aliases are not
+required.
+
+## Installation in GitHub Copilot
+
+Loom includes a GitHub Copilot plugin manifest at the repository root and a
+Copilot marketplace at `.github/plugin/marketplace.json`. With Copilot CLI:
+
+    copilot plugin marketplace add shpakv/loom
+    copilot plugin install loom@loom
+
+The same repository can also be installed from the Copilot app or enabled in
+Copilot repository settings. Copilot uses the shared `skills/` and the
+Copilot-specific `copilot-agents/` profiles.
+
 ## Project initialization
 
     /loom:init          # scaffolds docs/, loom.yaml, ADR-0, and a copy of scripts/loom for CI
@@ -60,9 +84,12 @@ plugin ships no hooks since 0.20.0). Update the project's scripts/loom via
 
 ## Contents
 
-    commands/      18 commands (loom: namespace)
+    commands/      18 Claude Code commands (loom: namespace)
     skills/        loom-core + 10 phases + review-gate + spike/intake/harvest-method
     agents/        reviewer, challenger, harvester
+    copilot-agents/  Copilot custom-agent profiles
+    plugin.json    GitHub Copilot plugin manifest
+    .codex-plugin/ Codex plugin manifest
     scripts/loom/  oq_scan, index_gen, link_check, adr_scan, roadmap_gen, compile
     init-assets/   loom.yaml, ADR-adopt-loom — copied by /loom:init
     docs/recipes/  anti-cheating TDD, for whoever runs the implementation loop

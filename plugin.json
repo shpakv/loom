@@ -1,0 +1,15 @@
+{
+  "name": "loom",
+  "version": "0.23.0",
+  "description": "Knowledge layer for AI development: glossary, drivers, rules, ADR lifecycle, package boundaries and task specs.",
+  "author": {
+    "name": "shpakv",
+    "url": "https://github.com/shpakv"
+  },
+  "homepage": "https://github.com/shpakv/loom",
+  "repository": "https://github.com/shpakv/loom",
+  "license": "MIT",
+  "keywords": ["requirements", "architecture", "adr", "sdd", "documentation"],
+  "skills": "skills/",
+  "agents": "copilot-agents/"
+}

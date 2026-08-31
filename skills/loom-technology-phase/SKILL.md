@@ -1,6 +1,6 @@
 ---
 name: loom-technology-phase
-description: Invoked by the /loom:technology command to choose technologies after the logical architecture and quality requirements exist — for each open fork in the solution strategy, run the decision-mode-first fork protocol and record a proposed ADR framed by DRIVERS and QS, scheduling a /loom:spike where a comparison needs evidence. Also captures the team's tech posture into DRIVERS.md if absent. Nothing is accepted here — the skeleton verifies. Run /loom:technology after /loom:architecture and before /loom:skeleton.
+description: Resolve technology forks after logical architecture and quality requirements exist by recording proposed ADRs framed by drivers and quality scenarios. Use between architecture and skeleton; schedule spikes where evidence is needed and never accept one-way decisions in this phase.
 ---
 
 # Loom: technology phase (decisions as hypotheses)

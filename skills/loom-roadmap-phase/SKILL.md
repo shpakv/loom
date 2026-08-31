@@ -1,6 +1,6 @@
 ---
 name: loom-roadmap-phase
-description: Invoked by the /loom:roadmap command to build a rolling-wave roadmap: pick the first vertical slice, keep other epics as cheap draft candidates in a dependency DAG, and generate ROADMAP.md. Run /loom:roadmap to sequence epics or re-cut the roadmap after consolidation or retro.
+description: Build or recut a rolling-wave roadmap from an approved vision: choose the first vertical slice, keep future epics as draft candidates in an acyclic dependency graph and generate ROADMAP.md.
 ---
 
 # Loom: roadmap phase (rolling wave)

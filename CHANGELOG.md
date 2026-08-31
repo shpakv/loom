@@ -10,6 +10,20 @@ Two version numbers move independently (see `CLAUDE.md` → Releasing):
 - **scripts** — `scripts_version` in `init-assets/loom.yaml`, bumped only when
   `scripts/loom/*` change; consuming projects re-sync via `/loom:init --refresh`.
 
+## [0.23.0] — 2026-08-31
+
+### Added
+- Codex plugin packaging in `.codex-plugin/plugin.json`, with the shared Loom
+  skills exposed through the Agent Skills format.
+- GitHub Copilot plugin packaging in the root `plugin.json`, a Copilot
+  marketplace entry, repository instructions, and Copilot custom-agent profiles.
+- `loom-init` as a portable skill so project initialization is not only a
+  Claude Code command.
+
+### Changed
+- Shared skill descriptions are now host-neutral and can be selected by Codex
+  and GitHub Copilot as well as Claude Code.
+
 ## [0.22.1] — 2026-08-18
 
 ### Removed
@@ -375,4 +389,3 @@ published state of the plugin (early development moved the manifest version
 [0.11.0]: https://github.com/shpakv/loom/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/shpakv/loom/compare/v0.9.1...v0.10.0
 [0.9.1]: https://github.com/shpakv/loom/releases/tag/v0.9.1
-
