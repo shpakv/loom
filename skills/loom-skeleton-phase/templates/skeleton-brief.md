@@ -7,7 +7,7 @@ updated: {date}
 # Skeleton brief: {first-slice epic}
 
 The thinnest end-to-end slice that makes the proposed decisions carry real
-weight. Built by the SDD engine; specified here. This is a falsification test,
+weight. Run by any convenient means; specified here. This is a falsification test,
 not a demo — a slice that cannot come out wrong has told us nothing.
 
 ## The path

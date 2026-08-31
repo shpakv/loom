@@ -5,7 +5,7 @@ description: Run the backward audit over accepted ADRs, revisit triggers, stale 
 
 # Loom: audit phase (close the learning loop)
 
-Goal: catch decisions that have quietly gone stale. Loom's forward phases fix
+Goal: catch decisions that have quietly gone stale. Loom's phases fix
 decisions at the moment of maximum knowledge — but the world moves: load grows,
 vendors change, guessed facts get measured, assumptions break. Without a
 deliberate backward pass, an `accepted` ADR keeps looking authoritative long
@@ -55,18 +55,10 @@ because those are the ones assumed settled.
    was vague, sharpen its `revisit_when:`. A decision that survived an audit with a
    tightened trigger is stronger than one that was never checked.
 6. **Re-cut the roadmap if the audit changed the picture.** A broken load-bearing
-   decision often reshuffles priorities — hand off to /loom:roadmap (or
-   /loom:consolidate if a one-way ADR must be superseded) rather than editing
-   epics here.
-7. **Check the projection.** Run `compile.py --check`: a stale constitution means
-   the engine is being handed decisions the docs no longer hold, which is drift in
-   the other direction. If this audit changed any ADR status, sharpened a rule, or
-   deprecated a decision, re-run `/loom:compile` — a deprecated decision still
-   sitting in the engine's constitution is worse than an undocumented one, because
-   the engine will actively obey it.
-8. Report: a short list of findings by severity (broken one-way decision >
-   unconfirmed guessed driver under a live decision > deprecated decision still in
-   the projection > overdue rule review > stale OQ > missing revisit trigger),
+   decision often reshuffles priorities — route to /loom:roadmap or
+   /loom:consolidate rather than editing epics here.
+7. Report: a short list of findings by severity (broken one-way decision >
+   unconfirmed guessed driver under a live decision > overdue rule review > stale OQ > missing revisit trigger),
    each pointing at the OQ it became and the command that will resolve it.
 
 ## Exit criteria

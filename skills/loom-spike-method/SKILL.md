@@ -7,8 +7,8 @@ description: Frame and record a time-boxed spike that answers one falsifiable qu
 
 A spike answers ONE falsifiable question within a time-box and ends with a
 recommendation. It produces EVIDENCE for ADRs; it never makes the decision.
-Loom frames it and records it — the throwaway code itself is built by the engine,
-a human, or a shell one-liner, whichever is cheapest.
+Loom frames and records it — the throwaway exercise may be run by a human, an
+agent, or a shell one-liner, whichever is cheapest.
 Read `loom-core` conventions first.
 
 Spike, probe, prototype, tracer bullet: one genre — **throwaway code as an

@@ -5,10 +5,23 @@ All notable changes to the Loom plugin are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Two version numbers move independently (see `CLAUDE.md` → Releasing):
+Two version numbers move independently (see `AGENTS.MD` → Releasing):
 - **plugin** — the `version` in `.claude-plugin/plugin.json` (the package).
 - **scripts** — `scripts_version` in `init-assets/loom.yaml`, bumped only when
   `scripts/loom/*` change; consuming projects re-sync via `/loom:init --refresh`.
+
+## [0.24.0] — 2026-08-31
+
+### Changed
+- Reframed Loom as a standalone requirements repository.
+- The lifecycle now ends at approved design and task specifications.
+- Bumped scaffolded scripts to `scripts_version` `0.13.0`; `index_gen.py` no
+  longer carries engine handoff state.
+
+### Removed
+- Engine-specific configuration and the `compile`/`harvest` handoff seam.
+- Handoff metadata, engine projections, harvester agents and implementation
+  recipes.
 
 ## [0.23.0] — 2026-08-31
 

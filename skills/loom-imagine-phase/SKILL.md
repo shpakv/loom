@@ -22,7 +22,7 @@ Read `loom-core` conventions first.
    new `STEP-<slug>` row in the same turn.
 4. **Prototype-as-interview**: when the user struggles to answer in the
    abstract, or after two unproductive rounds on the same question, offer to
-   build 1–3 throwaway prototypes and harvest reactions instead — people
+   build 1–3 throwaway prototypes and gather reactions instead — people
    answer "what do you want" poorly and critique "is it this?" excellently.
    Rules: prototype code lives on a scratch branch, is NEVER merged, and its
    only outputs are edits to VISION / GLOSSARY / ASSUMPTIONS / use cases.

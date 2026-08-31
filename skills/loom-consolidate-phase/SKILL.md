@@ -1,23 +1,21 @@
 ---
 name: loom-consolidate-phase
-description: Consolidate evidence from a demoable walking skeleton: accept or reject proposed one-way ADRs, reconcile as-built structure and quality scenarios, extract conventions, sweep assumptions and recut the roadmap. Use after the skeleton is verified with green CI.
+description: Consolidate evidence from a skeleton or spike: accept or reject proposed one-way ADRs, reconcile architecture and quality scenarios, extract conventions, sweep assumptions and recut the roadmap.
 ---
 
 # Loom: consolidation event
 
-Goal: fix the expensive-to-change decisions NOW — at the moment of maximum
-knowledge, with a working skeleton as evidence. This is an event, not an
-ongoing phase: enter with proposed ADRs and an architecture hypothesis, leave
-with accepted ADRs and an as-built architecture reconciled against what was
-intended. This phase does NOT originate quality scenarios or building blocks —
-those were written in /loom:requirements and /loom:architecture; here you
-confirm or correct them against reality.
+Goal: fix expensive-to-change decisions at the moment of maximum knowledge. This
+is an event, not an ongoing phase: enter with proposed ADRs and an architecture
+hypothesis, leave with accepted ADRs and a reconciled architecture. This phase
+does not originate quality scenarios or building blocks; it confirms or
+corrects them against recorded evidence.
 Read `loom-core` conventions first.
 
 ## Inputs (gate)
 
-A demoable walking skeleton (CI green); its proposed ADRs carrying the skeleton's
-evidence notes; the architecture approved as a hypothesis (`quality-requirements.md`,
+A recorded skeleton or spike; proposed ADRs carrying its evidence notes; the
+architecture approved as a hypothesis (`quality-requirements.md`,
 `building-blocks.md`, `solution-strategy.md`); and `ASSUMPTIONS.md` in any state.
 If the skeleton is not demoable, this event is premature — go back to
 /loom:skeleton.
@@ -64,14 +62,8 @@ If the skeleton is not demoable, this event is premature — go back to
 8. **Re-cut the roadmap** — with skeleton knowledge in hand, revisit draft
    epic candidates: merge, split, re-sequence, adjust appetites. Approve only
    the next one epic (rolling wave). Run `roadmap_gen.py`.
-9. **Re-project into the engine.** This event changes the set of accepted ADRs
-   and usually adds conventions — both are compiled into the engine's
-   constitution, so run `/loom:compile` before any further work is handed off. An
-   engine still obeying the pre-consolidation projection is following decisions
-   that were just superseded.
-10. Gates: `adr_scan.py --gate --framing`, `link_check.py docs packages`,
-   `oq_scan.py --gate` on each architecture document, `compile.py --check`,
-   then /loom:review them.
+9. Gates: `adr_scan.py --gate --framing`, `link_check.py docs packages`, and
+   `oq_scan.py --gate` on each architecture document, then /loom:review them.
    The `--framing` mode is the point of this event: it fails unless every
    accepted one-way ADR is framed by a driver (DRV-*) AND a quality scenario
    (QS-*), declares its decision_mode, every QS in the solution strategy maps to

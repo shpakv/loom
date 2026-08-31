@@ -22,7 +22,6 @@ docs/spikes
 docs/architecture
 docs/conventions
 docs/roadmap/epics
-changes
 scripts/loom
 ```
 
@@ -37,8 +36,8 @@ installed plugin's resource directory or the equivalent local checkout path;
 do not hardcode this repository's absolute path.
 
 If legacy `.claude/commands/loom-*.md` or `.claude/skills/loom-*` files exist,
-report them and ask before deleting them. Finish by asking the user to fill in
-the `engine:` block in `docs/loom.yaml`, then continue with the imagine phase.
+report them and ask before deleting them. Finish by showing the created paths,
+then continue with the imagine phase.
 
 ## Refresh
 

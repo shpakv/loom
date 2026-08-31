@@ -15,45 +15,24 @@ command exists when following a skill. When a skill says to continue with
 another phase, name the phase and its skill as well as the Claude command alias
 where one exists.
 
-Loom is the **knowledge layer** of a docs-first workflow: documents are the
-source of truth, and code — written by an external SDD engine — follows them.
-Loom itself writes no plan, no test, and no production code; what it produces is
-knowledge in checkable form, up to and including the task spec the engine
-consumes (see the handoff seam below). Every phase skill (loom-imagine-phase,
-loom-skeleton-phase, loom-consolidate-phase, ...) builds on the conventions
-defined here.
-
-## The handoff seam (what Loom does not do)
-
-Loom stops at the spec. Knowing exactly where it stops is what keeps it from
-competing with the engine over "how we code" — two sources of truth on that
-question is strictly worse than either one alone.
-
-| Loom owns | The engine owns |
-|---|---|
-| glossary, drivers, rules, quality scenarios | the plan, the step order |
-| decisions and their reasons (ADR lifecycle) | tests and the code |
-| contracts, invariants, package boundaries | diff review, refactoring |
-| the task `## Spec` — behavior, acceptance, out of scope | how the behavior is achieved |
+Loom is a **requirements repository** for a docs-first project. Documents under
+`docs/` are the source of truth for behavior, constraints, decisions and
+structure. Loom does not generate product code, tests or plans; it helps people
+and agents build, review and maintain the knowledge those artifacts require.
+Every phase skill builds on the conventions defined here.
 
 Consequences that bind every skill here:
 
 - **Never prescribe internals.** A Loom document names behavior, contracts and
   glossary terms; it does not name source files, functions, or a build order.
   The one exception is a contract file, which IS the interface.
-- **`rigor: full | light` is advice, not a mode.** It tells the engine the cost
-  of being wrong (public contract / domain invariant / more than one package →
-  `full`). Loom no longer runs a ceremony for it; the one it used to run is kept
-  as a recipe in `docs/recipes/anti-cheating-tdd.md`.
-- **The seam is bidirectional.** `/loom:compile` pushes the knowledge layer into
-  the engine's own files; `/loom:harvest` reads back what the engine decided and
-  materializes the facts. A task with `handoff:` set and `harvested: false` is
-  work whose facts are still missing from the docs — the successor to the old
-  "unfinished task" signal.
-- **Code is evidence, not authority.** When code and an `approved` document
-  disagree, the document is the bug to fix or the decision to supersede — never
-  something to quietly work around. Harvest raises it as a blocking OQ; it does
-  not edit the document to match the code.
+- **`rigor: full | light` is advice, not a mode.** It records the cost of being
+  wrong (public contract / domain invariant / more than one package → `full`)
+  so a reviewer can spend attention where it matters.
+- **The repository is authoritative.** If an implementation or an external
+  proposal disagrees with an approved document, record the contradiction as a
+  blocking OQ and resolve it through the document's owning phase. Do not
+  silently rewrite requirements to match what happened.
 
 ## Identity and naming (slugs, never sequential numbers)
 
@@ -125,12 +104,9 @@ docs/
         └── tasks/TASK-<slug>.md
 ```
 
-Everything above is authored. Everything the engine reads is **generated** by
-`/loom:compile` into the paths named in `loom.yaml` `engine:` — outside `docs/`,
-opening with a `<!-- GENERATED ... do not edit -->` marker, and never edited by
-hand: a fix belongs in the source document, and the next compile would overwrite
-it anyway. The generated tree is not part of the knowledge layer; deleting it and
-recompiling must lose nothing.
+Everything above is authored or generated inside the repository. Generated
+indexes are projections of documents under `docs/`; the documents themselves
+remain the source of truth.
 
 ## Frontmatter schema
 
@@ -146,13 +122,6 @@ aliases: []                  # former IDs after a legitimate rename
 
 Optional keys by type: `depends_on: []` (epics, tasks), `packages: []` (tasks),
 `criticality: must|should|could|wont` (epics), `appetite: <duration>` (epics).
-
-Handoff keys (tasks only, written at the seam — see above): `handoff: <engine>`
-when `/loom:compile` shipped the spec, `landed: <PR|commit>` when the engine
-closed it, `harvested: true|false` once `/loom:harvest` folded its facts back.
-They track the round trip, not the document's own review status — a task can be
-`approved` and unharvested, and that combination is exactly what /loom:status
-surfaces.
 
 ## Status vocabularies
 
@@ -211,8 +180,9 @@ Template: `templates/adr.md` in this skill. Key rules:
   under which the decision holds; the audit phase scans these. Use a calendar
   `review_by` only for decisions tied to the external world (licenses, vendors).
 - **Enforce what is enforceable** (`enforced` field): if a consequence can be
-  checked automatically, it MUST become a lint/arch-test rule that references the
-  ADR ID in a comment; `code-tag` means the implementing code carries the ADR ID.
+  checked automatically, it MUST become a lint or architecture rule that
+  references the ADR ID in a comment; `code-tag` means the implementation
+  carries the ADR ID.
 - `scripts/loom/adr_scan.py --gate` validates lifecycle invariants in CI.
 
 Spike vs ADR: a spike ends with a **recommendation** (evidence), an ADR fixes a
@@ -239,9 +209,8 @@ One table row per rule: **ID | rule | bounds | source | review_by**.
   and period boundaries, and precedence when two rules collide.
 - **`source` is not decoration.** It is the only thing separating a rule from a
   guess. Name who or what says so — a person and a date, a regulation with its
-  section and edition, a contract. A rule whose source is "the engine chose it"
-  during `/loom:harvest` is recorded as `confidence: guessed` with what would
-  confirm it — never presented as settled.
+  section and edition, or a contract. An unverified proposal is recorded as
+  `confidence: guessed` with what would confirm it — never presented as settled.
 - **`review_by` for rules with an external source.** Standards and regulations get
   revised, and unlike a decision there is no `revisit_when` condition to watch —
   the trigger is a calendar one. `/loom:audit` scans these; a product built "to the

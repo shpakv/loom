@@ -35,7 +35,7 @@ rule, the questions worth answering before an agent answers them for you:
 
 - `source` is what separates a rule from a guess. A person plus a date, or a
   document with its section and edition.
-- A rule recovered from code during `/loom:harvest` is marked
+- A rule discovered during implementation review is marked
   `confidence: guessed` in its source cell, with what would confirm it. It stays
   labelled until a human or a measurement settles it.
 - `review_by` is only for rules whose source lives outside the project. Standards
