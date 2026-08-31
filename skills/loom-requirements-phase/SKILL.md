@@ -31,7 +31,7 @@ quality/data rows yet, the facts are missing — go back to the driver interview
 
 ## Procedure
 
-1. **Harvest sources.** Read the `## Quality (proto-QS)` and `## Data profile`
+1. **Gather sources.** Read the `## Quality (proto-QS)` and `## Data profile`
    rows of DRIVERS.md, the VISION metrics, and the first-slice epic's definition
    of done. These three are where real quality demands hide.
 2. **Promote each proto-QS into a full scenario** in

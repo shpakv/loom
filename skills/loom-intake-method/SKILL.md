@@ -1,6 +1,6 @@
 ---
 name: loom-intake-method
-description: Triage incoming work in an existing Loom project and route it to the smallest honest phase: design, roadmap, consolidate, imagine, requirements or spike. Use for bugs, feature requests and harvested facts; use imagine for a brand-new product.
+description: Triage incoming work in an existing Loom project and route it to the smallest honest phase: design, roadmap, consolidate, imagine, requirements or spike. Use for bugs, feature requests and newly discovered facts; use imagine for a brand-new product.
 ---
 
 # Loom: intake (triage router)
@@ -18,12 +18,12 @@ least a VISION). For a brand-new product, skip intake and go straight to
 /loom:imagine.
 
 **Two callers, one router.** Items arrive either from the human (a bug, a
-request, an idea) or from `/loom:harvest` — a fact the SDD engine decided on its
-own that turned out to be bigger than a glossary line. Harvested items enter the
+request, an idea) or from review of an implementation — a fact that turned out
+to be bigger than a glossary line. Newly discovered items enter the
 same interview and the same routing table, with one difference: the fact already
 exists in code, so the question is not "should we?" but "what authority should
 have decided this, and does it still hold?". Route them by the same rules; a
-harvested change that contradicts an accepted ADR is a decision to revisit, not a
+change that contradicts an accepted ADR is a decision to revisit, not a
 task, no matter that it is already written.
 
 ## Triage interview (one question per turn, stop as soon as the route is clear)
@@ -45,7 +45,7 @@ questions:
 
 | Signal | Route to | Why |
 |---|---|---|
-| Defect, or a change wholly inside one existing capability, fits current contracts and decisions | `/loom:design` on the owning epic to add a `TASK-<slug>` (or append the task directly if the design doc is still accurate), then `/loom:compile` to hand it to the engine | the spec exists; this is just more work under it |
+| Defect, or a change wholly inside one existing capability, fits current contracts and decisions | `/loom:design` on the owning epic to add a `TASK-<slug>` (or append the task directly if the design doc is still accurate) | the requirements exist; this is just more work under them |
 | New capability that fits the vision but no current epic covers it | `/loom:roadmap` to add an epic candidate, then `/loom:design` when it becomes the rolling-wave epic | roadmap owns epic scoping and sequencing |
 | Satisfying it requires changing an accepted decision | a superseding ADR via `/loom:consolidate`, or `/loom:audit` first if a revisit trigger fired | accepted ADRs are immutable; the change is a new decision, not a task |
 | It changes the problem, the users, an anti-goal, or needs a new glossary term | `/loom:imagine` (targeted — extend VISION/GLOSSARY/use-cases, not a from-scratch interview) | vision is the authority everything else derives from |

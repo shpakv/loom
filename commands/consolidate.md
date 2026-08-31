@@ -1,9 +1,9 @@
 ---
-description: Loom phase — decision event after the skeleton: accept the proposed one-way ADRs, reconcile as-built architecture, extract conventions, re-cut roadmap
+description: Loom phase — decision event after evidence: accept proposed ADRs, reconcile architecture, extract conventions, and re-cut the roadmap
 ---
 Use the `loom-consolidate-phase` skill (read `loom-core` first).
 
-Verify the walking skeleton is demoable with green CI before starting. Accept the
+Verify the walking skeleton or other evidence is recorded before starting. Accept the
 proposed ADRs on the skeleton's evidence (one-way first, `verification: skeleton`),
 then reconcile against reality: confirm/correct quality scenarios with what the
 skeleton measured, update building blocks as-built vs as-intended, close the
@@ -12,6 +12,5 @@ the roadmap. These docs already exist from /loom:requirements and
 /loom:architecture — you are confirming or correcting them, not writing them
 fresh. Finish with `adr_scan.py --gate --framing` (every accepted one-way ADR
 must cite a DRV-* and a QS-*, declare its decision_mode, and every QS must map to
-an ADR or convention), `link_check.py docs packages`, and /loom:compile — the
-newly accepted decisions and extracted conventions must reach the engine's
-constitution before it writes another line against the old one.
+an ADR or convention), and `link_check.py docs packages`. The repository's
+approved documents are the durable result.

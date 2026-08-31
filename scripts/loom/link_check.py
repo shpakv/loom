@@ -24,7 +24,7 @@ OQ_DEF_RE = re.compile(r"^-\s*\[[ xX]\]\s*(OQ-[a-z0-9][a-z0-9-]*[a-z0-9])\b")
 
 
 def generated(path: Path) -> bool:
-    """Skip files written by a loom generator (ROADMAP.md, compiled engine files):
+    """Skip files written by a Loom generator (ROADMAP.md and INDEX.md):
     they restate IDs defined elsewhere, so scanning them would report every
     projected ID as a duplicate definition."""
     try:

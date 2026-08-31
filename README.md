@@ -1,95 +1,64 @@
-# Loom — plugin
+# Loom
 
-The knowledge layer for AI development: glossary, drivers, domain rules, ADR
-lifecycle, contracts, package boundaries and task specs — compiled into whatever
-SDD engine writes the code.
+Loom is a requirements repository for AI-assisted development: a structured,
+docs-first place for product language, requirements, business rules,
+architecture, decisions and task specifications.
 
-**Loom does not implement.** Spec-driven engines (Spec Kit, Kiro, OpenSpec, BMAD,
-…) are execution engines for feature scope and each does it better, in its own
-style. What none of them do is accumulate knowledge between features: the
-glossary, the measured facts, the binding rules and the reasons behind accepted
-decisions. That gap is all Loom does. It hands the engine a spec and a
-constitution, and pulls back what the engine decided on its own.
+Loom does not generate code, tests or plans, and it does not prepare files for
+another development process. It keeps the project's durable knowledge coherent;
+implementation may happen by hand, in an IDE, through an AI assistant or by any
+other process.
 
-## Installation (local)
+## Installation
+
+Claude Code:
 
     claude
     /plugin marketplace add shpakv/loom
     /plugin install loom@loom
 
-## Installation in Codex
-
-Loom is also packaged as an Agent Skills plugin for Codex. From Codex CLI,
-add this repository as a marketplace and install it:
+Codex:
 
     codex plugin marketplace add shpakv/loom
     codex plugin add loom@loom
 
-The Codex manifest is `.codex-plugin/plugin.json`. In Codex, invoke the
-workflows as `loom-*` skills; Claude's `/loom:*` command aliases are not
-required.
-
-## Installation in GitHub Copilot
-
-Loom includes a GitHub Copilot plugin manifest at the repository root and a
-Copilot marketplace at `.github/plugin/marketplace.json`. With Copilot CLI:
+GitHub Copilot:
 
     copilot plugin marketplace add shpakv/loom
     copilot plugin install loom@loom
 
-The same repository can also be installed from the Copilot app or enabled in
-Copilot repository settings. Copilot uses the shared `skills/` and the
-Copilot-specific `copilot-agents/` profiles.
-
 ## Project initialization
 
-    /loom:init          # scaffolds docs/, loom.yaml, ADR-0, and a copy of scripts/loom for CI
-    # fill in the engine: block in docs/loom.yaml (which SDD engine writes the code)
-    /loom:prime
+    /loom:init
+    /loom:imagine
 
-Route: prime → imagine → roadmap → requirements → architecture → technology →
-skeleton → consolidate → design → **compile** → ((the engine implements)) →
-**harvest**. Utilities: spike, challenge, review, status, audit, intake.
+The lifecycle is:
 
-Requirements and structure come before technology; technology decisions are
-proposed and the skeleton verifies them (Loom writes the skeleton brief, the
-engine builds it). `compile` projects the knowledge layer into the engine's own
-files; `harvest` reads back the terms, numbers and decisions the engine settled by
-itself and files them where they belong. `audit` is the backward pass that
-re-checks accepted decisions against their revisit triggers and rules against
-their review dates; `intake` routes incoming work — from a human or from harvest —
-to the smallest phase that fits. To update the project scripts after a plugin
-update: /loom:init --refresh.
+    prime → imagine → roadmap → requirements → architecture → technology →
+    skeleton → consolidate → design
 
-## What Loom owns, and what it does not
+Utilities are `spike`, `challenge`, `review`, `status`, `audit` and `intake`.
+The final artifact is an approved set of requirements and decisions under
+`docs/`; Loom has no implementation handoff step.
 
-| Loom | the engine |
-|---|---|
-| glossary, drivers, `BR-*` rules, quality scenarios | the plan, the step order |
-| decisions and their reasons (ADR lifecycle) | tests and code |
-| contracts, invariants, package boundaries | diff review, refactoring |
-| the task `## Spec` — behavior, acceptance, out of scope | how the behavior is achieved |
+## What Loom stores
 
-The anti-cheating TDD machinery Loom used to run itself — role separation, a red
-gate that requires failing *for the right reason*, a file-role hook — is kept as a
-portable recipe in `docs/recipes/anti-cheating-tdd.md`, because SDD engines ship
-nothing like it and it is orthogonal to whose engine runs the loop.
+- glossary, actors and use cases;
+- drivers and quality scenarios;
+- binding domain rules (`BR-*`);
+- ADRs with alternatives, evidence and revisit triggers;
+- architecture hypotheses, boundaries and contracts;
+- roadmap epics, designs and task specifications;
+- open questions and the reasons behind decisions.
 
-## Migration from kit (<=v0.8)
-
-docs/ stays as is. Remove: .claude/commands/loom-*.md, .claude/skills/loom-*,
-.claude/agents/loom-*, and any Loom hooks fragment in .claude/settings.json (the
-plugin ships no hooks since 0.20.0). Update the project's scripts/loom via
-/loom:init --refresh. /loom-imagine becomes /loom:imagine.
+Generated indexes are convenience projections of the documents. The documents
+under `docs/` remain the source of truth.
 
 ## Contents
 
-    commands/      18 Claude Code commands (loom: namespace)
-    skills/        loom-core + 10 phases + review-gate + spike/intake/harvest-method
-    agents/        reviewer, challenger, harvester
-    copilot-agents/  Copilot custom-agent profiles
-    plugin.json    GitHub Copilot plugin manifest
-    .codex-plugin/ Codex plugin manifest
-    scripts/loom/  oq_scan, index_gen, link_check, adr_scan, roadmap_gen, compile
-    init-assets/   loom.yaml, ADR-adopt-loom — copied by /loom:init
-    docs/recipes/  anti-cheating TDD, for whoever runs the implementation loop
+    commands/       Claude Code command wrappers
+    skills/         shared lifecycle phases, gates and methods
+    agents/         read-only challenger and reviewer agents
+    copilot-agents/ Copilot read-only agent profiles
+    scripts/loom/   stdlib-only document gates and generators
+    init-assets/    loom.yaml, seed ADR and initialization assets

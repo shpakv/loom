@@ -8,7 +8,7 @@ updated: {date}
 
 The single source of truth for Given/When/Then phrasing. Before writing a new
 step in any `UC-*.md`, check here first — reusing a registered phrase means
-the engine writes (or generates) one step definition instead of N near-duplicates
+implementation uses (or generates) one step definition instead of N near-duplicates
 for N slightly different wordings of the same fact. `scripts/loom/gherkin_lint.py`
 enforces this: every step in every UC's Gherkin block must resolve to a row
 here, exactly or via its `{placeholder}` slots.
