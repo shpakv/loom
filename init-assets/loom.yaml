@@ -1,11 +1,12 @@
 # Loom framework config — single source of truth for paths and phases
-version: 0.11
-scripts_version: 0.15.0   # written by /loom:init; compared with shipped scripts version
+version: 0.13
+scripts_version: 0.16.0   # written by /loom:init; compared with shipped scripts version
 paths:
   product: docs/product
   domain: docs/domain
   adr: docs/adr
   spikes: docs/spikes
+  changes: docs/changes
   architecture: docs/architecture
   conventions: docs/conventions
   roadmap: docs/roadmap
@@ -14,6 +15,7 @@ paths:
 statuses:
   documents: [draft, in-review, approved, superseded]
   adr: [proposed, accepted, rejected, deprecated, superseded]
+  changes: [captured, triaged, accepted, in-progress, applied, rejected, superseded]
 naming: slug-based, no sequential numbers — see loom-core skill
 phases:
   implemented: [imagine, roadmap, requirements, architecture, technology, consolidate, design, review, spike, audit, intake]

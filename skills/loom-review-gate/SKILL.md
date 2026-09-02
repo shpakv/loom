@@ -37,8 +37,11 @@ the substantive review below begin.
    - Upstream doc of its phase (design vs epic, epic vs vision).
    Report findings as new OQs if non-trivial.
 6. Gates: `python3 scripts/loom/oq_scan.py --gate <file>` and
-   `python3 scripts/loom/link_check.py`. If clean, set `status: approved`,
-   bump `updated`, run `scripts/loom/index_gen.py`.
+   `python3 scripts/loom/link_check.py`. If `docs/changes/` exists, also run
+   `python3 scripts/loom/change_scan.py --gate`; an affected document is not
+   revalidation-complete until the owning change record lists it under
+   `revalidated_documents`. If clean, set `status: approved`, bump `updated`,
+   run `scripts/loom/index_gen.py`.
 
 ## Additional checklist for ADRs (proposed → accepted)
 

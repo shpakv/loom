@@ -6,7 +6,7 @@ Definitions:
   - OQ slugs defined in checklist lines
   - QS/DRV/BR/ACTOR/track table rows (`| <ID> | ... |`)
 References:
-  - every ADR/UC/SPIKE/TASK/OQ/QS/DRV/BR/ACTOR/track/epic-* mention in scanned files
+  - every ADR/UC/SPIKE/TASK/OQ/QS/DRV/BR/ACTOR/CHG/track/epic-* mention in scanned files
 
 Usage:
   link_check.py [paths...]        scan (default: docs/); exit 1 on violations
@@ -19,7 +19,7 @@ from collections import defaultdict
 from pathlib import Path
 from config import ConfigError, project_config, target, require_targets, usage
 
-REF_RE = re.compile(r"\b(?:ADR|UC|SPIKE|TASK|OQ|QS|DRV|BR|ACTOR|track|epic)-[a-z0-9][a-z0-9-]*[a-z0-9]\b")
+REF_RE = re.compile(r"\b(?:ADR|UC|SPIKE|TASK|OQ|QS|DRV|BR|ACTOR|CHG|track|epic)-[a-z0-9][a-z0-9-]*[a-z0-9]\b")
 QS_DEF_RE = re.compile(r"^\|\s*((?:QS|DRV|BR|ACTOR|track)-[a-z0-9][a-z0-9-]*[a-z0-9])\s*\|")
 OQ_DEF_RE = re.compile(r"^-\s*\[[ xX]\]\s*(OQ-[a-z0-9][a-z0-9-]*[a-z0-9])\b")
 TASK_DEP_RE = re.compile(r"\bTASK-[a-z0-9][a-z0-9-]*[a-z0-9]\b")
@@ -93,7 +93,16 @@ def main(argv):
     if not targets:
         try:
             config, base = project_config()
-            targets = [str(base / target(config, "docs", "docs"))]
+            docs_target = base / target(config, "docs", "docs")
+            targets = [str(docs_target)]
+            changes_target = base / target(config, "changes", "docs/changes")
+            try:
+                changes_target.relative_to(docs_target)
+                changes_inside_docs = True
+            except ValueError:
+                changes_inside_docs = False
+            if changes_target != docs_target and not changes_inside_docs:
+                targets.append(str(changes_target))
         except ConfigError as exc:
             print(f"ERROR: {exc}", file=sys.stderr)
             return 1
@@ -115,8 +124,10 @@ def main(argv):
     try:
         config, _ = project_config()
         document_statuses = set(config.get("statuses", {}).get("documents", []))
+        change_statuses = set(config.get("statuses", {}).get("changes", []))
     except ConfigError as exc:
         errors.append(str(exc))
+        change_statuses = set()
 
     for f in files:
         try:
@@ -124,7 +135,9 @@ def main(argv):
         except (UnicodeDecodeError, OSError):
             continue
         fm = frontmatter(lines)
-        if fm.get("status") and document_statuses and fm["status"] not in document_statuses and not str(fm.get("id", "")).startswith("ADR-"):
+        record_id = str(fm.get("id", ""))
+        valid_change_status = record_id.startswith("CHG-") and (not change_statuses or fm.get("status") in change_statuses)
+        if fm.get("status") and document_statuses and fm["status"] not in document_statuses and not record_id.startswith("ADR-") and not valid_change_status:
             errors.append(f"invalid document status '{fm['status']}' at {f}")
         ids = []
         if isinstance(fm.get("id"), str):

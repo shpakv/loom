@@ -1,78 +1,114 @@
 ---
 name: loom-intake-method
-description: Triage incoming work in an existing Loom project and route it to the smallest honest phase: design, roadmap, consolidate, imagine, requirements or spike. Use for bugs, feature requests and newly discovered facts; use imagine for a brand-new product.
+description: Capture and triage incoming work in a Loom project, persist changes as CHG records when they affect accepted knowledge or are deferred, and route them to the smallest honest owning phase.
 ---
 
-# Loom: intake (triage router)
+# Loom: intake
 
-Goal: match incoming work to the SMALLEST phase that honestly handles it. Loom's
-forward route is built for greenfield — a full socratic /loom:imagine is right for
-a new product, but crushing for "fix this bug" or "add one field" on a project
-that already has a vision, a roadmap, and accepted decisions. Intake is the cheap
-router that keeps the ceremony proportional to the change. It produces NO gated
-artifacts of its own — its only output is a routing decision and the first command
-to run. Read `loom-core` conventions first.
+Intake is the durable front door for incoming requirements, customer changes,
+new facts and ideas. Read loom-core first.
 
-Use this only on an initialized Loom project (there is a `docs/loom.yaml` and at
-least a VISION). For a brand-new product, skip intake and go straight to
-/loom:imagine.
+Intake has two modes:
 
-**Two callers, one router.** Items arrive either from the human (a bug, a
-request, an idea) or from review of an implementation — a fact that turned out
-to be bigger than a glossary line. Newly discovered items enter the
-same interview and the same routing table, with one difference: the fact already
-exists in code, so the question is not "should we?" but "what authority should
-have decided this, and does it still hold?". Route them by the same rules; a
-change that contradicts an accepted ADR is a decision to revisit, not a
-task, no matter that it is already written.
+- **Capture-only:** immediately after loom:init, before VISION.md exists.
+  Preserve the original message and source in the configured changes path
+  (normally docs/changes/CHG-<slug>.md) with status: captured; do not classify
+  or edit product documents.
+- **Capture and triage:** after VISION exists. Classify the item, calculate
+  impact, propose one owning phase and stop for the human decision. Do not start
+  the downstream phase automatically.
 
-## Triage interview (one question per turn, stop as soon as the route is clear)
+For a trivial, unambiguous change inside one draft document, no CHG-* is
+required if it does not affect another scope and is applied immediately. Every
+deferred item, hypothesis, change to approved/accepted knowledge or item with
+uncertain blast radius gets a change record.
 
-Ask only what you need to place the work — most items are obvious after one or two
-questions:
+## Capture
 
-1. **What is it** — a defect in something that already exists, a change to how an
-   existing capability behaves, or a genuinely new capability?
-2. **Does it fit the current vision and glossary?** If it introduces a new domain
-   term, a new actor, or contradicts an anti-goal, it is a vision-level change, not
-   a task.
-3. **Does it cross a decision?** If satisfying it means changing an accepted ADR (a
-   datastore, a protocol, a boundary), it is not a task — it is a decision to
-   revisit.
-4. **Does it fit one existing epic, or does it span several / need a new one?**
+1. Record the incoming message verbatim under Original input.
+2. Record who or what supplied it in source:
+   human, customer, implementation, external or unknown.
+3. Record confidence as confirmed, reported or hypothesis.
+4. Use skills/loom-intake-method/templates/change-record.md.
+5. Keep status: captured until VISION exists and triage is possible.
+
+Do not rewrite the original input into a cleaner requirement. Interpretation
+belongs in classification and the owning phase.
+
+## Triage interview
+
+Ask only what is needed to place the work, one question per turn:
+
+1. Is it a defect, a behavior change, a new capability, a new fact, or an idea?
+2. Does it fit the current vision, glossary and anti-goals?
+3. Does it contradict an approved/accepted document or decision?
+4. Does it fit one existing epic, or does it span several / need a new one?
+5. Is the claim confirmed, reported or hypothetical?
+
+When VISION is missing, stop after capture. When an unknown is falsifiable,
+route to spike rather than guessing.
+
+## Classification
+
+Use one of:
+
+| Classification | Meaning |
+|---|---|
+| additive | Consistent addition without changing approved authority |
+| forgotten-requirement | Requirement that should already have been recorded |
+| fact-correction | Previously recorded fact is no longer correct |
+| customer-change | Confirmed customer or stakeholder change |
+| hypothesis | Unconfirmed signal that needs evidence |
+| rule-change | New or changed BR, QS, SLA or numeric constraint |
+| decision-conflict | Contradiction with an accepted ADR or architecture |
+| roadmap-idea | New capability or priority candidate |
+
+additive is a classification, not a phase. A draft-only additive edit may be
+applied without a change record; an additive edit touching approved knowledge
+still requires CHG-*.
 
 ## Routing table
 
 | Signal | Route to | Why |
 |---|---|---|
-| Defect, or a change wholly inside one existing capability, fits current contracts and decisions | `/loom:design` on the owning epic to add a `TASK-<slug>` (or append the task directly if the design doc is still accurate) | the requirements exist; this is just more work under them |
-| New capability that fits the vision but no current epic covers it | `/loom:roadmap` to add an epic candidate, then `/loom:design` when it becomes the rolling-wave epic | roadmap owns epic scoping and sequencing |
-| Satisfying it requires changing an accepted decision | a superseding ADR via `/loom:consolidate`, or `/loom:audit` first if a revisit trigger fired | accepted ADRs are immutable; the change is a new decision, not a task |
-| It changes the problem, the users, an anti-goal, or needs a new glossary term | `/loom:imagine` (targeted — extend VISION/GLOSSARY/use-cases, not a from-scratch interview) | vision is the authority everything else derives from |
-| It needs a new quality target or breaks an existing NFR | `/loom:requirements` to add/adjust the `QS-*`, which may cascade to architecture/technology | NFRs gate the structural and tech decisions below them |
-| The answer depends on a falsifiable unknown (does X perform? is Y compatible?) | `/loom:spike` first, then re-run intake with the evidence | decide with evidence, not under pressure |
+| Defect or change inside one existing capability, fitting current contracts and decisions | /loom:design on the owning epic | requirements already exist |
+| New capability fitting the vision but not covered by an epic | /loom:roadmap, then /loom:design | roadmap owns scope and sequence |
+| Change to an accepted decision | /loom:consolidate for a superseding ADR, or /loom:audit when a revisit trigger fired | accepted ADRs are immutable |
+| Change to problem, users, anti-goal or glossary | targeted /loom:imagine | vision is the highest authority |
+| New quality target or changed NFR/rule | /loom:requirements | requirements own QS/BR |
+| Changed boundary or responsibility | /loom:architecture | architecture owns structural boundaries |
+| Changed technology decision | /loom:technology plus superseding ADR | technology owns the fork |
+| Falsifiable unknown | /loom:spike, then re-run intake | evidence precedes commitment |
 
-When several rows apply, route to the **highest-authority** one: a change that
-touches both the vision and a task is a vision change first — resolving it there
-reshapes everything below. Routing a vision-level change as a mere task is the
-main failure intake exists to prevent.
+When several rows fit, route to the highest-authority row. If prerequisites
+are not yet approved, keep the change triaged or accepted and report the
+prerequisites; do not restart the whole lifecycle.
+
+## Impact
+
+After the affected IDs are known, run:
+
+    python3 scripts/loom/impact_scan.py --id <affected-id>
+
+Record direct and transitive consumers in affects. Treat approved/accepted
+consumers as blocked until their owning phase or review gate revalidates them;
+draft consumers are needs-review; generated projections are informational.
+
+## Human decision and handoff
+
+Present:
+
+- classification;
+- direct and transitive blast radius;
+- proposed owning phase;
+- prerequisites and unresolved OQs.
+
+The human, not intake, sets accepted or rejected. On acceptance, hand off
+the owning command and leave execution to that command. Intake never edits
+approved knowledge and never marks a change applied.
 
 ## Output
 
-A short verdict: the classification, the single command to run next, and — if the
-work needs a paper trail before that command — the one artifact to create first
-(an epic candidate, an OQ on the vision, a spike question). Do NOT start the
-downstream phase yourself; hand the user the command so they enter it
-deliberately. If the item is trivial and unambiguous (a typo, a one-line fix under
-an accurate spec), say so plainly rather than inventing process for it.
-
-## Rules
-
-- **Proportional ceremony.** The right route is the smallest one that does not skip
-  a real authority. Do not send a bug through /loom:imagine; do not smuggle a
-  vision change in as a task.
-- **Intake routes, it does not decide.** It never writes a spec, an ADR, or a
-  design — it names where the work belongs and what to run. The owning phase does
-  the work under its own gates.
-- Re-runnable: after a spike or a vision edit resolves the unknown, run intake
-  again — the route often changes once the missing fact exists.
+Return a short verdict containing the change ID, classification, impact summary,
+single next command and any prerequisite. For capture-only mode, return the
+created change ID and state that triage is waiting for VISION.

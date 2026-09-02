@@ -78,7 +78,7 @@ Rules:
 - Rare legitimate renames: keep the old ID in frontmatter `aliases: []` — aliases
   stay globally unique and resolvable forever.
 - Reference integrity is enforced by `scripts/loom/link_check.py` (uniqueness of
-  all IDs + aliases; every `ADR-* / UC-* / SPIKE-* / TASK-* / OQ-* / epic-* /
+  all IDs + aliases; every `ADR-* / UC-* / SPIKE-* / TASK-* / OQ-* / CHG-* / epic-* /
   ACTOR-*` mention in docs must resolve; QS-*, track-*, DRV-* and ACTOR-* table
   rows count as definitions).
 
@@ -92,6 +92,7 @@ docs/
 ├── domain/                   # event storming notes, C4 models (.dsl / mermaid)
 ├── adr/                      # global ADRs: ADR-<slug>.md
 ├── spikes/                   # SPIKE-<slug>.md
+├── changes/                  # durable incoming deltas: CHG-<slug>.md
 ├── architecture/             # quality-requirements, building-blocks, solution-strategy
 ├── conventions/              # golden-path rules for the documented system
 └── roadmap/
@@ -123,6 +124,19 @@ aliases: []                  # former IDs after a legitimate rename
 Optional keys by type: `depends_on: []` (epics, tasks), `boundaries: []` (tasks),
 `criticality: must|should|could|wont` (epics), `appetite: <duration>` (epics).
 
+Change records under `docs/changes/CHG-*.md` are durable deltas, not approved
+knowledge. Their lifecycle is `captured → triaged → accepted → in-progress →
+applied`, with terminal `rejected` and `superseded` branches. A change record
+must preserve the original input, source, classification, route, affected IDs,
+human decision and applied/revalidated document IDs. `blocked` is represented by
+an open blocking OQ on an accepted or in-progress change; it is not a second
+approval lifecycle.
+
+Intake may capture a change before `VISION.md` exists. In that case it stops at
+`captured`; classification and impact analysis wait until the project has a
+vision. Intake never edits approved knowledge and never starts the owning phase
+automatically.
+
 ## Status vocabularies
 
 **Regular documents** (vision, epics, design docs, tasks, spikes):
@@ -150,6 +164,11 @@ Template: `templates/adr.md` in this skill. Key rules:
 - **Accepted is immutable.** After acceptance only metadata (status, links) and
   append-only `## Addenda` entries may change. Changing the decision = a new
   superseding ADR linked both ways (`supersedes` / `superseded_by`).
+- **Approved regular documents are revised through their owning phase.** An
+  accepted change moves an affected approved document to `in-review`; the phase
+  applies the revision and the normal review gate returns it to `approved`.
+  The document ID remains stable. Downstream documents are revalidated only in
+  the affected scope.
 - **Decisions cite facts**: the Context section names the `DRV-*` drivers the
   decision stands on. Hitting a fork whose deciding fact is missing from
   DRIVERS.md: for a one-way door — STOP, raise a blocking OQ to the human,
