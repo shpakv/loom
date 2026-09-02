@@ -3,14 +3,14 @@ description: Loom phase — decision event after evidence: accept proposed ADRs,
 ---
 Use the `loom-consolidate-phase` skill (read `loom-core` first).
 
-Verify the walking skeleton or other evidence is recorded before starting. Accept the
-proposed ADRs on the skeleton's evidence (one-way first, `verification: skeleton`),
+Verify the evidence summary or reasoned judgment is recorded before starting.
+Accept, reject or defer proposed ADRs according to project policy and authority,
 then reconcile against reality: confirm/correct quality scenarios with what the
-skeleton measured, update building blocks as-built vs as-intended, close the
+available evidence observed, update building blocks as-observed vs as-intended, close the
 solution-strategy QS → ADR matrix, extract conventions, sweep ASSUMPTIONS, re-cut
 the roadmap. These docs already exist from /loom:requirements and
 /loom:architecture — you are confirming or correcting them, not writing them
 fresh. Finish with `adr_scan.py --gate --framing` (every accepted one-way ADR
-must cite a DRV-* and a QS-*, declare its decision_mode, and every QS must map to
+must cite a DRV-* and a QS-*, declare its policy decision_mode, and every QS must map to
 an ADR or convention), and `link_check.py docs`. The repository's
 approved documents are the durable result.

@@ -2,7 +2,12 @@
 id: ADR-adopt-loom
 status: accepted
 reversibility: two-way
-verification: judgment
+decision_mode: record-only
+evidence_level: reasoned
+confidence: high
+evidence_refs: []
+authority: project-owner
+risk_accepted_by: null
 enforced: none
 revisit_when:
   - the doc-maintenance overhead visibly exceeds its value for the team
@@ -14,11 +19,18 @@ updated: 2026-07-06
 ---
 # ADR: Adopt the Loom docs-first workflow
 
-Status: accepted · reversibility: two-way · verification: judgment
+Status: accepted · reversibility: two-way · evidence: reasoned · confidence: high
 
 ## Context
 AI-assisted development degrades without persistent, structured context: agents
 re-derive intent, drift from decisions, and produce inconsistent terminology.
+
+## Recommendation
+Record and use a shared docs-first workflow for durable project knowledge.
+
+## Evidence
+Reasoned judgment based on recurring context loss in AI-assisted development.
+The recommendation is intentionally recorded as a project-level decision.
 
 ## Options
 ### A. Loom (docs-first, slug IDs, gated phases)

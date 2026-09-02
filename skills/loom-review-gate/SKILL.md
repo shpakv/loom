@@ -44,14 +44,15 @@ the substantive review below begin.
 
 - At least two REAL options with honest trade-offs (no strawmen).
 - At least one genuine negative consequence of the chosen option.
-- Verification matches reversibility: `one-way` decisions require material
-  evidence (skeleton, SPIKE-*, benchmark, prototype, justified reference) — `judgment`
-  is only acceptable for `two-way`.
+- Evidence is recorded neutrally with `evidence_level`, `confidence` and
+  provenance. Weak one-way evidence is acceptable only with explicit unknowns,
+  consequences, research trade-off, `risk_accepted_by` and `revisit_when`.
 - `revisit_when` is non-empty, or its emptiness is explicitly justified.
 - Enforceable consequences have an enforcement plan (`enforced: fitness|code-tag`).
 - No contradiction with accepted ADRs; if superseding, both link fields are set.
 - Name reads as an answer (verb phrase), not a topic.
-- `decision_mode` is filled and truthful (see loom-core fork protocol).
+- `decision_mode` and `authority` are filled and truthful; a freer-than-policy
+  mode has an explicit override and reason.
 - On acceptance: set `status: accepted` in the frontmatter AND in the body
   `Status:` line, fill `decided:`, then treat the body as immutable (addenda
   only). Run `python3 scripts/loom/adr_scan.py --gate`.

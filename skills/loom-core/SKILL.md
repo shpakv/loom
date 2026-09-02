@@ -141,7 +141,7 @@ A phase may only read `approved` (or `accepted`) documents of the previous phase
 Template: `templates/adr.md` in this skill. Key rules:
 
 - **Status is visible in the body**: the line right under the H1
-  (`Status: <value> · reversibility: ... · verification: ...`) mirrors the
+  (`Status: <value> · reversibility: ... · evidence: ... · confidence: ...`) mirrors the
   frontmatter for human readers. Update BOTH on every transition —
   `adr_scan.py` fails on mismatch or a missing body line.
 
@@ -157,25 +157,28 @@ Template: `templates/adr.md` in this skill. Key rules:
   two-way door — proceeding is allowed, but the guess is recorded in
   DRIVERS.md as `confidence: guessed` first. `adr_scan.py` warns on accepted
   one-way ADRs citing no drivers.
-- **Never open a technology fork with a recommendation.** Protocol:
+- **Open technology forks with an agreed decision mode.** Protocol:
   (1) check DRIVERS.md `## Tech posture` — the fork may already be constrained
   or decided; (2) if not, ask the human the decision mode in ONE question:
-  `decided` (already chosen — record as driver) / `framed` (constraints given,
-  options within them) / `menu` (2–3 options with trade-offs against THIS
-  project's drivers, recommendation only on explicit request) / `delegated`
-  (agent decides — two-way doors only; one-way still requires human accept);
-  (3) record the mode in ADR frontmatter `decision_mode:`. A recommendation
-  offered before the mode was asked anchors the human — that is the failure
-  this protocol exists to prevent.
+  `record-only` (already chosen outside Loom) / `confirm` (human confirmation
+  required) / `recommend` (agent recommends, authority decides) / `delegated`
+  (agent decides within policy);
+  (3) record the mode in ADR frontmatter `decision_mode:`. The mode makes clear
+  whether the agent recommends, decides or only records an external decision.
 - **One-way acceptance requires a challenge.** Before accepting any one-way
   ADR, the review gate dispatches the `loom-challenger` agent (fresh context);
   its findings are materialized as OQs and resolved first.
-- **Verification is proportional to reversibility** (`reversibility` field):
-  - `two-way` (cheap to undo) → `verification: judgment` is acceptable.
-  - `one-way` (expensive to undo: language, DB, data schema, cross-boundary
-    protocol) → requires material evidence: the walking skeleton
-    (`verification: skeleton` — the primary path), `verification: SPIKE-<slug>`,
-    benchmark, prototype, or a justified external reference.
+- **Evidence and decision are separate** (`recommendation` is not `decision`):
+  - `evidence_level` is `none | reasoned | reported | observed | measured`;
+  - `confidence` is `low | medium | high` and describes applicability;
+  - evidence may be external. Store its question, method, observations,
+    interpretation, limitations and provenance under `## Evidence`, not code;
+  - one-way decisions may proceed on weak evidence when unknowns, consequences,
+    research trade-off, `risk_accepted_by` and `revisit_when` are explicit.
+    The validator fails on hidden risk, not on the evidence method.
+- **Decision policy** is configured in `loom.yaml` under `decisions`:
+  `delegated`, `recommend`, `confirm` and `record-only`. The policy is a
+  default; a freer ADR mode requires `policy_override` and `override_reason`.
 - **Rot by triggers, not by calendar**: `revisit_when:` lists the assumptions
   under which the decision holds; the audit phase scans these. Use a calendar
   `review_by` only for decisions tied to the external world (licenses, vendors).
@@ -185,8 +188,10 @@ Template: `templates/adr.md` in this skill. Key rules:
   carries the ADR ID.
 - `scripts/loom/adr_scan.py --gate` validates lifecycle invariants in CI.
 
-Spike vs ADR: a spike ends with a **recommendation** (evidence), an ADR fixes a
-**decision**. Spikes are cited from the ADR Options section, never merged into it.
+Evidence method vs ADR: a spike, benchmark, prototype or skeleton ends with a
+**recommendation** (evidence), while an ADR records the authority's
+**decision**. The method may live outside Loom; cite its ID or URI and summarize
+its limits rather than copying implementation artifacts.
 
 ## Business rules (BR-*)
 

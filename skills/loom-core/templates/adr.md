@@ -2,9 +2,13 @@
 id: ADR-{decision-as-verb-phrase}     # must equal filename; reads as an answer, not a topic
 status: proposed                      # proposed | accepted | rejected | deprecated | superseded
 reversibility: two-way                # one-way | two-way
-verification: judgment                # skeleton | SPIKE-<slug> | benchmark | prototype | reference | judgment
+decision_mode: recommend              # delegated | recommend | confirm | record-only
+evidence_level: reasoned              # none | reasoned | reported | observed | measured
+confidence: medium                    # low | medium | high
+evidence_refs: []                     # IDs or external URIs; details live in ## Evidence
+authority: null                       # side authorized to accept/reject this ADR
+risk_accepted_by: null                # required when weak evidence is accepted
 enforced: none                        # fitness | code-tag | none
-decision_mode: null                   # decided | framed | menu | delegated — how the human chose to decide
 revisit_when: []                      # triggers that invalidate this decision, e.g. "sustained load > 5k rps"
 supersedes: []
 superseded_by: null
@@ -14,7 +18,7 @@ updated: {date}
 ---
 # ADR: {Decision as a claim, e.g. "Use QuestDB for time-series storage"}
 
-Status: proposed · reversibility: two-way · verification: judgment
+Status: proposed · reversibility: two-way · evidence: reasoned · confidence: medium
 <!-- This line mirrors the frontmatter for human readers; adr_scan fails on mismatch. Update BOTH on every status transition. -->
 
 ## Context
@@ -22,13 +26,21 @@ Problem, forces, constraints. MUST cite the drivers this decision stands on
 (DRV-*); also link use cases / QS-* / assumptions (AS-*). If the deciding
 fact is not in DRIVERS.md yet — ask the human and record it there first.
 
+## Recommendation
+{The agent's recommendation, with the reason it is preferred. This is not the
+decision; authority may accept, reject or defer it.}
+
+## Evidence
+{Question, method, observations, interpretation, limitations and provenance.
+External evidence is allowed; do not copy its code or infrastructure into Loom.}
+
 ## Options
 ### A. {option} — honest pros and cons, 2–3 each
 ### B. {option} — evidence: SPIKE-{slug} showed ...
 <!-- at least two REAL options; "do it well vs do it badly" is a strawman -->
 
 ## Decision
-Chosen A, because {the deciding factor — one, not a list}.
+{Accepted, rejected or deferred outcome, recorded only when authority decides.}
 
 ## Consequences
 - (+) ...

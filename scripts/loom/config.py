@@ -7,7 +7,11 @@ portable without adding a dependency to initialized projects.
 from pathlib import Path
 import re
 
-SHIPPED_SCRIPTS_VERSION = "0.14.0"
+SHIPPED_SCRIPTS_VERSION = "0.15.0"
+
+DECISION_MODES = {"delegated", "recommend", "confirm", "record-only"}
+EVIDENCE_LEVELS = {"none", "reasoned", "reported", "observed", "measured"}
+CONFIDENCE_LEVELS = {"low", "medium", "high"}
 
 
 class ConfigError(RuntimeError):

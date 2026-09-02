@@ -1,16 +1,16 @@
 ---
 name: loom-skeleton-phase
-description: Define the smallest architecture-validation slice or falsification exercise for a Loom project. Use after technology proposals and before consolidation when a decision needs evidence; record the brief and results as project knowledge, without prescribing an implementation.
+description: Define an optional smallest architecture-validation slice or falsification exercise for a Loom project when its uncertainty reduction justifies the cost; record the brief and results as evidence, without prescribing implementation.
 ---
 
-# Loom: skeleton phase
+# Loom: skeleton evidence method
 
-Goal: validate an architectural or technology hypothesis with the smallest
+Use this optional method when it is the cheapest honest way to validate an architectural or technology hypothesis with the smallest
 honest exercise that can falsify it. Loom records the question, evidence and
 conclusion; it does not build production code or prescribe who builds a probe.
 Read `loom-core` conventions first.
 
-## Inputs (gate)
+## Inputs
 
 Approved `GLOSSARY.md`, `VISION.md`, `quality-requirements.md`, the
 architecture hypothesis (`building-blocks.md`, `solution-strategy.md`) and its
@@ -29,7 +29,8 @@ scenario, but this phase does not require an implementation project.
    quarantined and label every fake or shortcut.
 4. Record raw observations before interpretation. Update the relevant proposed
    ADR with the evidence, limitations and conclusion; keep the ADR proposed
-   until `/loom:consolidate` accepts or rejects it.
+   until authority accepts, rejects or defers it at `/loom:consolidate` or
+   `/loom:review` according to policy.
 5. If the evidence exposes a missing requirement, driver or decision, create a
    blocking OQ and route it to the owning phase. Do not silently adapt the
    architecture to the result.
@@ -45,7 +46,7 @@ scenario, but this phase does not require an implementation project.
 
 ## Rules
 
-- One question per exercise; a second question is a second spike.
+- One question per exercise; a second question is a second evidence record.
 - A demo that cannot fail is not evidence.
 - Do not turn a throwaway probe into a product dependency through this phase.
 - The deliverable is durable knowledge in `docs/`, not code.

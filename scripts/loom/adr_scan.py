@@ -7,7 +7,7 @@ Checks:
   - status in {proposed, accepted, rejected, deprecated, superseded}
   - body contains a human-visible `Status: <value>` line matching frontmatter
   - accepted/rejected ADRs have `decided:` filled
-  - accepted one-way ADRs have material verification (not 'judgment')
+  - ADRs use neutral evidence_level and confidence values
   - superseded ADRs have `superseded_by`; supersedes/superseded_by are symmetric
   - warns on accepted ADRs with empty revisit_when (not a gate failure)
 
@@ -23,8 +23,8 @@ Usage:
                                     - any one-way ADR declares decision_mode
                                     - every QS-* in solution-strategy.md maps to an
                                       ADR-* or a convention (no unmapped NFR)
-                                    - accepted ADR with verification: SPIKE-<slug>
-                                      points at a real, approved spike
+                                    - weak one-way decisions explicitly record
+                                      risk acceptance and revisit conditions
                                     - accepted one-way ADR does not stand on a
                                       confidence: guessed driver without a
                                       revisit_when trigger
@@ -33,11 +33,10 @@ import re
 import sys
 from datetime import date
 from pathlib import Path
-from config import ConfigError, project_config, target, require_targets, usage
+from config import (CONFIDENCE_LEVELS, DECISION_MODES, EVIDENCE_LEVELS,
+                     ConfigError, project_config, target, require_targets, usage)
 
 STATUSES = {"proposed", "accepted", "rejected", "deprecated", "superseded"}
-DECISION_MODES = {"decided", "framed", "menu", "delegated"}
-
 QS_RE = re.compile(r"\bQS-[a-z0-9-]+", re.IGNORECASE)
 ADR_REF_RE = re.compile(r"\bADR-[a-z0-9-]+", re.IGNORECASE)
 DRV_REF_RE = re.compile(r"\bDRV-[a-z0-9-]+", re.IGNORECASE)
@@ -92,6 +91,29 @@ def body_status(lines):
             if m:
                 return m.group(1).lower()
     return None
+
+
+def has_section(text, heading):
+    return bool(re.search(rf"^##\s+{re.escape(heading)}\s*$", text,
+                          re.IGNORECASE | re.MULTILINE))
+
+
+def empty(value):
+    return value in (None, "", "null", "[]", [])
+
+
+def decision_policy(config, reversibility):
+    policy = config.get("decisions", {}) if isinstance(config, dict) else {}
+    key = "irreversible" if reversibility in ("irreversible", "permanent") else (
+        "one_way" if reversibility == "one-way" else "two_way")
+    return policy.get(key, "recommend" if key == "one_way" else "delegated")
+
+
+def policy_is_freer(mode, default):
+    # Higher rank means less human authority is required. record-only is a
+    # separate audit mode and is never treated as a freer override.
+    rank = {"record-only": 0, "confirm": 1, "recommend": 2, "delegated": 3}
+    return rank.get(mode, -1) > rank.get(default, -1)
 
 
 def frontmatter(lines):
@@ -157,6 +179,7 @@ def main(argv):
         print(f"ERROR: {error}", file=sys.stderr)
         return 1
 
+    config = {}
     try:
         config, _ = project_config()
         statuses = set(config.get("statuses", {}).get("adr", STATUSES))
@@ -164,7 +187,7 @@ def main(argv):
         statuses = STATUSES
     adrs = {}
     errors = []
-    spikes = {}          # SPIKE-<slug> -> status (for framing verification checks)
+    doc_ids = set()
     drv_conf = {}        # DRV-<slug> -> confidence (from DRIVERS.md rows)
     for t in targets:
         p = Path(t)
@@ -175,14 +198,14 @@ def main(argv):
                 continue
             fm = frontmatter(text.splitlines())
             fid = fm.get("id")
+            if isinstance(fid, str) and fid:
+                doc_ids.add(fid)
             if isinstance(fid, str) and fid.startswith("ADR-"):
                 if fid in adrs:
                     errors.append(f"duplicate ADR id '{fid}' in {adrs[fid][1]} and {f}")
-                adrs[fid] = (fm, str(f), body_status(text.splitlines()),
+                adrs[fid] = (fm, str(f), body_status(text.splitlines()), text,
                              "DRV-" in text, bool(QS_RE.search(text)),
                              sorted(set(DRV_REF_RE.findall(text))))
-            elif isinstance(fid, str) and fid.startswith("SPIKE-"):
-                spikes[fid] = fm.get("status", "?")
             # DRIVERS.md (or any doc carrying DRV rows) → confidence map
             for line in text.splitlines():
                 m = DRV_ROW_RE.match(line.strip())
@@ -190,9 +213,10 @@ def main(argv):
                     drv_conf[m.group(1).lower()] = m.group(2).lower()
 
     warnings = []
-    for aid, (fm, path, bstat, has_drv, has_qs, drv_refs) in sorted(adrs.items()):
+    for aid, (fm, path, bstat, text, has_drv, has_qs, drv_refs) in sorted(adrs.items()):
         st = fm.get("status", "?")
-        one_way = fm.get("reversibility") == "one-way"
+        reversibility = fm.get("reversibility", "two-way")
+        one_way = reversibility in ("one-way", "irreversible", "permanent")
         if st not in statuses:
             errors.append(f"{aid}: invalid ADR status '{st}' ({path})")
             continue
@@ -201,13 +225,42 @@ def main(argv):
                           f"in the body ({path})")
         elif bstat != st:
             errors.append(f"{aid}: body status '{bstat}' != frontmatter "
-                          f"'{st}' — update both on transition ({path})")
+                              f"'{st}' — update both on transition ({path})")
+        evidence = fm.get("evidence_level")
+        confidence = fm.get("confidence")
+        mode = fm.get("decision_mode")
+        if evidence not in EVIDENCE_LEVELS:
+            errors.append(f"{aid}: invalid evidence_level '{evidence}' — use "
+                          f"{', '.join(sorted(EVIDENCE_LEVELS))} ({path})")
+        if confidence not in CONFIDENCE_LEVELS:
+            errors.append(f"{aid}: invalid confidence '{confidence}' — use low, "
+                          f"medium or high ({path})")
+        if mode not in DECISION_MODES:
+            errors.append(f"{aid}: invalid decision_mode '{mode}' — use "
+                          f"{', '.join(sorted(DECISION_MODES))} ({path})")
+        refs = fm.get("evidence_refs", [])
+        refs = refs if isinstance(refs, list) else [refs]
+        for ref in refs:
+            if not ref or str(ref).startswith(("http://", "https://")):
+                continue
+            if ref not in doc_ids:
+                errors.append(f"{aid}: evidence_ref '{ref}' does not resolve to "
+                              f"an internal document or external URI ({path})")
+        if st in ("proposed", "accepted") and not has_section(text, "Recommendation"):
+            errors.append(f"{aid}: missing ## Recommendation ({path})")
+        if st in ("proposed", "accepted") and not has_section(text, "Evidence"):
+            errors.append(f"{aid}: missing ## Evidence ({path})")
+        default_mode = decision_policy(config, reversibility)
+        if mode in DECISION_MODES and policy_is_freer(mode, default_mode):
+            if not fm.get("policy_override") or empty(fm.get("override_reason")):
+                errors.append(f"{aid}: decision_mode '{mode}' is freer than project "
+                              f"default '{default_mode}'; require policy_override "
+                              f"and override_reason ({path})")
+        if st == "accepted" and mode != "delegated" and empty(fm.get("authority")):
+            errors.append(f"{aid}: accepted decision requires authority ({path})")
         if st in ("accepted", "rejected") and fm.get("decided") in (None, "", "null", []):
             errors.append(f"{aid}: status '{st}' but 'decided:' is empty ({path})")
         if st == "accepted":
-            if one_way and fm.get("verification", "judgment") == "judgment":
-                errors.append(f"{aid}: one-way decision accepted on 'judgment' — "
-                              f"needs SPIKE/benchmark/prototype/reference ({path})")
             if not fm.get("revisit_when"):
                 warnings.append(f"{aid}: accepted with empty revisit_when ({path})")
             if one_way and not has_drv:
@@ -216,23 +269,24 @@ def main(argv):
                     f"(DRV-*) in its body ({path})")
         # --framing: stricter, opt-in checks that hard-wire "framed by facts and
         # targets before acceptance" (see the phase-reordering, v0.10.0).
+            weak = confidence == "low" or evidence in ("none", "reasoned")
+            if one_way and weak:
+                required = [("risk_accepted_by", fm.get("risk_accepted_by")),
+                            ("revisit_when", fm.get("revisit_when"))]
+                for field, value in required:
+                    if empty(value):
+                        errors.append(f"{aid}: weak evidence on accepted one-way "
+                                      f"decision requires {field} ({path})")
+                for heading in ("Unknowns", "Residual risk", "Research decision"):
+                    if not has_section(text, heading):
+                        errors.append(f"{aid}: weak evidence requires ## {heading} "
+                                      f"to make risk explicit ({path})")
         if framing:
             if st == "accepted" and one_way and not has_qs:
                 errors.append(f"{aid}: accepted one-way decision cites no quality "
                               f"scenario (QS-*) — an untargeted one-way door ({path})")
-            if one_way and fm.get("decision_mode") not in DECISION_MODES:
-                errors.append(f"{aid}: one-way decision with no decision_mode "
-                              f"(decided|framed|menu|delegated) — a fork opened "
-                              f"without agreeing how it was decided ({path})")
-            # a verification: SPIKE-<slug> claim must point at a real, approved spike
-            verif = fm.get("verification", "")
-            if st == "accepted" and isinstance(verif, str) and verif.startswith("SPIKE-"):
-                if verif not in spikes:
-                    errors.append(f"{aid}: verification cites {verif}, which does "
-                                  f"not exist — evidence claimed but missing ({path})")
-                elif spikes[verif] not in ("approved", "accepted"):
-                    errors.append(f"{aid}: verification cites {verif}, still "
-                                  f"'{spikes[verif]}' — evidence not yet approved ({path})")
+            # Legacy verification fields are ignored; the neutral evidence model
+            # is authoritative for new decisions.
             # an accepted one-way decision may not rest on an unconfirmed guess
             # unless it declares what would invalidate it (revisit_when)
             if st == "accepted" and one_way and not fm.get("revisit_when"):
@@ -260,7 +314,7 @@ def main(argv):
                               f"does not include {aid} — links must be symmetric")
 
     if revisit_only:
-        for aid, (fm, _, _, _, _, _) in sorted(adrs.items()):
+        for aid, (fm, _, _, _, _, _, _) in sorted(adrs.items()):
             if fm.get("status") == "accepted":
                 trig = fm.get("revisit_when") or ["(none declared)"]
                 print(aid)
@@ -280,9 +334,10 @@ def main(argv):
                           f"{', '.join(unmapped)} map to neither an ADR nor a "
                           f"convention — a decorative or undecided NFR ({spath})")
 
-    for aid, (fm, _, _, _, _, _) in sorted(adrs.items()):
+    for aid, (fm, _, _, _, _, _, _) in sorted(adrs.items()):
         print(f"{fm.get('status', '?'):<11} {aid}  "
-              f"[{fm.get('reversibility', '?')}, verify: {fm.get('verification', '?')}]")
+              f"[{fm.get('reversibility', '?')}, evidence: {fm.get('evidence_level', '?')}, "
+              f"confidence: {fm.get('confidence', '?')}]" )
     for w in warnings:
         print(f"WARN: {w}")
     for e in errors:
