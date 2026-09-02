@@ -8,10 +8,10 @@ architecture hypothesis (building-blocks, solution-strategy) with its proposed
 technology ADRs, and optionally one approved first-slice epic to provide the
 scenario.
 
-Do not prescribe production implementation. Write the brief — what each proposed ADR must
-demonstrate, which layers must be traversed, the `Faked:` list, and the
-observation that would refute the hypothesis — give every new package its
-SKILL.md before the exercise, label every fake and shortcut, and record the raw
-result on each affected ADR. If the evidence refutes a decision or surfaces a
+Do not prescribe production implementation. Write the brief as a record of an
+external experiment — what each proposed ADR must demonstrate, which boundaries
+must be traversed, the `Faked:` list, and the observation that would refute the
+hypothesis. Label every fake and shortcut, and record the raw result on each
+affected ADR. If the evidence refutes a decision or surfaces a
 fork the technology phase missed, say so with a new/updated proposed ADR and a
 blocking OQ. Do not accept one-way ADRs — that is /loom:consolidate's job.

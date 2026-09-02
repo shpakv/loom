@@ -42,27 +42,24 @@ If the skeleton is not demoable, this event is premature — go back to
    disagreed, and add any scenario the build revealed was missing. A QS the
    skeleton could not exercise at all is a coverage gap — note how it will be
    proven later.
-4. **Building blocks, as-built vs as-intended** — reconcile
-   `building-blocks.md` (the hypothesis) with the package structure the skeleton
-   actually grew. Where they diverge, the as-built wins: update the block, its
-   edges, and forbidden dependencies to match reality, and note WHY the intended
-   shape changed (that note is a lesson for the next epic). Every block must
-   already have its package SKILL.md from the skeleton phase.
+4. **Building blocks, as-tested vs as-intended** — reconcile
+   `building-blocks.md` (the hypothesis) with the boundaries observed by the
+   external experiment. Where they diverge, record the evidence and update the
+   architectural document through review.
 5. **Solution strategy, closed** — in `solution-strategy.md`, fill the ADR
    column: each QS now maps to the accepted ADR or convention that satisfies it,
    and each "decision still open" fork is resolved. An unmapped QS means a
    missing decision or a decorative NFR — resolve which.
-6. **Conventions** — extract the golden path the skeleton converged on
-   (error handling, logging, test layout, package structure) into
-   `conventions/*.md`. Enforceable rules point to their lint/arch-test;
-   the rest are marked `advisory`.
+6. **Conventions** — extract durable product and architecture conventions into
+   `conventions/*.md`. Enforceable rules point to their gate; the rest are
+   marked `advisory`.
 7. **Assumption sweep** — every `AS-*` row: promote to ADR, schedule
    `/loom:spike`, or delete with a one-line reason. The event is not done
    while ASSUMPTIONS.md has unswept rows.
 8. **Re-cut the roadmap** — with skeleton knowledge in hand, revisit draft
    epic candidates: merge, split, re-sequence, adjust appetites. Approve only
    the next one epic (rolling wave). Run `roadmap_gen.py`.
-9. Gates: `adr_scan.py --gate --framing`, `link_check.py docs packages`, and
+9. Gates: `adr_scan.py --gate --framing`, `link_check.py docs`, and
    `oq_scan.py --gate` on each architecture document, then /loom:review them.
    The `--framing` mode is the point of this event: it fails unless every
    accepted one-way ADR is framed by a driver (DRV-*) AND a quality scenario
@@ -77,7 +74,7 @@ If the skeleton is not demoable, this event is premature — go back to
 
 - All one-way ADRs are accepted or explicitly parked with a blocking OQ.
 - ASSUMPTIONS.md is empty.
-- Building blocks match reality (`as-built`), every block has a SKILL.md.
+- Building blocks match the recorded evidence.
 - Exactly one approved not-yet-started epic exists; the rest are draft.
 
 ## Rules

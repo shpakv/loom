@@ -20,6 +20,7 @@ import re
 import sys
 from datetime import date
 from pathlib import Path
+from config import ConfigError, project_config, target, require_targets, usage
 
 ACTORS = Path("docs/product/ACTORS.md")
 USE_CASES = Path("docs/product/use-cases")
@@ -55,17 +56,32 @@ def as_list(v):
 
 
 def main(argv):
+    if "--help" in argv:
+        print(usage("uc_diagram_gen.py", "[--print|--gate]", "Validate and generate the configured use-case diagram."))
+        return 0
+    try:
+        config, base = project_config()
+        product = base / target(config, "product", "docs/product")
+        actors_path = product / "ACTORS.md"
+        use_cases = product / "use-cases"
+        out_path = product / "UC-DIAGRAM.md"
+    except ConfigError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
+    for error in require_targets([product, use_cases]):
+        print(f"ERROR: {error}", file=sys.stderr)
+        return 1
     errors = []
 
     actors = {}
-    if ACTORS.exists():
-        for line in ACTORS.read_text(encoding="utf-8").splitlines():
+    if actors_path.exists():
+        for line in actors_path.read_text(encoding="utf-8").splitlines():
             m = ACTOR_ROW_RE.match(line.strip())
             if m:
                 actors[m.group(1)] = m.group(2).strip()
 
     ucs = {}
-    for f in sorted(USE_CASES.glob("UC-*.md")):
+    for f in sorted(use_cases.glob("UC-*.md")):
         fm = frontmatter(f.read_text(encoding="utf-8").splitlines())
         uid = fm.get("id", "?")
         if uid != f.stem:
@@ -111,9 +127,9 @@ def main(argv):
         print(f"ERROR: {err}", file=sys.stderr)
     if "--print" in argv:
         print(out)
-    elif not errors:
-        OUT.write_text(out, encoding="utf-8")
-        print(f"wrote {OUT} ({len(actors)} actors, {len(ucs)} use cases)")
+    elif not errors and "--gate" not in argv:
+        out_path.write_text(out, encoding="utf-8")
+        print(f"wrote {out_path} ({len(actors)} actors, {len(ucs)} use cases)")
     print(f"-- actors: {len(actors)}, use cases: {len(ucs)}, errors: {len(errors)}")
     return 1 if errors else 0
 

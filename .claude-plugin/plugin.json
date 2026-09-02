@@ -1,7 +1,7 @@
 {
   "name": "loom",
-  "version": "0.24.0",
-  "description": "Knowledge layer for AI development: glossary, drivers, rules, ADR lifecycle, package boundaries and task specs, compiled into whatever SDD engine writes the code.",
+  "version": "0.25.0",
+  "description": "Standalone requirements repository for product language, rules, architecture, decisions and task specifications.",
   "author": {
     "name": "shpakv"
   },

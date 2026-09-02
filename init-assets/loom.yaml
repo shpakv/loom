@@ -1,6 +1,6 @@
 # Loom framework config — single source of truth for paths and phases
 version: 0.10
-scripts_version: 0.13.0   # written by /loom:init; compared with plugin version by /loom:status
+scripts_version: 0.14.0   # written by /loom:init; compared with shipped scripts version
 paths:
   product: docs/product
   domain: docs/domain
@@ -17,4 +17,3 @@ statuses:
 naming: slug-based, no sequential numbers — see loom-core skill
 phases:
   implemented: [imagine, roadmap, requirements, architecture, technology, skeleton, consolidate, design, review, spike, audit, intake]
-  planned: [retro, ship, postmortem]

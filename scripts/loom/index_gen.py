@@ -9,6 +9,7 @@ Naive frontmatter parser (top-level `key: value` between --- fences) — no deps
 import sys
 from datetime import date
 from pathlib import Path
+from config import ConfigError, project_config, target, require_targets, usage
 
 DOCS = Path("docs")
 
@@ -33,8 +34,20 @@ def frontmatter(path: Path):
 
 
 def main(argv):
+    if "--help" in argv:
+        print(usage("index_gen.py", "[--print] [--help]", "Generate or print the configured document index."))
+        return 0
+    try:
+        config, base = project_config()
+        docs = base / target(config, "docs", "docs")
+    except ConfigError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
+    for error in require_targets([docs]):
+        print(f"ERROR: {error}", file=sys.stderr)
+        return 1
     rows = []
-    for f in sorted(DOCS.rglob("*.md")):
+    for f in sorted(docs.rglob("*.md")):
         if f.name == "INDEX.md":
             continue
         fm = frontmatter(f)
@@ -50,11 +63,11 @@ def main(argv):
     lines += [f"| {i} | {s} | {u} | {p} |" for i, s, u, p in rows]
     out = "\n".join(lines) + "\n"
 
-    if "--print" in argv:
+    if "--print" in argv or "--gate" in argv:
         print(out)
     else:
-        (DOCS / "INDEX.md").write_text(out, encoding="utf-8")
-        print(f"wrote docs/INDEX.md ({len(rows)} documents)")
+        (docs / "INDEX.md").write_text(out, encoding="utf-8")
+        print(f"wrote {docs / 'INDEX.md'} ({len(rows)} documents)")
     return 0
 
 

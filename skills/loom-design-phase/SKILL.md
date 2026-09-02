@@ -12,7 +12,7 @@ conventions first.
 ## Inputs (gate)
 
 The one approved epic (rolling wave), consolidated architecture (accepted ADRs,
-building-blocks, conventions), package SKILL.md of packages likely touched.
+building-blocks and conventions), and relevant architecture documents.
 
 ## Procedure
 
@@ -27,11 +27,11 @@ building-blocks, conventions), package SKILL.md of packages likely touched.
    (`track-<slug>` in the tracks table) is a workstream that can proceed in
    parallel with its siblings: two tracks must be executable by two agents
    without merge conflicts or mid-sprint blocking. Tracks usually align with
-   package boundaries. If two tracks keep touching the same files, they are
+   architecture boundaries. If two tracks keep touching the same concerns, they are
    one track.
 4. **Tasks** — `tasks/TASK-<pkg-change>.md` from `templates/task.md`. Sizing
    rule: one task = one context window = one session = one PR. The spec plus
-   the package SKILL.md plus the relevant design.md excerpt must fit in
+   the relevant design.md excerpt must fit in
    context with room to spare. If a task cannot be specified without "and
    then figure out...", it is underdesigned — split or return to the track.
 5. **`## Spec` is the whole task file.** Behavior, acceptance with numbers,
@@ -39,19 +39,19 @@ building-blocks, conventions), package SKILL.md of packages likely touched.
    function names or build order. A spec that cannot be written without naming
    internals is usually a missing contract.
 6. Assign `rigor` per task: `full` when it touches public contracts, domain
-   invariants, or more than one package; `light` otherwise. This is an
+   invariants, or more than one boundary; `light` otherwise. This is an
    **advisory signal** about the cost of being wrong, so review effort can be
    proportional to the consequences.
 7. Task `depends_on` forms a DAG within the epic; cross-track dependencies
    are a design smell — restructure tracks before accepting one.
-8. Gates: `oq_scan --gate` on design.md, `link_check.py docs packages`,
+8. Gates: `oq_scan --gate` on design.md, `link_check.py docs`,
    then /loom:review on design.md.
 9. Review the design and task specs. Do not mark them `approved` while blocking
    OQs remain.
 
 ## Exit criteria
 
-- Contracts reviewed; task DAG valid; every task names its packages and rigor.
+- Contracts reviewed; task DAG valid; every task names its boundaries and rigor.
 - Every task is **implementation-ready**: acceptance criteria are checkable and carry
   numbers where numbers exist, contracts touched are named, out of scope is
   filled, and no internal file or step order is prescribed.

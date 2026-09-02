@@ -41,7 +41,7 @@ scenario, but this phase does not require an implementation project.
   the evidence.
 - Every affected ADR, quality scenario or assumption links to the result.
 - Any unresolved consequence is a blocking OQ.
-- `link_check.py docs packages` and `oq_scan.py --gate` pass on the artifacts.
+- `link_check.py docs` and `oq_scan.py --gate` pass on the artifacts.
 
 ## Rules
 

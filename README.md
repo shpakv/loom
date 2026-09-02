@@ -29,8 +29,21 @@ GitHub Copilot:
 
 ## Project initialization
 
+Claude Code:
+
     /loom:init
-    /loom:imagine
+    /loom:prime
+
+Codex:
+
+    Use the `loom-init` skill, then invoke `loom-prime-method`.
+
+GitHub Copilot:
+
+    Ask Copilot to initialize Loom, then run the `loom-prime-method` workflow.
+
+All hosts use the same shared skills and `scripts/loom` gates; Claude commands
+are thin aliases for those methods.
 
 The lifecycle is:
 

@@ -12,8 +12,8 @@ not a demo — a slice that cannot come out wrong has told us nothing.
 
 ## The path
 
-One use case, all layers: {entry point} → {domain logic} → {persistence} →
-{response}, plus CI{, plus deploy path if relevant}.
+One use case across the relevant boundaries: {entry point} → {domain logic} →
+{persistence} → {response}, plus the external validation path if relevant.
 
 Use case: `UC-{actor-action}`. Degenerate data and an ugly UI are correct here.
 
@@ -33,8 +33,8 @@ Anything on this list that the slice stops short of leaves the decisions living
 there unverified — name them so the gap is visible rather than assumed.
 
 - [ ] {persistence — the real datastore, not an in-memory double}
-- [ ] {inter-package boundary as drawn in building-blocks.md}
-- [ ] {CI running the slice's tests}
+- [ ] {boundary as drawn in building-blocks.md}
+- [ ] {repeatable observation for the slice}
 - [ ] {deploy path, if a decision depends on it}
 
 ## Faked
@@ -55,11 +55,11 @@ The observation that would mean the hypothesis is wrong, stated before the build
 If this is observed, the slice succeeded — record the refutation on the ADR and
 raise a blocking OQ. Do not build around it.
 
-## Boundaries and packages
+## Boundaries
 
-Packages this slice creates, each with its `SKILL.md` written BEFORE the build:
+Boundaries exercised by this experiment:
 
-- `{path/to/package}` — {purpose in one line}
+- `{boundary}` — {purpose and evidence needed}
 
 Forbidden dependencies from `building-blocks.md` apply. A forbidden import is a
 blocker to report, not an obstacle to work around.

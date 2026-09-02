@@ -2,12 +2,12 @@
 id: TASK-{pkg-change}
 status: draft
 track: track-{slug}
-rigor: full            # full | light — advisory signal for review effort; full if public contracts, invariants, or >1 package
+rigor: full            # full | light — advisory signal for review effort; full if public contracts, invariants, or >1 boundary
 depends_on: []         # TASK ids within the epic
-packages: []           # packages touched; their SKILL.md is mandatory context
+boundaries: []         # architecture boundaries affected
 updated: {date}
 ---
-# TASK: {package + change, glossary terms}
+# TASK: {capability + change, glossary terms}
 
 ## Spec
 **Behavior:** what becomes true, observable, in glossary terms.

@@ -29,9 +29,9 @@ Proposed ADRs in ./adr/, listed here with one line each. Or "none".
 
 ## Tracks
 Parallel workstreams; each row must be executable without conflicts with siblings.
-| Track | Owns | Packages | Tasks |
+| Track | Owns | Boundaries | Tasks |
 |---|---|---|---|
-| track-{slug} | {responsibility} | packages/{x} | TASK-{a}, TASK-{b} |
+| track-{slug} | {responsibility} | {architecture boundary} | TASK-{a}, TASK-{b} |
 
 ## Open questions
 - [ ] OQ-{epic-slug}-design-{topic} (blocking): ...

@@ -33,6 +33,7 @@ import re
 import sys
 from datetime import date
 from pathlib import Path
+from config import ConfigError, project_config, target, require_targets, usage
 
 STATUSES = {"proposed", "accepted", "rejected", "deprecated", "superseded"}
 DECISION_MODES = {"decided", "framed", "menu", "delegated"}
@@ -138,12 +139,31 @@ def strategy_unmapped_qs(targets):
 
 
 def main(argv):
+    if "--help" in argv:
+        print(usage("adr_scan.py", "[--gate] [--framing|--revisit] [paths ...]", "Validate ADR lifecycle and symmetry."))
+        return 0
     gate = "--gate" in argv
     revisit_only = "--revisit" in argv
     framing = "--framing" in argv
-    targets = [a for a in argv if not a.startswith("--")] or ["docs"]
+    targets = [a for a in argv if not a.startswith("--")]
+    if not targets:
+        try:
+            config, base = project_config()
+            targets = [str(base / target(config, "docs", "docs"))]
+        except ConfigError as exc:
+            print(f"ERROR: {exc}", file=sys.stderr)
+            return 1
+    for error in require_targets(targets):
+        print(f"ERROR: {error}", file=sys.stderr)
+        return 1
 
+    try:
+        config, _ = project_config()
+        statuses = set(config.get("statuses", {}).get("adr", STATUSES))
+    except ConfigError:
+        statuses = STATUSES
     adrs = {}
+    errors = []
     spikes = {}          # SPIKE-<slug> -> status (for framing verification checks)
     drv_conf = {}        # DRV-<slug> -> confidence (from DRIVERS.md rows)
     for t in targets:
@@ -156,6 +176,8 @@ def main(argv):
             fm = frontmatter(text.splitlines())
             fid = fm.get("id")
             if isinstance(fid, str) and fid.startswith("ADR-"):
+                if fid in adrs:
+                    errors.append(f"duplicate ADR id '{fid}' in {adrs[fid][1]} and {f}")
                 adrs[fid] = (fm, str(f), body_status(text.splitlines()),
                              "DRV-" in text, bool(QS_RE.search(text)),
                              sorted(set(DRV_REF_RE.findall(text))))
@@ -167,11 +189,11 @@ def main(argv):
                 if m:
                     drv_conf[m.group(1).lower()] = m.group(2).lower()
 
-    errors, warnings = [], []
+    warnings = []
     for aid, (fm, path, bstat, has_drv, has_qs, drv_refs) in sorted(adrs.items()):
         st = fm.get("status", "?")
         one_way = fm.get("reversibility") == "one-way"
-        if st not in STATUSES:
+        if st not in statuses:
             errors.append(f"{aid}: invalid ADR status '{st}' ({path})")
             continue
         if bstat is None:
@@ -230,6 +252,12 @@ def main(argv):
                 if back != aid:
                     errors.append(f"{aid} supersedes {old}, but {old}.superseded_by "
                                   f"is '{back}' — links must be symmetric")
+        newer = fm.get("superseded_by")
+        if newer in adrs:
+            forward = adrs[newer][0].get("supersedes", [])
+            if aid not in (forward if isinstance(forward, list) else [forward]):
+                errors.append(f"{aid} is superseded_by {newer}, but {newer}.supersedes "
+                              f"does not include {aid} — links must be symmetric")
 
     if revisit_only:
         for aid, (fm, _, _, _, _, _) in sorted(adrs.items()):

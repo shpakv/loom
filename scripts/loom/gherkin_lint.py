@@ -20,9 +20,7 @@ Usage:
 import re
 import sys
 from pathlib import Path
-
-STEPS = Path("docs/product/STEPS.md")
-USE_CASES = Path("docs/product/use-cases")
+from config import ConfigError, project_config, target, require_targets, usage
 
 STEP_ROW_RE = re.compile(
     r"^\|\s*(STEP-[a-z0-9][a-z0-9-]*[a-z0-9])\s*\|\s*(Given|When|Then)\s*\|\s*(.+?)\s*\|$",
@@ -50,11 +48,11 @@ def literal_words(phrase):
     return set(re.findall(r"[a-z0-9]+", stripped.lower()))
 
 
-def load_steps():
+def load_steps(steps_path):
     steps, errors = [], []
-    if not STEPS.exists():
-        return steps, [f"{STEPS} does not exist — create it from templates/steps.md"]
-    for line in STEPS.read_text(encoding="utf-8").splitlines():
+    if not steps_path.exists():
+        return steps, [f"{steps_path} does not exist — create it from templates/steps.md"]
+    for line in steps_path.read_text(encoding="utf-8").splitlines():
         m = STEP_ROW_RE.match(line.strip())
         if m:
             sid, keyword, phrase = m.groups()
@@ -112,15 +110,29 @@ def check_uc(f, text, steps):
 
 
 def main(argv):
-    steps, errors = load_steps()
-    for f in sorted(USE_CASES.glob("UC-*.md")):
+    if "--help" in argv:
+        print(usage("gherkin_lint.py", "[--gate]", "Validate configured Gherkin phrases and non-happy-path coverage."))
+        return 0
+    try:
+        config, base = project_config()
+        product = base / target(config, "product", "docs/product")
+        steps_path = product / "STEPS.md"
+        use_cases = product / "use-cases"
+    except ConfigError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
+    for error in require_targets([product, use_cases]):
+        print(f"ERROR: {error}", file=sys.stderr)
+        return 1
+    steps, errors = load_steps(steps_path)
+    for f in sorted(use_cases.glob("UC-*.md")):
         text = f.read_text(encoding="utf-8")
         errors += check_uc(f, text, steps)
 
     for e in errors:
         print(f"ERROR: {e}", file=sys.stderr)
     print(f"-- steps: {len(steps)}, use cases scanned: "
-          f"{len(list(USE_CASES.glob('UC-*.md')))}, findings: {len(errors)}")
+          f"{len(list(use_cases.glob('UC-*.md')))}, findings: {len(errors)}")
     return 1 if ("--gate" in argv and errors) else 0
 
 

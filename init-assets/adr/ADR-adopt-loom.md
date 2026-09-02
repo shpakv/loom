@@ -31,7 +31,7 @@ re-derive intent, drift from decisions, and produce inconsistent terminology.
 Chosen A: the cost of context loss across agent sessions exceeds the upkeep cost.
 
 ## Consequences
-- (+) /loom-prime gives deterministic context bootstrap.
+- (+) /loom:prime gives deterministic context bootstrap.
 - (−) Every artifact edit carries frontmatter/status discipline.
 - Enforcement: none (process-level decision).
 

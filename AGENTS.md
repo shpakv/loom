@@ -67,7 +67,7 @@ affected host integration in a scratch project initialized with `/loom:init`.
 
 ## Releasing
 
-Bump the package version in all three host manifests for user-visible changes
+Bump the plugin version in all host manifests for user-visible changes
 and update `CHANGELOG.md` in the same commit. The framework `version` and
 `scripts_version` in `init-assets/loom.yaml` track the scaffolded document
 workflow independently; bump `scripts_version` when `scripts/loom/*` changes.
