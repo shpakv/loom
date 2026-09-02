@@ -1,0 +1,11 @@
+{
+  "name": "loom",
+  "description": "Standalone requirements repository for product language, rules, architecture, decisions and task specifications.",
+  "plugins": [
+    {
+      "name": "loom",
+      "version": "0.25.0",
+      "source": "../"
+    }
+  ]
+}

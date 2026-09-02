@@ -6,9 +6,9 @@
   "plugins": [
     {
       "name": "loom",
-      "version": "0.24.0",
+      "version": "0.25.0",
       "source": "./",
-      "description": "Knowledge layer for AI development: glossary, drivers, rules, ADR lifecycle, package boundaries and task specs, compiled into whatever SDD engine writes the code."
+      "description": "Standalone requirements repository for product language, rules, architecture, decisions and task specifications."
     }
   ]
 }

@@ -17,10 +17,33 @@ import re
 import sys
 from collections import defaultdict
 from pathlib import Path
+from config import ConfigError, project_config, target, require_targets, usage
 
 REF_RE = re.compile(r"\b(?:ADR|UC|SPIKE|TASK|OQ|QS|DRV|BR|ACTOR|track|epic)-[a-z0-9][a-z0-9-]*[a-z0-9]\b")
 QS_DEF_RE = re.compile(r"^\|\s*((?:QS|DRV|BR|ACTOR|track)-[a-z0-9][a-z0-9-]*[a-z0-9])\s*\|")
 OQ_DEF_RE = re.compile(r"^-\s*\[[ xX]\]\s*(OQ-[a-z0-9][a-z0-9-]*[a-z0-9])\b")
+TASK_DEP_RE = re.compile(r"\bTASK-[a-z0-9][a-z0-9-]*[a-z0-9]\b")
+
+
+def find_cycle(graph):
+    state, stack = {}, []
+    def visit(node):
+        state[node] = 1
+        stack.append(node)
+        for dep in graph.get(node, []):
+            if dep not in graph:
+                continue
+            if state.get(dep) == 1:
+                return stack[stack.index(dep):] + [dep]
+            if not state.get(dep) and (cycle := visit(dep)):
+                return cycle
+        stack.pop()
+        state[node] = 2
+        return None
+    for node in graph:
+        if not state.get(node) and (cycle := visit(node)):
+            return cycle
+    return None
 
 
 def generated(path: Path) -> bool:
@@ -55,12 +78,28 @@ def frontmatter(lines):
 
 
 def main(argv):
+    if "--help" in argv:
+        print(usage("link_check.py", "[paths ...] | --refs ID", "Validate document IDs and references."))
+        return 0
     want_refs = None
     if "--refs" in argv:
         i = argv.index("--refs")
+        if i + 1 >= len(argv):
+            print("ERROR: --refs requires an ID", file=sys.stderr)
+            return 1
         want_refs = argv[i + 1]
         argv = argv[:i] + argv[i + 2:]
-    targets = argv or ["docs"]
+    targets = argv or []
+    if not targets:
+        try:
+            config, base = project_config()
+            targets = [str(base / target(config, "docs", "docs"))]
+        except ConfigError as exc:
+            print(f"ERROR: {exc}", file=sys.stderr)
+            return 1
+    for error in require_targets(targets):
+        print(f"ERROR: {error}", file=sys.stderr)
+        return 1
 
     files = []
     for t in targets:
@@ -71,6 +110,13 @@ def main(argv):
     defined = {}                      # id -> file where defined
     refs = defaultdict(list)          # id -> [(file, line_no)]
     errors = []
+    task_graph = {}
+    document_statuses = set()
+    try:
+        config, _ = project_config()
+        document_statuses = set(config.get("statuses", {}).get("documents", []))
+    except ConfigError as exc:
+        errors.append(str(exc))
 
     for f in files:
         try:
@@ -78,6 +124,8 @@ def main(argv):
         except (UnicodeDecodeError, OSError):
             continue
         fm = frontmatter(lines)
+        if fm.get("status") and document_statuses and fm["status"] not in document_statuses and not str(fm.get("id", "")).startswith("ADR-"):
+            errors.append(f"invalid document status '{fm['status']}' at {f}")
         ids = []
         if isinstance(fm.get("id"), str):
             ids.append(fm["id"])
@@ -95,6 +143,16 @@ def main(argv):
             if i in defined and defined[i] != str(f):
                 errors.append(f"duplicate id '{i}': {defined[i]} and {f}")
             defined.setdefault(i, str(f))
+        if isinstance(fm.get("id"), str) and fm["id"].startswith("TASK-"):
+            deps = fm.get("depends_on", [])
+            task_graph[fm["id"]] = deps if isinstance(deps, list) else ([deps] if deps else [])
+
+    for task, deps in task_graph.items():
+        for dep in deps:
+            if dep and dep not in task_graph:
+                errors.append(f"{task}: depends_on '{dep}' does not resolve to a task")
+    if (cycle := find_cycle(task_graph)):
+        errors.append("task dependency cycle: " + " -> ".join(cycle))
 
     if want_refs:
         for file, n in refs.get(want_refs, []):

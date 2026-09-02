@@ -27,7 +27,7 @@ Consequences that bind every skill here:
   glossary terms; it does not name source files, functions, or a build order.
   The one exception is a contract file, which IS the interface.
 - **`rigor: full | light` is advice, not a mode.** It records the cost of being
-  wrong (public contract / domain invariant / more than one package → `full`)
+  wrong (public contract / domain invariant / more than one boundary → `full`)
   so a reviewer can spend attention where it matters.
 - **The repository is authoritative.** If an implementation or an external
   proposal disagrees with an approved document, record the contradiction as a
@@ -52,7 +52,7 @@ Naming grammar by type:
 | Gherkin step | fact/action slug | `STEP-user-logged-in` |
 | Spike | question / comparison | `SPIKE-questdb-vs-timescale-ingest` |
 | Track | workstream in a design doc | `track-billing-api` |
-| Task | package + change | `TASK-billing-add-vat-rates` |
+| Task | capability + change | `TASK-billing-add-vat-rates` |
 | OQ | topic slug | `OQ-vision-multi-tenancy` |
 | Quality scenario | topic slug | `QS-ingest-sustained-load` |
 | Driver (fact) | fact slug | `DRV-peak-ingest-rate` |
@@ -93,7 +93,7 @@ docs/
 ├── adr/                      # global ADRs: ADR-<slug>.md
 ├── spikes/                   # SPIKE-<slug>.md
 ├── architecture/             # quality-requirements, building-blocks, solution-strategy
-├── conventions/              # golden-path rules inherited by every package
+├── conventions/              # golden-path rules for the documented system
 └── roadmap/
     ├── ROADMAP.md            # generated index + dependency DAG
     └── epics/epic-<slug>/
@@ -120,7 +120,7 @@ aliases: []                  # former IDs after a legitimate rename
 ---
 ```
 
-Optional keys by type: `depends_on: []` (epics, tasks), `packages: []` (tasks),
+Optional keys by type: `depends_on: []` (epics, tasks), `boundaries: []` (tasks),
 `criticality: must|should|could|wont` (epics), `appetite: <duration>` (epics).
 
 ## Status vocabularies
@@ -172,7 +172,7 @@ Template: `templates/adr.md` in this skill. Key rules:
   its findings are materialized as OQs and resolved first.
 - **Verification is proportional to reversibility** (`reversibility` field):
   - `two-way` (cheap to undo) → `verification: judgment` is acceptable.
-  - `one-way` (expensive to undo: language, DB, data schema, inter-package
+  - `one-way` (expensive to undo: language, DB, data schema, cross-boundary
     protocol) → requires material evidence: the walking skeleton
     (`verification: skeleton` — the primary path), `verification: SPIKE-<slug>`,
     benchmark, prototype, or a justified external reference.

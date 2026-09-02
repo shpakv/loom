@@ -34,7 +34,7 @@ Approved `VISION.md` and use cases (minimum form is fine).
 ## Rolling wave rules
 
 - **At most ONE approved, not-yet-started epic at any time.** The next epic
-  is detailed and approved only when the current one finishes (at retro) or
+  is detailed and approved only when the current one finishes or is explicitly
   at consolidation — with the knowledge just gained.
 - Re-cutting candidates (merge, split, re-sequence, park as `wont`) is the
   norm, not an exception; drafts are cheap by design.

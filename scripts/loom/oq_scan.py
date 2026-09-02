@@ -10,6 +10,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from config import ConfigError, project_config, target, require_targets, usage
 
 OQ_RE = re.compile(
     r"^-\s*\[(?P<done>[ xX])\]\s*(?P<id>OQ-[A-Za-z0-9][A-Za-z0-9-]*)\s*"
@@ -46,9 +47,22 @@ def collect(targets):
 
 
 def main(argv):
+    if "--help" in argv:
+        print(usage("oq_scan.py", "[--gate|--json] [file-or-dir ...]", "Scan configured documents for open questions."))
+        return 0
     gate = "--gate" in argv
     as_json = "--json" in argv
-    targets = [a for a in argv if not a.startswith("--")] or ["docs"]
+    targets = [a for a in argv if not a.startswith("--")]
+    if not targets:
+        try:
+            config, base = project_config()
+            targets = [str(base / target(config, "docs", "docs"))]
+        except ConfigError as exc:
+            print(f"ERROR: {exc}", file=sys.stderr)
+            return 1
+    for error in require_targets(targets):
+        print(f"ERROR: {error}", file=sys.stderr)
+        return 1
     oqs = collect(targets)
 
     if as_json:

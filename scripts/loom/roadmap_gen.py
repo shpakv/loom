@@ -16,6 +16,7 @@ import re
 import sys
 from datetime import date
 from pathlib import Path
+from config import ConfigError, project_config, target, require_targets, usage
 
 EPICS = Path("docs/roadmap/epics")
 OUT = Path("docs/roadmap/ROADMAP.md")
@@ -66,8 +67,21 @@ def find_cycle(graph):
 
 
 def main(argv):
+    if "--help" in argv:
+        print(usage("roadmap_gen.py", "[--print|--gate]", "Validate and generate the configured roadmap."))
+        return 0
+    try:
+        config, base = project_config()
+        epics_dir = base / target(config, "epics", "docs/roadmap/epics")
+        out_path = base / target(config, "roadmap", "docs/roadmap") / "ROADMAP.md"
+    except ConfigError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
+    for error in require_targets([epics_dir]):
+        print(f"ERROR: {error}", file=sys.stderr)
+        return 1
     epics, errors = {}, []
-    for f in sorted(EPICS.glob("*/epic.md")):
+    for f in sorted(epics_dir.glob("*/epic.md")):
         fm = frontmatter(f.read_text(encoding="utf-8").splitlines())
         eid = fm.get("id", "?")
         if eid != f.parent.name:
@@ -110,13 +124,16 @@ def main(argv):
     lines += ["```", ""]
     out = "\n".join(lines)
 
+    approved = [eid for eid, e in epics.items() if e["status"] == "approved"]
+    if len(approved) > 1:
+        errors.append("more than one approved epic: " + ", ".join(sorted(approved)))
     for err in errors:
         print(f"ERROR: {err}", file=sys.stderr)
     if "--print" in argv:
         print(out)
-    elif not errors:
-        OUT.write_text(out, encoding="utf-8")
-        print(f"wrote {OUT} ({len(epics)} epics)")
+    elif not errors and "--gate" not in argv:
+        out_path.write_text(out, encoding="utf-8")
+        print(f"wrote {out_path} ({len(epics)} epics)")
     print(f"-- epics: {len(epics)}, errors: {len(errors)}")
     return 1 if errors else 0
 

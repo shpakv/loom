@@ -6,8 +6,8 @@ updated: {date}
 ---
 # Building blocks (C4 L2)
 
-Containers/packages of the system. Every block here later owns a package
-SKILL.md at the listed path — keep names in glossary terms.
+Responsibilities of the system. Every block here is an architectural boundary
+documented under `docs/architecture/` — keep names in glossary terms.
 
 ```mermaid
 graph LR
@@ -19,7 +19,7 @@ it is filled in at /loom:consolidate once the technology ADRs are accepted.
 
 | Block | Responsibility (one sentence) | Monorepo path | Key ADRs |
 |---|---|---|---|
-| {name} | {what it owns, in glossary terms} | packages/{name} | — (filled at consolidate) |
+| {name} | {what it owns, in glossary terms} | {boundary or document} | — (filled at consolidate) |
 
 ## Forbidden dependencies
 Explicit negative edges (these become arch-test rules referencing ADRs once the

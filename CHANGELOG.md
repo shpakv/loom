@@ -5,10 +5,20 @@ All notable changes to the Loom plugin are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Two version numbers move independently (see `AGENTS.MD` → Releasing):
+Two version numbers move independently (see `AGENTS.md` → Releasing):
 - **plugin** — the `version` in `.claude-plugin/plugin.json` (the package).
 - **scripts** — `scripts_version` in `init-assets/loom.yaml`, bumped only when
   `scripts/loom/*` change; consuming projects re-sync via `/loom:init --refresh`.
+
+## [0.25.0] — 2026-09-02
+
+### Added
+- Fail-closed stdlib gates, temporary-fixture tests, configured paths and CI validation.
+- Portable prime/status methods, marketplace metadata and an MIT license.
+
+### Changed
+- Completed the standalone requirements-repository model across all host surfaces.
+- Bumped shipped scripts to `0.14.0` and the plugin manifests to `0.25.0`.
 
 ## [0.24.0] — 2026-08-31
 

@@ -1,6 +1,6 @@
 # Claude Code instructions for Loom
 
-The canonical repository instructions are in [AGENTS.MD](../AGENTS.MD).
+The canonical repository instructions are in [AGENTS.md](../AGENTS.md).
 Read that file first: it covers the shared Loom model, repository layout,
 authoring conventions, multi-host packaging, validation and release rules.
 
@@ -9,7 +9,7 @@ Claude Code-specific conventions:
 - Commands live in `commands/*.md` and are exposed in the `loom:` namespace.
 - Commands are thin wrappers around skills; durable procedure belongs in
   `skills/<name>/SKILL.md`.
-- Claude agents live in `agents/*.md`, use `Read, Grep, Glob, Bash`, and are
+- Claude agents live in `agents/*.md`, use `Read, Grep, Glob`, and are
   read-only. Copilot profiles live separately in `copilot-agents/`.
 - `${CLAUDE_PLUGIN_ROOT}` is the only supported way for Claude commands to
   reference plugin resources.

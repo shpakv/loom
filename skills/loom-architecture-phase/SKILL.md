@@ -59,8 +59,8 @@ guessing.
 ## Exit criteria (before /loom:technology)
 
 - Building blocks named by responsibility, with an explicit allowed/forbidden
-  dependency graph; every block will own a package SKILL.md once the skeleton
-  creates it.
+  dependency graph; every block remains an architectural responsibility
+  documented under `docs/architecture/`.
 - Every quality scenario maps to a structural approach; each remaining technology
   fork is captured as an open decision, not resolved.
 - Structural assumptions recorded; documents `approved` (meaning: a coherent
