@@ -57,6 +57,72 @@ class ScriptFixtures(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("more than one approved epic", result.stderr)
 
+    def write_adr(self, name="ADR-use-postgres-for-billing", **fields):
+        defaults = {
+            "id": "ADR-use-postgres-for-billing",
+            "status": "accepted", "reversibility": "one-way",
+            "decision_mode": "recommend", "evidence_level": "reasoned",
+            "confidence": "low", "authority": "product-owner",
+            "risk_accepted_by": "product-owner",
+            "revisit_when": "load exceeds 1000 requests per second",
+            "decided": "2026-09-02", "updated": "2026-09-02",
+        }
+        defaults.update(fields)
+        front = "\n".join(f"{key}: {value}" for key, value in defaults.items())
+        body = """# ADR: Use Postgres for billing
+
+Status: accepted · reversibility: one-way · evidence: reasoned · confidence: low
+
+## Context
+The choice is framed by DRV-billing-volume and QS-billing-reliability.
+
+## Recommendation
+Use Postgres because the operational fit is strongest.
+
+## Evidence
+Question, method, observations, interpretation, limitations and provenance are
+recorded here; no experiment code is stored in Loom.
+
+## Unknowns
+Peak behavior remains uncertain.
+
+## Residual risk
+The choice may need migration if load grows faster than expected.
+
+## Research decision
+The project accepts this risk now because the decision is time-sensitive.
+
+## Decision
+Accepted by the authority.
+"""
+        (self.project / "custom/docs" / f"{name}.md").write_text(
+            f"---\n{front}\n---\n{body}", encoding="utf-8")
+
+    def test_weak_one_way_decision_can_pass_with_explicit_risk(self):
+        self.write_adr()
+        result = self.run_script("adr_scan.py", "--gate", "custom/docs")
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_weak_one_way_decision_fails_when_risk_is_hidden(self):
+        self.write_adr(risk_accepted_by="null", revisit_when="[]")
+        result = self.run_script("adr_scan.py", "--gate", "custom/docs")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("weak evidence", result.stderr)
+
+    def test_all_decision_modes_and_evidence_levels_are_supported(self):
+        modes = ("delegated", "recommend", "confirm", "record-only")
+        levels = ("none", "reasoned", "reported", "observed", "measured")
+        for index, mode in enumerate(modes):
+            for level in levels:
+                name = f"ADR-use-billing-option-{index}-{level}"
+                self.write_adr(
+                    name=name, id=name, decision_mode=mode,
+                    evidence_level=level, confidence="medium",
+                    policy_override="true" if mode == "delegated" else "null",
+                    override_reason="project policy permits delegation" if mode == "delegated" else "null")
+        result = self.run_script("adr_scan.py", "--gate", "custom/docs")
+        self.assertEqual(result.returncode, 0, result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -48,9 +48,11 @@ are thin aliases for those methods.
 The lifecycle is:
 
     prime → imagine → roadmap → requirements → architecture → technology →
-    skeleton → consolidate → design
+    consolidate → design
 
 Utilities are `spike`, `challenge`, `review`, `status`, `audit` and `intake`.
+Spikes, benchmarks, prototypes and skeletons are optional evidence methods, not
+mandatory lifecycle phases.
 The final artifact is an approved set of requirements and decisions under
 `docs/`; Loom has no implementation handoff step.
 
@@ -63,6 +65,13 @@ The final artifact is an approved set of requirements and decisions under
 - architecture hypotheses, boundaries and contracts;
 - roadmap epics, designs and task specifications;
 - open questions and the reasons behind decisions.
+
+An ADR records two separate events: an agent recommendation and an authorized
+decision. Evidence is summarized with `evidence_level` (`none`, `reasoned`,
+`reported`, `observed`, `measured`), `confidence`, limitations and provenance;
+external benchmarks and experiments are valid sources. Low-confidence decisions
+may proceed when the residual risk, accepting authority and `revisit_when` are
+explicit.
 
 Generated indexes are convenience projections of the documents. The documents
 under `docs/` remain the source of truth.

@@ -13,8 +13,8 @@ technology forks small and local instead of sprawling.
 Read `loom-core` conventions first.
 
 This phase sits between /loom:requirements and /loom:technology. Its output is a
-HYPOTHESIS: `draft` documents that the walking skeleton will later confirm or
-refute. Nothing here is `approved`-as-truth — approving it means "this is a
+HYPOTHESIS: `draft` documents that later evidence may confirm or refute. Nothing
+here is `approved`-as-truth — approving it means "this is a
 coherent plan worth testing", not "this is how it is". That distinction is what
 keeps this phase from becoming big-design-up-front: you are drawing the map you
 will walk, knowing the walk may redraw it.

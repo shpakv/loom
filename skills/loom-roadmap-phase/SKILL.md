@@ -6,8 +6,8 @@ description: Build or recut a rolling-wave roadmap from an approved vision: choo
 # Loom: roadmap phase (rolling wave)
 
 Goal: choose the first slice and keep the rest deliberately cheap. Detailed
-plans made before the skeleton exist are inventory that rots — sequence over
-schedule, one wave at a time. Read `loom-core` conventions first.
+plans made before the relevant evidence exists are inventory that rots —
+sequence over schedule, one wave at a time. Read `loom-core` conventions first.
 
 ## Inputs (gate)
 
@@ -20,7 +20,8 @@ Approved `VISION.md` and use cases (minimum form is fine).
    layer — `epic-backend` is forbidden. For candidates, cheap frontmatter is
    enough: `id`, `goal`, `criticality`; leave the body one paragraph.
 2. **Pick the first slice** — the thinnest capability that forces every
-   architectural layer to exist: it feeds /loom:skeleton. Selection criteria:
+   architectural layer to exist: it may feed an optional evidence method.
+   Selection criteria:
    maximum architectural learning per unit of appetite, not maximum user value.
 3. Only the first-slice epic gets full treatment: complete frontmatter
    (`goal, metric, criticality, appetite, depends_on`), scope with anti-scope,

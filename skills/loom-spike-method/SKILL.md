@@ -40,8 +40,8 @@ are the fidelity axis and the rung, both recorded in the document.
    explicitly which results ran through something on the `Faked:` list: those
    measure the fake, not the system.
 6. Set `status: approved` via /loom:review (spikes rarely have blocking OQs) and
-   cite the spike from the relevant ADR's Options section as
-   `evidence: SPIKE-<slug>`.
+   cite the spike from the relevant ADR's `evidence_refs` and summarize its
+   provenance and limitations under `## Evidence`.
 
 ## Rules
 

@@ -10,6 +10,20 @@ Two version numbers move independently (see `AGENTS.md` → Releasing):
 - **scripts** — `scripts_version` in `init-assets/loom.yaml`, bumped only when
   `scripts/loom/*` change; consuming projects re-sync via `/loom:init --refresh`.
 
+## [0.26.0] — 2026-09-02
+
+### Added
+- Separate ADR recommendations from authority decisions.
+- Neutral evidence levels, confidence, provenance, configurable decision policy
+  and explicit low-evidence risk acceptance.
+
+### Changed
+- Spike and skeleton are optional evidence methods; they are no longer required
+  lifecycle phases.
+- Validators check transparency and hidden risk rather than requiring a specific
+  experiment type.
+- Bumped shipped scripts to `0.15.0` and plugin manifests to `0.26.0`.
+
 ## [0.25.0] — 2026-09-02
 
 ### Added

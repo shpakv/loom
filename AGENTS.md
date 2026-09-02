@@ -10,9 +10,14 @@ files for another development process.
 
 The lifecycle is:
 
-`prime → imagine → roadmap → requirements → architecture → technology → skeleton → consolidate → design`
+`prime → imagine → roadmap → requirements → architecture → technology → consolidate → design`
+
+Evidence methods such as spike, benchmark, prototype and skeleton are optional
+and may run outside Loom; Loom records their durable summaries and provenance.
 
 Utilities are `spike`, `challenge`, `review`, `status`, `audit` and `intake`.
+Spike, benchmark, prototype and skeleton are optional evidence methods; their
+code and infrastructure may live outside Loom.
 The durable result is the approved knowledge under `docs/`.
 
 Loom owns glossary, drivers, quality scenarios, `BR-*` rules, ADRs, contracts,

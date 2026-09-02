@@ -1,9 +1,10 @@
 ---
-description: Loom phase — specify and record the smallest falsification exercise for proposed architecture or technology decisions
+description: Loom method — specify and record an optional smallest falsification exercise for proposed architecture or technology decisions
 ---
 Use the `loom-skeleton-phase` skill (read `loom-core` first).
 
-Verify inputs: approved GLOSSARY, VISION (minimum), quality-requirements, the
+Use only when its expected uncertainty reduction justifies the cost. Inputs:
+approved GLOSSARY, VISION (minimum), quality-requirements, the
 architecture hypothesis (building-blocks, solution-strategy) with its proposed
 technology ADRs, and optionally one approved first-slice epic to provide the
 scenario.

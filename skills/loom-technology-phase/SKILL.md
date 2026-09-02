@@ -1,20 +1,20 @@
 ---
 name: loom-technology-phase
-description: Resolve technology forks after logical architecture and quality requirements exist by recording proposed ADRs framed by drivers and quality scenarios. Use between architecture and skeleton; schedule spikes where evidence is needed and never accept one-way decisions in this phase.
+description: Resolve technology forks after logical architecture and quality requirements exist by recording proposed ADRs with recommendations, evidence provenance and confidence. Use between architecture and design; schedule optional evidence methods where useful.
 ---
 
 # Loom: technology phase (decisions as hypotheses)
 
 Goal: pick the technologies that realise the building blocks and satisfy the
-quality scenarios — as PROPOSED ADRs, framed by facts, to be verified by the
-walking skeleton and accepted only at /loom:consolidate. Technology decisions
+quality scenarios — as PROPOSED ADRs, framed by facts, with a recommendation,
+evidence provenance and confidence. Technology decisions
 fail more often from ignoring the TEAM and the measurable targets than from
 ignoring the workload, so this phase leans on two things that now already exist:
 DRIVERS.md (facts about the team and world) and quality-requirements.md
 (measurable targets). Read `loom-core` conventions first — the technology-fork
 protocol especially.
 
-This phase sits between /loom:architecture and /loom:skeleton. Structure is
+This phase sits between /loom:architecture and /loom:consolidate. Structure is
 already fixed as a hypothesis; here you decide what each part is built with. You
 do NOT accept one-way decisions here — the skeleton has not proven anything yet.
 
@@ -56,8 +56,8 @@ time, not only here.
    mode BEFORE any recommendation. First check `DRIVERS.md ## Tech posture` and
    the constraints: the fork may already be constrained (a veto, a mandated tech)
    or decided. If not, ask the human the decision mode in ONE question:
-   `decided` / `framed` / `menu` / `delegated`. Record the mode in the ADR
-   `decision_mode:`. Leading with "I'd use Postgres" before asking the mode
+   `delegated` / `recommend` / `confirm` / `record-only`. Record the mode in the
+   ADR `decision_mode:`. Leading with "I'd use Postgres" before agreeing the mode
    anchors the human — that is the failure this protocol prevents.
 3. **Frame every decision by facts and targets.** The ADR Context must cite the
    `DRV-*` drivers and the `QS-*` scenarios the choice stands on. A datastore ADR
@@ -67,25 +67,25 @@ time, not only here.
    the guess as `confidence: guessed` first.
 4. **Record a PROPOSED ADR per fork** (`templates/adr.md` in loom-core), name it
    as an answer (`ADR-use-questdb-for-timeseries`, not `ADR-datastore`):
-   - one-way door (language, persistence, inter-block protocol, monorepo tooling)
-     → `verification: skeleton` (the skeleton will demonstrate it) or a scheduled
-     `/loom:spike` where two options need a head-to-head; keep it `proposed`.
-   - two-way door → `verification: judgment`, one paragraph, `proposed`.
-   Never set a one-way ADR to `accepted` here — acceptance is /loom:consolidate's
-   job, after the skeleton has proven it.
-5. **Schedule spikes where evidence is required — these triggers are mandatory,
-   not discretionary.** A one-way ADR may not be accepted later on a claim the
-   skeleton will not itself substantiate. Open a `/loom:spike` (falsifiable
-   question + kill criterion) BEFORE proposing such an ADR whenever:
+   - record `evidence_level`, `confidence`, `evidence_refs`, `authority` and
+     `risk_accepted_by` where applicable;
+   - a one-way door may use an optional skeleton, spike, benchmark, prototype,
+     reference or reasoned judgment. Keep the ADR `proposed` until authority
+     accepts, rejects or defers it according to project policy.
+5. **Choose evidence proportionally.** Schedule a spike, benchmark, prototype
+   or skeleton only when its expected uncertainty reduction justifies the cost.
+   Record the question, method, observations, limitations and provenance; the
+   evidence code and infrastructure remain outside Loom. Weak evidence is
+   acceptable when residual risk is explicitly accepted and revisitable. When
+   useful, open a `/loom:spike` (falsifiable question + kill criterion):
    - the fork is **one-way and between close options** where the choice turns on a
      measurable difference (throughput, latency, footprint) rather than team fit;
-   - the deciding `QS-*` is one the **walking skeleton alone will not exercise**
-     (e.g. a sustained-load or failover scenario the thin slice never hits);
+   - the deciding `QS-*` is not covered by the available evidence method
+     (e.g. a sustained-load or failover scenario a thin slice never hits);
    - the decision rests on a **`confidence: guessed` driver** whose real value
      would flip the choice — spike to measure the fact, not just the tech.
-   A one-way ADR whose `verification: skeleton` cannot honestly be met by the
-   planned slice MUST instead carry `verification: SPIKE-<slug>`. The spike's
-   recommendation is cited from the ADR Options section, never merged in.
+   The method's recommendation is cited by ID or URI in `evidence_refs` and
+   summarized in `## Evidence`; it is never merged as if it were the decision.
 6. **Feed the strategy back.** For each fork now covered by a proposed ADR, note
    the ADR id against its QS row in `solution-strategy.md` — closing the loop
    from quality scenario → structure → technology.
@@ -94,26 +94,26 @@ time, not only here.
    reviewed for framing, not accepted — /loom:review may move them `in-review`,
    never `accepted`. The stricter `adr_scan.py --framing` gate runs at
    /loom:consolidate, not here — but every one-way ADR you write should already
-   satisfy it (cite a DRV-* and a QS-*, declare `decision_mode:`) so acceptance
+   satisfy it (cite a DRV-* and a QS-*, declare policy `decision_mode:`) so acceptance
    later is a formality, not a scramble.
 
-## Exit criteria (before /loom:skeleton)
+## Exit criteria (before /loom:consolidate or /loom:design)
 
 - Tech posture exists in DRIVERS.md.
 - Every open technology fork from the solution strategy has a proposed ADR (or a
   scheduled spike feeding one), framed by the drivers and quality scenarios it
   depends on.
-- Every one-way ADR carries `verification: skeleton` or `verification: SPIKE-*`
-  and stays `proposed`; none is accepted.
+- Every ADR carries a recommendation, evidence level, confidence and provenance
+  sufficient for its policy mode; one-way ADRs stay proposed until authority acts.
 
 ## Rules
 
 - **Facts and targets, never taste.** Every choice is justified by a `DRV-*`
   and/or a `QS-*`. "I like it" is not a driver; "team knows it
   (DRV-stack-competence)" is.
-- **Propose, don't accept.** This phase produces hypotheses to be tested. The
-  skeleton verifies; consolidation accepts. A technology decision accepted before
-  a single line proves it is exactly the risk this ordering removes.
+- **Recommend, then decide.** This phase produces a recommendation. Optional
+  evidence methods inform it; consolidation/review records the authority's
+  accepted, rejected or deferred outcome.
 - **Boring by default, novel by budget.** Prefer the option the team can operate
   unless a driver (novelty appetite) or a QS the boring option cannot meet
   justifies the risk — and say which, in the ADR.
