@@ -19,6 +19,7 @@ docs/product/use-cases
 docs/domain
 docs/adr
 docs/spikes
+docs/changes
 docs/architecture
 docs/conventions
 docs/roadmap/epics
@@ -44,8 +45,10 @@ then continue with the imagine phase.
 When the request contains `--refresh`, copy only the currently shipped
 `scripts/loom/*.py` into the project's `scripts/loom/`, report project-local
 scripts that are no longer shipped, and update `scripts_version` in
-`docs/loom.yaml`. Never touch documents under `docs/`.
+`docs/loom.yaml`. Ensure the configured changes directory exists, but never
+overwrite or rewrite documents under `docs/`.
 
 After either mode, report what was created or synchronized and remind the user
 that the phase route starts with imagine unless an existing project is being
-triaged through intake.
+triaged through intake. Intake may be used immediately after init in capture-only
+mode, even before VISION exists.

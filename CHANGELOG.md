@@ -10,6 +10,22 @@ Two version numbers move independently (see `AGENTS.md` → Releasing):
 - **scripts** — `scripts_version` in `init-assets/loom.yaml`, bumped only when
   `scripts/loom/*` change; consuming projects re-sync via `/loom:init --refresh`.
 
+## [0.27.0] — 2026-09-02
+
+### Added
+- Durable `CHG-*` change records under `docs/changes/`, including a schema
+  gate and lifecycle for captured, triaged, accepted, in-progress and applied
+  changes.
+- `impact_scan.py` for reproducible direct/transitive ID impact analysis with
+  blocked and needs-review scope states.
+- Capture-only intake immediately after `loom:init`; approved knowledge remains
+  unchanged until a human accepts the change.
+
+### Changed
+- Updated `loom-core`, intake, prime, status and audit guidance for continuous
+  change and scope-level revalidation.
+- Bumped scaffolded scripts to `0.16.0` and plugin manifests to `0.27.0`.
+
 ## [0.26.0] — 2026-09-02
 
 ### Added
@@ -414,6 +430,9 @@ published state of the plugin (early development moved the manifest version
   auto-discovers `hooks/hooks.json`, and registering it explicitly caused the
   file-role guard hook to misbehave. Documented the auto-discovery in `CLAUDE.md`.
 
+[0.27.0]: https://github.com/shpakv/loom/compare/v0.26.0...v0.27.0
+[0.26.0]: https://github.com/shpakv/loom/compare/v0.25.0...v0.26.0
+[0.25.0]: https://github.com/shpakv/loom/compare/v0.24.0...v0.25.0
 [0.20.0]: https://github.com/shpakv/loom/compare/v0.19.0...v0.20.0
 [0.19.0]: https://github.com/shpakv/loom/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/shpakv/loom/compare/v0.17.0...v0.18.0

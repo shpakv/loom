@@ -14,7 +14,10 @@ any other work:
 6. Run `python3 scripts/loom/index_gen.py --print` if available.
 7. Run `python3 scripts/loom/oq_scan.py docs/` to see where blocking questions
    sit — these are the most likely "where was I" markers.
-8. Check for the nearest unresolved work: blocking OQs, documents left
+8. If the configured changes path exists, run
+   `python3 scripts/loom/change_scan.py --json` and inspect the nearest
+   captured, triaged, accepted or in-progress change.
+9. Check for the nearest unresolved work: blocking OQs, unfinished changes, documents left
    `in-review`, stale generated indexes, or an ADR that needs an audit.
 
 Finish with a one-paragraph summary AND a "resume here" line so a returning

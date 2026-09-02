@@ -40,14 +40,26 @@ def main(argv):
     try:
         config, base = project_config()
         docs = base / target(config, "docs", "docs")
+        changes = base / target(config, "changes", "docs/changes")
     except ConfigError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
     for error in require_targets([docs]):
         print(f"ERROR: {error}", file=sys.stderr)
         return 1
+    roots = [docs]
+    try:
+        changes.relative_to(docs)
+        changes_inside_docs = True
+    except ValueError:
+        changes_inside_docs = False
+    if changes != docs and not changes_inside_docs and changes.exists():
+        roots.append(changes)
     rows = []
-    for f in sorted(docs.rglob("*.md")):
+    files = []
+    for root in roots:
+        files.extend(root.rglob("*.md"))
+    for f in sorted(files):
         if f.name == "INDEX.md":
             continue
         fm = frontmatter(f)

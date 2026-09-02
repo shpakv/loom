@@ -56,6 +56,13 @@ mandatory lifecycle phases.
 The final artifact is an approved set of requirements and decisions under
 `docs/`; Loom has no implementation handoff step.
 
+Incoming work is durable as well as routable. `/loom:intake` creates a
+`docs/changes/CHG-<slug>.md` record for deferred work or anything that affects
+approved knowledge. The record preserves the original input, human decision,
+ID-based impact and downstream revalidation; before acceptance, approved
+documents remain unchanged. Intake can capture immediately after `loom:init`,
+even before `VISION.md` exists.
+
 ## What Loom stores
 
 - glossary, actors and use cases;
@@ -64,6 +71,7 @@ The final artifact is an approved set of requirements and decisions under
 - ADRs with alternatives, evidence and revisit triggers;
 - architecture hypotheses, boundaries and contracts;
 - roadmap epics, designs and task specifications;
+- incoming deltas and customer changes (`CHG-*`);
 - open questions and the reasons behind decisions.
 
 An ADR records two separate events: an agent recommendation and an authorized

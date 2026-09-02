@@ -19,6 +19,12 @@ decision has drifted. It never resolves anything itself: it surfaces drift as
 blocking OQs and hands them to the human. Resolution happens through the normal
 phases (a superseding ADR, a driver update, a re-cut roadmap).
 
+If `docs/changes/` exists, audit also runs `change_scan.py --gate` and reports
+captured or triaged records that have no route, accepted/in-progress records
+that have not reached application, and applied records missing their owning or
+revalidated document lists. Change records are never auto-accepted or
+auto-applied by audit.
+
 ## Inputs (gate)
 
 An initialized Loom project with accepted ADRs and a `DRIVERS.md`. No status gate
