@@ -6,13 +6,13 @@
   },
   "metadata": {
     "description": "Knowledge and decision layer for AI development agents.",
-    "version": "0.27.1"
+    "version": "0.27.2"
   },
   "plugins": [
     {
       "name": "loom",
       "description": "Standalone requirements repository for product language, rules, architecture, decisions and task specifications.",
-      "version": "0.27.1",
+      "version": "0.27.2",
       "source": "../.."
     }
   ]

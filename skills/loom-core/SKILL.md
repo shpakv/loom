@@ -105,6 +105,12 @@ docs/
         └── tasks/TASK-<slug>.md
 ```
 
+`docs/loom.yaml` keeps three independent version values: `loom_version` records
+the Loom plugin package that initialized or refreshed the project; `version`
+identifies the scaffolded Loom framework configuration; and `scripts_version`
+identifies the shipped gate and generator scripts. Do not use one as a
+substitute for another.
+
 Everything above is authored or generated inside the repository. Generated
 indexes are projections of documents under `docs/`; the documents themselves
 remain the source of truth.

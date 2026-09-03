@@ -10,6 +10,12 @@ Two version numbers move independently (see `AGENTS.md` → Releasing):
 - **scripts** — `scripts_version` in `init-assets/loom.yaml`, bumped only when
   `scripts/loom/*` change; consuming projects re-sync via `/loom:init --refresh`.
 
+## [0.27.2] — 2026-09-03
+
+### Added
+- `loom_version` in initialized `docs/loom.yaml` files, recording the Loom
+  plugin package version that performed the initialization or refresh.
+
 ## [0.27.1] — 2026-09-03
 
 ### Fixed
@@ -436,6 +442,7 @@ published state of the plugin (early development moved the manifest version
   auto-discovers `hooks/hooks.json`, and registering it explicitly caused the
   file-role guard hook to misbehave. Documented the auto-discovery in `CLAUDE.md`.
 
+[0.27.2]: https://github.com/shpakv/loom/compare/v0.27.1...v0.27.2
 [0.27.1]: https://github.com/shpakv/loom/compare/v0.27.0...v0.27.1
 [0.27.0]: https://github.com/shpakv/loom/compare/v0.26.0...v0.27.0
 [0.26.0]: https://github.com/shpakv/loom/compare/v0.25.0...v0.26.0
