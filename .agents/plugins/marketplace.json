@@ -7,8 +7,9 @@
     {
       "name": "loom",
       "source": {
-        "source": "local",
-        "path": "../../"
+        "source": "url",
+        "url": "https://github.com/shpakv/loom.git",
+        "ref": "main"
       },
       "policy": {
         "installation": "AVAILABLE",
