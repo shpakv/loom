@@ -10,9 +10,10 @@ Use the `loom-status-method` skill and interpret for the user:
 4. Check whether `docs/INDEX.md` and `docs/roadmap/ROADMAP.md` are generated
    and current; regenerate them when needed.
 
-Also compare `scripts_version` in docs/loom.yaml with the shipped scripts
-version; on mismatch suggest `/loom:init --refresh`. The plugin package version
-and the scaffolded scripts version are independent.
+Also report `loom_version` when present, and compare `scripts_version` in
+docs/loom.yaml with the shipped scripts version; on mismatch suggest
+`/loom:init --refresh`. The plugin package version, framework version and
+scaffolded scripts version are independent.
 
 Summarize which documents are draft / in-review / approved, how many blocking
 OQs are open and where, whether generated indexes are current, and the single

@@ -7,9 +7,10 @@ description: Report portable Loom project status from configured document indexe
 
 Read `docs/loom.yaml`, print the configured document index and scan configured
 documents for open questions. Check generated indexes and report document
-status counts, blocking questions and the most useful next phase. Compare the
-project `scripts_version` with the shipped scripts version; do not compare it
-with the plugin package version.
+status counts, blocking questions and the most useful next phase. Report the
+recorded `loom_version` when present. Compare the project `scripts_version`
+with the shipped scripts version; do not compare it with the plugin package
+version.
 
 If the configured changes directory exists, also run `change_scan.py --json` and
 report unfinished change records, their routes and affected IDs. For accepted
