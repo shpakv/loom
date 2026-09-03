@@ -10,6 +10,12 @@ Two version numbers move independently (see `AGENTS.md` → Releasing):
 - **scripts** — `scripts_version` in `init-assets/loom.yaml`, bumped only when
   `scripts/loom/*` change; consuming projects re-sync via `/loom:init --refresh`.
 
+## [0.27.1] — 2026-09-03
+
+### Fixed
+- Corrected the Codex GitHub marketplace entry so the root plugin is discoverable
+  and installable with `codex plugin add loom@loom`.
+
 ## [0.27.0] — 2026-09-02
 
 ### Added
@@ -430,6 +436,7 @@ published state of the plugin (early development moved the manifest version
   auto-discovers `hooks/hooks.json`, and registering it explicitly caused the
   file-role guard hook to misbehave. Documented the auto-discovery in `CLAUDE.md`.
 
+[0.27.1]: https://github.com/shpakv/loom/compare/v0.27.0...v0.27.1
 [0.27.0]: https://github.com/shpakv/loom/compare/v0.26.0...v0.27.0
 [0.26.0]: https://github.com/shpakv/loom/compare/v0.25.0...v0.26.0
 [0.25.0]: https://github.com/shpakv/loom/compare/v0.24.0...v0.25.0
