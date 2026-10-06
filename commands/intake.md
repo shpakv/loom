@@ -1,6 +1,6 @@
 ---
 description: Loom utility — capture and triage incoming work, persist durable changes, and route them to the smallest phase that fits
-argument-hint: [idea | bug | feature request in a sentence]
+argument-hint: "[idea | bug | feature request in a sentence]"
 ---
 Use the `loom-intake-method` skill (read `loom-core` first).
 

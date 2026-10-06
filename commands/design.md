@@ -1,6 +1,6 @@
 ---
 description: Loom design phase — decompose the approved epic into design doc, tracks, and session-sized task specs
-argument-hint: [epic-<slug>]
+argument-hint: "[epic-<slug>]"
 ---
 Use the `loom-design-phase` skill (read `loom-core` first) on epic: $ARGUMENTS
 

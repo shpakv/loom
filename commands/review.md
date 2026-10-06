@@ -1,6 +1,6 @@
 ---
 description: Loom gate — review a document, resolve open questions, manage status transition
-argument-hint: <path/to/document.md>
+argument-hint: "<path/to/document.md>"
 ---
 Use the `loom-review-gate` skill (read `loom-core` first) on: $ARGUMENTS
 

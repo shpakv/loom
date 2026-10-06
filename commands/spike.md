@@ -1,6 +1,6 @@
 ---
 description: Loom utility — frame and record a time-boxed spike or probe answering one falsifiable question, producing evidence for an ADR
-argument-hint: [question to answer]
+argument-hint: "[question to answer]"
 ---
 Use the `loom-spike-method` skill (read `loom-core` first).
 

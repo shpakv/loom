@@ -10,6 +10,15 @@ Two version numbers move independently (see `AGENTS.md` → Releasing):
 - **scripts** — `scripts_version` in `init-assets/loom.yaml`, bumped only when
   `scripts/loom/*` change; consuming projects re-sync via `/loom:init --refresh`.
 
+## [0.27.5] — 2026-10-06
+
+### Fixed
+- Quoted command `argument-hint` metadata so YAML parsers preserve the values as
+  strings instead of interpreting bracketed hints as sequences.
+
+### Changed
+- Bumped the plugin package manifests and scaffold metadata to `0.27.5`.
+
 ## [0.27.4] — 2026-10-06
 
 ### Fixed
@@ -463,6 +472,7 @@ published state of the plugin (early development moved the manifest version
   auto-discovers `hooks/hooks.json`, and registering it explicitly caused the
   file-role guard hook to misbehave. Documented the auto-discovery in `CLAUDE.md`.
 
+[0.27.5]: https://github.com/shpakv/loom/compare/v0.27.4...v0.27.5
 [0.27.4]: https://github.com/shpakv/loom/compare/v0.27.3...v0.27.4
 [0.27.3]: https://github.com/shpakv/loom/compare/v0.27.2...v0.27.3
 [0.27.2]: https://github.com/shpakv/loom/compare/v0.27.1...v0.27.2

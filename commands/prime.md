@@ -1,6 +1,6 @@
 ---
 description: Bootstrap Loom session context (conventions, glossary, active scope)
-argument-hint: [epic-<slug>]
+argument-hint: "[epic-<slug>]"
 ---
 Use the `loom-prime-method` skill to bootstrap the Loom working context before
 any other work:

@@ -1,6 +1,6 @@
 ---
 description: Loom phase — choose technologies as proposed recommendations with evidence provenance after the logical architecture exists
-argument-hint: [building block or fork to decide]
+argument-hint: "[building block or fork to decide]"
 ---
 Use the `loom-technology-phase` skill (read `loom-core` first).
 
