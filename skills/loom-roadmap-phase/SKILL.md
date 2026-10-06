@@ -1,6 +1,6 @@
 ---
 name: loom-roadmap-phase
-description: Build or recut a rolling-wave roadmap from an approved vision: choose the first vertical slice, keep future epics as draft candidates in an acyclic dependency graph and generate ROADMAP.md.
+description: "Build or recut a rolling-wave roadmap from an approved vision: choose the first vertical slice, keep future epics as draft candidates in an acyclic dependency graph and generate ROADMAP.md."
 ---
 
 # Loom: roadmap phase (rolling wave)

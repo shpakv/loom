@@ -10,6 +10,18 @@ Two version numbers move independently (see `AGENTS.md` → Releasing):
 - **scripts** — `scripts_version` in `init-assets/loom.yaml`, bumped only when
   `scripts/loom/*` change; consuming projects re-sync via `/loom:init --refresh`.
 
+## [0.27.4] — 2026-10-06
+
+### Fixed
+- Quoted skill and command descriptions containing colons so Copilot and other
+  YAML frontmatter readers load them correctly.
+
+### Changed
+- Rewrote the README with the purpose of Loom, concrete document outputs,
+  installation and first-project examples, lifecycle and change workflows,
+  approval rules, document checks and plugin development guidance.
+- Bumped the plugin package manifests and scaffold metadata to `0.27.4`.
+
 ## [0.27.3] — 2026-10-06
 
 ### Fixed
@@ -451,6 +463,7 @@ published state of the plugin (early development moved the manifest version
   auto-discovers `hooks/hooks.json`, and registering it explicitly caused the
   file-role guard hook to misbehave. Documented the auto-discovery in `CLAUDE.md`.
 
+[0.27.4]: https://github.com/shpakv/loom/compare/v0.27.3...v0.27.4
 [0.27.3]: https://github.com/shpakv/loom/compare/v0.27.2...v0.27.3
 [0.27.2]: https://github.com/shpakv/loom/compare/v0.27.1...v0.27.2
 [0.27.1]: https://github.com/shpakv/loom/compare/v0.27.0...v0.27.1

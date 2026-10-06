@@ -1,6 +1,6 @@
 ---
 name: loom-consolidate-phase
-description: Consolidate evidence from any source: accept, reject or defer proposed ADRs, reconcile architecture and quality scenarios, extract conventions, sweep assumptions and recut the roadmap.
+description: "Consolidate evidence from any source: accept, reject or defer proposed ADRs, reconcile architecture and quality scenarios, extract conventions, sweep assumptions and recut the roadmap."
 ---
 
 # Loom: consolidation event

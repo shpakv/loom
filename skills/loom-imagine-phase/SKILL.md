@@ -1,6 +1,6 @@
 ---
 name: loom-imagine-phase
-description: Extract the minimum shared understanding for a new product or greenfield idea: glossary, anti-goals, use cases, assumptions and measurable drivers. Use for a new problem space; route existing-project changes through intake instead.
+description: "Extract the minimum shared understanding for a new product or greenfield idea: glossary, anti-goals, use cases, assumptions and measurable drivers. Use for a new problem space; route existing-project changes through intake instead."
 ---
 
 # Loom: imagine phase (minimum)

@@ -1,5 +1,5 @@
 ---
-description: Loom phase — the feedback loop: check whether accepted decisions still hold, surface drift as blocking OQs
+description: "Loom phase — the feedback loop: check whether accepted decisions still hold, surface drift as blocking OQs"
 ---
 Use the `loom-audit-phase` skill (read `loom-core` first).
 

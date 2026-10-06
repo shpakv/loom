@@ -1,5 +1,5 @@
 ---
-description: Loom phase — decision event after evidence: accept proposed ADRs, reconcile architecture, extract conventions, and re-cut the roadmap
+description: "Loom phase — decision event after evidence: accept proposed ADRs, reconcile architecture, extract conventions, and re-cut the roadmap"
 ---
 Use the `loom-consolidate-phase` skill (read `loom-core` first).
 
