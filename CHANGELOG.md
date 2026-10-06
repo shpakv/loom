@@ -10,6 +10,15 @@ Two version numbers move independently (see `AGENTS.md` → Releasing):
 - **scripts** — `scripts_version` in `init-assets/loom.yaml`, bumped only when
   `scripts/loom/*` change; consuming projects re-sync via `/loom:init --refresh`.
 
+## [0.27.3] — 2026-10-06
+
+### Fixed
+- Pointed the GitHub Copilot marketplace entry at the repository root so the
+  plugin source stays inside the marketplace repository.
+
+### Changed
+- Bumped the plugin package manifests and scaffold metadata to `0.27.3`.
+
 ## [0.27.2] — 2026-09-03
 
 ### Added
@@ -442,6 +451,7 @@ published state of the plugin (early development moved the manifest version
   auto-discovers `hooks/hooks.json`, and registering it explicitly caused the
   file-role guard hook to misbehave. Documented the auto-discovery in `CLAUDE.md`.
 
+[0.27.3]: https://github.com/shpakv/loom/compare/v0.27.2...v0.27.3
 [0.27.2]: https://github.com/shpakv/loom/compare/v0.27.1...v0.27.2
 [0.27.1]: https://github.com/shpakv/loom/compare/v0.27.0...v0.27.1
 [0.27.0]: https://github.com/shpakv/loom/compare/v0.26.0...v0.27.0
