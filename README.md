@@ -56,6 +56,7 @@ The default layout grows into:
 docs/
 ├── loom.yaml                         # paths, statuses and decision policy
 ├── INDEX.md                          # generated document status index
+├── DOC-GRAPH.md                      # generated linked index and relationship graph
 ├── product/
 │   ├── VISION.md                      # problem, users, goals and non-goals
 │   ├── GLOSSARY.md                    # shared domain vocabulary
@@ -317,16 +318,25 @@ links. Consolidation also uses `adr_scan.py --gate --framing` to check decision
 framing and quality-scenario mappings. The scripts check document mechanics;
 substantive correctness still needs review.
 
+Keep Loom IDs bare in structured frontmatter and link document references in
+prose with relative inline Markdown links. link_check.py checks local Markdown
+destinations and heading or explicit HTML id fragments. doc_graph_gen.py
+generates a linked index and Mermaid graph from Loom ID references and local
+inline Markdown links. Keep links relative to the source documents; the selected
+static-site generator is responsible for adapting them to published URLs and
+rendering Mermaid diagrams. GitLab Pages publishes the generated static site.
+
 Regenerate the convenience views when their source documents change:
 
 ```bash
 python3 scripts/loom/index_gen.py
 python3 scripts/loom/roadmap_gen.py
 python3 scripts/loom/uc_diagram_gen.py
+python3 scripts/loom/doc_graph_gen.py
 ```
 
-`INDEX.md`, `ROADMAP.md` and `UC-DIAGRAM.md` begin with a `GENERATED` marker.
-Update their source documents and rerun the generator. For an affected ID,
+`INDEX.md`, `ROADMAP.md`, `UC-DIAGRAM.md` and `DOC-GRAPH.md` begin with a
+`GENERATED` marker. Update their source documents and rerun the generator. For an affected ID,
 `impact_scan.py --id <ID>` reports direct and transitive consumers, and
 `link_check.py --refs <ID>` lists reference sites. Each documented check supports
 `--help`.

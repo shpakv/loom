@@ -15,37 +15,37 @@ a guessed driver is an assumption and follows the same discipline).
 ## Quality (proto-QS)
 | ID | Fact | Confidence | Verify by |
 |---|---|---|---|
-| DRV-{load-topic} | peak ~{order} rps, {pattern} | guessed | {how} |
-| DRV-{latency-topic} | {operation} tolerable at ~{order} | known | — |
+| DRV-{load-topic} | peak ~{order} rps, {pattern} <a id="drv-{load-topic}"></a> | guessed | {how} |
+| DRV-{latency-topic} | {operation} tolerable at ~{order} <a id="drv-{latency-topic}"></a> | known | — |
 
 ## Constraints (mandated facts)
 | ID | Fact | Confidence | Verify by |
 |---|---|---|---|
-| DRV-{constraint} | {budget / deadline / mandated tech / compliance / who operates it} | known | — |
+| DRV-{constraint} | {budget / deadline / mandated tech / compliance / who operates it} <a id="drv-{constraint}"></a> | known | — |
 
 ## Integrations
 | ID | Fact | Confidence | Verify by |
 |---|---|---|---|
-| DRV-{system} | {system}, {protocol}, {direction}, {SLA expectations} | known | — |
+| DRV-{system} | {system}, {protocol}, {direction}, {SLA expectations} <a id="drv-{system}"></a> | known | — |
 
 ## Data profile
 | ID | Fact | Confidence | Verify by |
 |---|---|---|---|
-| DRV-{data-topic} | volume ~{order}, growth {rate}, retention {period}, sensitivity {class}, loss tolerance {level} | guessed | {how} |
+| DRV-{data-topic} | volume ~{order}, growth {rate}, retention {period}, sensitivity {class}, loss tolerance {level} <a id="drv-{data-topic}"></a> | guessed | {how} |
 
 ## Tech posture (about the team, not the system)
 | ID | Fact | Confidence | Verify by |
 |---|---|---|---|
-| DRV-stack-competence | team knows {stack}; unfamiliar: {list} | known | — |
-| DRV-tech-vetoes | forbidden/undesired: {list, with reasons} | known | — |
-| DRV-novelty-appetite | wants to learn {X} on this project / prefers boring tech | known | — |
-| DRV-ops-reality | operated by {who}; on-call {reality}; deploy target {where} | known | — |
-| DRV-existing-infra | already paid for / running: {list} | known | — |
+| DRV-stack-competence | team knows {stack}; unfamiliar: {list} <a id="drv-stack-competence"></a> | known | — |
+| DRV-tech-vetoes | forbidden/undesired: {list, with reasons} <a id="drv-tech-vetoes"></a> | known | — |
+| DRV-novelty-appetite | wants to learn {X} on this project / prefers boring tech <a id="drv-novelty-appetite"></a> | known | — |
+| DRV-ops-reality | operated by {who}; on-call {reality}; deploy target {where} <a id="drv-ops-reality"></a> | known | — |
+| DRV-existing-infra | already paid for / running: {list} <a id="drv-existing-infra"></a> | known | — |
 
 ## Evolution expectations
 | ID | Fact | Confidence | Verify by |
 |---|---|---|---|
-| DRV-{evolution-topic} | {what will change often} / {what is frozen} | guessed | {how} |
+| DRV-{evolution-topic} | {what will change often} / {what is frozen} <a id="drv-{evolution-topic}"></a> | guessed | {how} |
 
 ## Open questions
 - [ ] OQ-drivers-{topic} (blocking): ...

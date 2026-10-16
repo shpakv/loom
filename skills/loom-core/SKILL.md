@@ -72,6 +72,26 @@ Epic ID exception: an epic is a bundle directory `epics/epic-<slug>/` — the
 directory carries the slug; `epic.md` frontmatter `id:` equals the directory
 name; `design.md` takes `id: epic-<slug>-design`.
 
+Cross-document navigation uses two layers:
+
+- Loom IDs remain the stable traceability identity. Keep IDs bare in structured
+  frontmatter fields; in prose, link the ID to its owning page with a relative
+  inline Markdown link.
+- Use an explicit HTML id for a durable link to a table row or other non-heading
+  target. Use the lowercase Loom ID as the anchor value (for example,
+  `ACTOR-trainer` maps to `actor-trainer`). Renderer-generated row anchors vary
+  across hosts.
+- `link_check.py` validates relative inline Markdown document links and fragments.
+  If the link label contains a Loom ID, the destination must be the page defining
+  that ID.
+  `doc_graph_gen.py` generates a linked document index and a Mermaid graph from
+  resolved Loom ID references and local inline Markdown links.
+
+Keep paths relative to the source Markdown file rather than tying source
+documents to one published-site URL. A static-site generator may rewrite these
+paths for its output layout and must render Mermaid diagrams for the generated
+graph to appear visually.
+
 Rules:
 - **Immutability**: once an ID is referenced anywhere, it never changes. If the
   name became a lie, that is a superseding document with a new name, not a rename.
@@ -87,6 +107,8 @@ Rules:
 ```
 docs/
 ├── loom.yaml                 # framework config (paths, phases, status vocabularies)
+├── INDEX.md                  # generated document status index
+├── DOC-GRAPH.md              # generated linked index and document relationship graph
 ├── product/                  # VISION.md, GLOSSARY.md, ACTORS.md, STEPS.md, ASSUMPTIONS.md, DRIVERS.md, RULES.md, use-cases/
 │                              # UC-DIAGRAM.md is generated (actor↔UC UML diagram) — never edited by hand
 ├── domain/                   # event storming notes, C4 models (.dsl / mermaid)

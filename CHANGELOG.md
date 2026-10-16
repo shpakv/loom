@@ -10,6 +10,19 @@ Two version numbers move independently (see `AGENTS.md` → Releasing):
 - **scripts** — `scripts_version` in `init-assets/loom.yaml`, bumped only when
   `scripts/loom/*` change; consuming projects re-sync via `/loom:init --refresh`.
 
+## [0.28.0] — 2026-10-16
+
+### Added
+- Checked local Markdown document links and heading or explicit HTML anchor
+  fragments in `link_check.py`.
+- Added stable anchors for ID-bearing table rows and clickable ACTOR links in
+  the use case template.
+- Added `doc_graph_gen.py` for a linked document index and Mermaid graph
+  built from resolved Loom ID references and local Markdown links.
+
+### Changed
+- Bumped shipped scripts to `0.17.0` and plugin manifests to `0.28.0`.
+
 ## [0.27.5] — 2026-10-06
 
 ### Fixed

@@ -17,7 +17,7 @@ referenced.
 
 | ID | Rule | Bounds | Source | review_by |
 |---|---|---|---|---|
-| BR-{rule-slug} | {the rule, with its numbers} | {rounding and where applied; inclusive/exclusive edges; zero / empty / negative; tie-break; timezone; precedence} | {person + date, or standard §section, edition} | {YYYY-MM-DD for external sources, else empty} |
+| BR-{rule-slug} | {the rule, with its numbers} <a id="br-{rule-slug}"></a> | {rounding and where applied; inclusive/exclusive edges; zero / empty / negative; tie-break; timezone; precedence} | {person + date, or standard §section, edition} | {YYYY-MM-DD for external sources, else empty} |
 
 ## Notes on bounds
 

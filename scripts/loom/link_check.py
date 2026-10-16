@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Loom: reference integrity check for slug-based IDs.
+"""Loom: check document IDs and local Markdown navigation links.
 
 Definitions:
   - frontmatter `id:` of every docs/**/*.md (+ its `aliases:`)
@@ -7,22 +7,149 @@ Definitions:
   - QS/DRV/BR/ACTOR/track table rows (`| <ID> | ... |`)
 References:
   - every ADR/UC/SPIKE/TASK/OQ/QS/DRV/BR/ACTOR/CHG/track/epic-* mention in scanned files
+  - inline local .md links resolve to a file; fragments resolve to an HTML id or heading
+  - a Markdown link labelled with a Loom ID points to the file defining that ID
 
 Usage:
   link_check.py [paths...]        scan (default: docs/); exit 1 on violations
   link_check.py --refs <id>       reverse index: who references <id>
-Violations: duplicate IDs/aliases, references that resolve to nothing.
+Violations: duplicate IDs/aliases, unresolved references, and broken Markdown
+document links or fragments.
 """
+import html
 import re
 import sys
 from collections import defaultdict
 from pathlib import Path
+from urllib.parse import unquote, urlsplit
 from config import ConfigError, project_config, target, require_targets, usage
 
 REF_RE = re.compile(r"\b(?:ADR|UC|SPIKE|TASK|OQ|QS|DRV|BR|ACTOR|CHG|track|epic)-[a-z0-9][a-z0-9-]*[a-z0-9]\b")
 QS_DEF_RE = re.compile(r"^\|\s*((?:QS|DRV|BR|ACTOR|track)-[a-z0-9][a-z0-9-]*[a-z0-9])\s*\|")
 OQ_DEF_RE = re.compile(r"^-\s*\[[ xX]\]\s*(OQ-[a-z0-9][a-z0-9-]*[a-z0-9])\b")
 TASK_DEP_RE = re.compile(r"\bTASK-[a-z0-9][a-z0-9-]*[a-z0-9]\b")
+MARKDOWN_LINK_RE = re.compile(
+    r"(?<!!)\[((?:\\.|[^\]])+)\]\(\s*(?:<([^>\n]+)>|((?:\\.|[^\s)])+))"
+)
+FENCE_RE = re.compile(r"^\s{0,3}(\x60{3,}|~{3,})")
+INLINE_CODE_RE = re.compile(r"(\x60+).*?\1")
+ATX_HEADING_RE = re.compile(r"^\s{0,3}#{1,6}\s+(.+?)\s*#*\s*$")
+SETEXT_HEADING_RE = re.compile(r"^\s{0,3}(=+|-+)\s*$")
+HTML_ID_RE = re.compile(
+    r"(?<![\w:-])id\s*=\s*(?:\"([^\"]+)\"|'([^']+)'|([^\s'\"=<>]+))",
+    re.IGNORECASE,
+)
+
+
+def visible_markdown_lines(lines):
+    """Return source lines outside fenced code blocks, preserving line numbers."""
+    visible = []
+    fence_char, fence_size = None, 0
+    for number, line in enumerate(lines, 1):
+        match = FENCE_RE.match(line)
+        if fence_char:
+            if match and match.group(1)[0] == fence_char and len(match.group(1)) >= fence_size:
+                fence_char, fence_size = None, 0
+            visible.append((number, ""))
+            continue
+        if match:
+            fence_char, fence_size = match.group(1)[0], len(match.group(1))
+            visible.append((number, ""))
+            continue
+        visible.append((number, line))
+    return visible
+
+
+def markdown_link_items(lines):
+    """Yield (line number, label, destination) for inline Markdown links."""
+    for number, line in visible_markdown_lines(lines):
+        line = INLINE_CODE_RE.sub("", line)
+        for match in MARKDOWN_LINK_RE.finditer(line):
+            label = match.group(1)
+            destination = match.group(2) or match.group(3)
+            destination = re.sub(r"\\([!#$%&'()*+,\-./:;<=>?@\[\]^_\x60{|}~])", r"\1", destination)
+            yield number, label, destination
+
+
+def markdown_links(lines):
+    """Yield (line number, destination) for inline Markdown links."""
+    for number, _, destination in markdown_link_items(lines):
+        yield number, destination
+
+
+def heading_slug(text):
+    """Approximate GitHub-style heading slugs for ordinary Markdown headings."""
+    text = html.unescape(text)
+    text = re.sub(r"<[^>]*>", "", text)
+    text = re.sub(r"\[([^\]]+)\]\([^)]*\)", r"\1", text)
+    text = text.replace("\x60", "")
+    text = re.sub(r"[^\w -]", "", text, flags=re.UNICODE).lower().strip()
+    return re.sub(r"\s+", "-", text)
+
+
+def markdown_anchors(path):
+    """Collect explicit HTML ids and renderer-style anchors for Markdown headings."""
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except (UnicodeDecodeError, OSError):
+        return set()
+    visible = visible_markdown_lines(lines)
+    anchors, heading_counts = set(), defaultdict(int)
+    for index, (number, line) in enumerate(visible):
+        markup_free = INLINE_CODE_RE.sub("", line)
+        for match in HTML_ID_RE.finditer(markup_free):
+            anchors.add(match.group(1) or match.group(2) or match.group(3))
+
+        heading = ATX_HEADING_RE.match(line)
+        heading_text = heading.group(1) if heading else None
+        if not heading_text and index + 1 < len(visible):
+            next_line = visible[index + 1][1]
+            if line.strip() and SETEXT_HEADING_RE.match(next_line):
+                heading_text = line.strip()
+        if heading_text:
+            base = heading_slug(heading_text)
+            if base:
+                suffix = heading_counts[base]
+                heading_counts[base] += 1
+                anchors.add(base if suffix == 0 else f"{base}-{suffix}")
+    return anchors
+
+
+def markdown_link_errors(path, lines, anchor_cache):
+    """Validate local Markdown page destinations and any supplied fragments."""
+    errors = []
+    for number, destination in markdown_links(lines):
+        try:
+            parsed = urlsplit(html.unescape(destination))
+        except ValueError:
+            errors.append(f"invalid Markdown link '{destination}' at {path}:{number}")
+            continue
+        if parsed.scheme or parsed.netloc:
+            continue
+        target_path = unquote(parsed.path)
+        fragment = unquote(parsed.fragment)
+        if target_path and Path(target_path).suffix.lower() != ".md":
+            continue
+        if target_path:
+            target = (path.parent / target_path).resolve()
+        elif fragment:
+            target = path.resolve()
+        else:
+            continue
+        if not target.is_file():
+            errors.append(
+                f"unresolved Markdown document link '{destination}' at {path}:{number}"
+            )
+            continue
+        if fragment:
+            if target not in anchor_cache:
+                anchor_cache[target] = markdown_anchors(target)
+            if fragment not in anchor_cache[target]:
+                errors.append(
+                    f"unresolved Markdown anchor '#{fragment}' in {target} "
+                    f"from {path}:{number}"
+                )
+    return errors
 
 
 def find_cycle(graph):
@@ -79,7 +206,7 @@ def frontmatter(lines):
 
 def main(argv):
     if "--help" in argv:
-        print(usage("link_check.py", "[paths ...] | --refs ID", "Validate document IDs and references."))
+        print(usage("link_check.py", "[paths ...] | --refs ID", "Validate document IDs, references and local Markdown links."))
         return 0
     want_refs = None
     if "--refs" in argv:
@@ -118,8 +245,10 @@ def main(argv):
 
     defined = {}                      # id -> file where defined
     refs = defaultdict(list)          # id -> [(file, line_no)]
+    linked_ids = []                   # (id, destination, source file, line)
     errors = []
     task_graph = {}
+    anchor_cache = {}
     document_statuses = set()
     try:
         config, _ = project_config()
@@ -134,6 +263,12 @@ def main(argv):
             lines = f.read_text(encoding="utf-8").splitlines()
         except (UnicodeDecodeError, OSError):
             continue
+        errors.extend(markdown_link_errors(f, lines, anchor_cache))
+        for line_number, label, destination in markdown_link_items(lines):
+            linked_ids.extend(
+                (ref, destination, str(f), line_number)
+                for ref in REF_RE.findall(label)
+            )
         fm = frontmatter(lines)
         record_id = str(fm.get("id", ""))
         valid_change_status = record_id.startswith("CHG-") and (not change_statuses or fm.get("status") in change_statuses)
@@ -176,6 +311,26 @@ def main(argv):
         if ref not in defined:
             for file, n in sites:
                 errors.append(f"unresolved reference '{ref}' at {file}:{n}")
+
+    for ref, destination, source_file, line_number in linked_ids:
+        if ref not in defined:
+            continue
+        try:
+            parsed = urlsplit(html.unescape(destination))
+        except ValueError:
+            continue
+        if parsed.scheme or parsed.netloc:
+            continue
+        target_path = unquote(parsed.path)
+        if not target_path or Path(target_path).suffix.lower() != ".md":
+            continue
+        target = (Path(source_file).parent / target_path).resolve()
+        defined_at = Path(defined[ref]).resolve()
+        if target.is_file() and target != defined_at:
+            errors.append(
+                f"Markdown link for '{ref}' at {source_file}:{line_number} "
+                f"targets {target}, but the ID is defined in {defined_at}"
+            )
 
     for e in errors:
         print(f"ERROR: {e}", file=sys.stderr)

@@ -15,8 +15,8 @@ Cockburn fully-dressed use case. Actor(s) resolve against `ACTORS.md`
 `UC-*.md` — both are checked by `link_check.py` and drawn in the generated
 `docs/product/UC-DIAGRAM.md` (never hand-edited).
 
-**Primary actor:** {ACTOR-role} — {one-line goal from their point of view}
-**Secondary actors:** {ACTOR-role, or "none"}
+**Primary actor:** [ACTOR-role](../ACTORS.md#actor-role) — {one-line goal from their point of view}
+**Secondary actors:** [ACTOR-role](../ACTORS.md#actor-role), or "none"
 **Trigger:** {what starts this}
 
 **Preconditions:** {what must already be true for the scenario to start}

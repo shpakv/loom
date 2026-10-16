@@ -11,7 +11,7 @@ hard measure. `Enforced by` names a fitness function or `manual (<why>)`.
 
 | ID | Stimulus | Response | Measure | Traces to | Enforced by |
 |---|---|---|---|---|---|
-| QS-{slug} | {load/failure/change event} | {expected behavior} | {number + unit} | {VISION metric / epic} | {arch-test, CI job, or manual (<why>)} |
+| QS-{slug} | {load/failure/change event} <a id="qs-{slug}"></a> | {expected behavior} | {number + unit} | {VISION metric / epic} | {arch-test, CI job, or manual (<why>)} |
 
 ## Open questions
 - [ ] OQ-quality-{topic}: ...

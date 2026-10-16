@@ -7,7 +7,7 @@ portable without adding a dependency to initialized projects.
 from pathlib import Path
 import re
 
-SHIPPED_SCRIPTS_VERSION = "0.16.0"
+SHIPPED_SCRIPTS_VERSION = "0.17.0"
 
 DECISION_MODES = {"delegated", "recommend", "confirm", "record-only"}
 EVIDENCE_LEVELS = {"none", "reasoned", "reported", "observed", "measured"}

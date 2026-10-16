@@ -46,9 +46,9 @@ recorded as `guessed` with a verify-by — never silently omitted.
 |---|---|---|
 | `GLOSSARY.md` | written directly (no template) | every term used in UC and VISION |
 | `VISION.md` | `templates/vision.md` | problem, for whom, ≥3 anti-goals, ≥1 metric; personas table and full metrics may stay empty |
-| `ACTORS.md` | `templates/actors.md` | one row per actor a use case names as `primary_actor`/`secondary_actors` |
+| `ACTORS.md` | `templates/actors.md` | one row per actor a use case names as `primary_actor`/`secondary_actors`, with an explicit HTML id for stable links |
 | `STEPS.md` | `templates/steps.md` | one row per distinct Given/When/Then phrase before it is used in a UC |
-| `use-cases/UC-*.md` | `templates/use-case.md` (Cockburn fully-dressed) | exactly 3–5, glossary terms only, actor(s) resolved against `ACTORS.md`, steps resolved against `STEPS.md`, ≥1 `[error]`/`[boundary]` extension each |
+| `use-cases/UC-*.md` | `templates/use-case.md` (Cockburn fully-dressed) | exactly 3–5, glossary terms only, actor(s) resolved against and linked to `ACTORS.md`, steps resolved against `STEPS.md`, ≥1 `[error]`/`[boundary]` extension each |
 | `ASSUMPTIONS.md` | `templates/assumptions.md` | every unverified belief, with verify-by |
 | `DRIVERS.md` | `templates/drivers.md` | facts in orders of magnitude; unknowns as `guessed` |
 

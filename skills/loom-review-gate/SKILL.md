@@ -41,7 +41,7 @@ the substantive review below begin.
    `python3 scripts/loom/change_scan.py --gate`; an affected document is not
    revalidation-complete until the owning change record lists it under
    `revalidated_documents`. If clean, set `status: approved`, bump `updated`,
-   run `scripts/loom/index_gen.py`.
+   run `scripts/loom/index_gen.py` and `scripts/loom/doc_graph_gen.py`.
 
 ## Additional checklist for ADRs (proposed → accepted)
 

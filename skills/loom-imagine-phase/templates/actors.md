@@ -13,7 +13,11 @@ One row per actor; `ID` is referenced from `use-cases/UC-*.md` frontmatter
 
 | ID | Name | Kind | Description |
 |---|---|---|---|
-| ACTOR-{role} | {role, glossary term} | primary \| secondary \| system | {who they are, what they want from the system} |
+| ACTOR-{role} | {role, glossary term} | primary \| secondary \| system | {who they are, what they want from the system} <a id="actor-{role}"></a> |
+
+The explicit HTML id in the Description cell makes each table row a stable link
+target across hosts. Use the lowercase Loom ID as the fragment:
+`ACTOR-trainer` maps to `actor-trainer`.
 
 Kind: `primary` initiates use cases toward a goal; `secondary` is consulted or
 notified but does not initiate; `system` is an external system acting as an

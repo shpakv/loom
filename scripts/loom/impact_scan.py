@@ -47,12 +47,17 @@ def frontmatter(lines):
             value = value.split("#", 1)[0].strip()
             if value in {"", "[]", "null", "~"}:
                 fm[key.strip()] = [] if value in {"", "[]"} else None
+            elif value.startswith("[") and value.endswith("]"):
+                fm[key.strip()] = [
+                    item.strip().strip("'\"")
+                    for item in value[1:-1].split(",") if item.strip()
+                ]
             else:
                 fm[key.strip()] = value.strip("'\"")
     return fm
 
 
-def collect(docs):
+def collect(docs, include_changes=False):
     definitions = {}
     refs = defaultdict(list)
     file_info = {}
@@ -64,11 +69,15 @@ def collect(docs):
         except (OSError, UnicodeError):
             continue
         fm = frontmatter(lines)
-        if isinstance(fm.get("id"), str) and fm["id"].startswith("CHG-"):
+        if (not include_changes and isinstance(fm.get("id"), str)
+                and fm["id"].startswith("CHG-")):
             continue
         ids = []
         if isinstance(fm.get("id"), str):
             ids.append(fm["id"])
+        aliases = fm.get("aliases", [])
+        if isinstance(aliases, list):
+            ids.extend(alias for alias in aliases if isinstance(alias, str))
         for line in lines:
             q = OQ_DEF_RE.match(line.strip())
             if q:
